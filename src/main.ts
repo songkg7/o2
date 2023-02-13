@@ -1,7 +1,7 @@
 import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian'
 import {DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab} from "./settings"
 import {O2Modal} from "./o2Modal"
-import {copyMarkdownFile, removeDoubleSquareBracketsInFiles} from "./jekyll/converter"
+import {convertToJekyll} from "./jekyll"
 
 export default class O2Plugin extends Plugin {
     settings: O2PluginSettings
@@ -82,18 +82,8 @@ export default class O2Plugin extends Plugin {
         this.addCommand({
             id: 'test-command',
             name: 'Test Command',
-            callback: async () => {
-                // copy file to temp directory
-                copyMarkdownFile()
-
-                //
-                removeDoubleSquareBracketsInFiles()
-
-                // copy image to jeykll image folder
-
-                // delete copy file
-
-                // 원본 파일을 published 폴더로 이동
+            callback: () => {
+                convertToJekyll()
             }
         })
 

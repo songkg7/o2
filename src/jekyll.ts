@@ -1,6 +1,16 @@
 import {TFile} from "obsidian"
 
-export function removeDoubleSquareBracketsInFiles() {
+export function convertToJekyll() {
+    copyMarkdownFile()
+    removeDoubleSquareBracketsInFiles()
+    // copy image to jeykll image folder
+
+    // delete copy file
+
+    // 원본 파일을 published 폴더로 이동
+}
+
+function removeDoubleSquareBracketsInFiles() {
     let markdownFiles = this.app.vault.getMarkdownFiles()
     markdownFiles.forEach(async (file: TFile) => {
         let content = await this.app.vault.read(file)
@@ -9,7 +19,7 @@ export function removeDoubleSquareBracketsInFiles() {
     })
 }
 
-export function copyMarkdownFile() {
+function copyMarkdownFile() {
     let markdownFiles = this.app.vault.getMarkdownFiles()
     markdownFiles.forEach(async (file: TFile) => {
         console.log(file)
