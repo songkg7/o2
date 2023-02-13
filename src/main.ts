@@ -1,6 +1,6 @@
 import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting} from 'obsidian';
 import {DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab} from "./settings";
-
+import {O2Modal} from "./o2Modal";
 
 export default class O2Plugin extends Plugin {
 	settings: O2PluginSettings;
@@ -25,7 +25,7 @@ export default class O2Plugin extends Plugin {
 			id: 'open-sample-modal-simple',
 			name: 'Open test sample modal (simple)',
 			callback: () => {
-				new SampleModal(this.app).open();
+				new O2Modal(this.app).open();
 			}
 		});
 		// This adds an editor command that can perform some operation on the current editor instance
@@ -48,7 +48,7 @@ export default class O2Plugin extends Plugin {
 					// If checking is true, we're simply "checking" if the command can be run.
 					// If checking is false, then we want to actually perform the operation.
 					if (!checking) {
-						new SampleModal(this.app).open();
+						new O2Modal(this.app).open();
 					}
 
 					// This command will only show up in Command Palette when the check function returns true
@@ -80,22 +80,6 @@ export default class O2Plugin extends Plugin {
 
 	async saveSettings() {
 		await this.saveData(this.settings);
-	}
-}
-
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
 	}
 }
 
