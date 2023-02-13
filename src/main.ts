@@ -1,9 +1,12 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting} from 'obsidian'
+import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian'
 import {DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab} from "./settings"
 import {O2Modal} from "./o2Modal"
+import {copyMarkdownFile, removeDoubleSquareBracketsInFiles} from "./jekyll/converter"
 
 export default class O2Plugin extends Plugin {
     settings: O2PluginSettings
+
+    private readonly tempDir = 'temp'
 
     async onload() {
         await this.loadSettings()
@@ -76,6 +79,24 @@ export default class O2Plugin extends Plugin {
             }
         })
 
+        this.addCommand({
+            id: 'test-command',
+            name: 'Test Command',
+            callback: async () => {
+                // copy file to temp directory
+                copyMarkdownFile()
+
+                //
+                removeDoubleSquareBracketsInFiles()
+
+                // copy image to jeykll image folder
+
+                // delete copy file
+
+                // 원본 파일을 published 폴더로 이동
+            }
+        })
+
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new O2SettingTab(this.app, this))
 
@@ -88,6 +109,7 @@ export default class O2Plugin extends Plugin {
         // When registering intervals, this function will automatically clear the interval when the plugin is disabled.
         this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000))
     }
+
 
     onunload() {
 
