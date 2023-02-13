@@ -1,12 +1,11 @@
 import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian'
 import {DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab} from "./settings"
 import {O2Modal} from "./o2Modal"
-import {convertToJekyll, deleteCopiedMarkdownFile} from "./jekyll"
+import {convertToJekyll} from "./jekyll"
+import {Temporal} from "@js-temporal/polyfill"
 
 export default class O2Plugin extends Plugin {
     settings: O2PluginSettings
-
-    private readonly tempDir = 'temp'
 
     async onload() {
         await this.loadSettings()
@@ -49,8 +48,8 @@ export default class O2Plugin extends Plugin {
                 if (markdownView) {
                     if (!checking) {
                         const file = markdownView.file
-                        const from = this.settings.from
-                        const to = this.settings.to
+                        const from = this.settings.draftDir
+                        const to = this.settings.publishedDir
                         const toPath = file.path.replace(from, to)
                         this.app.vault.rename(file, toPath)
                     }
@@ -62,16 +61,23 @@ export default class O2Plugin extends Plugin {
         this.addCommand({
             id: 'test-command',
             name: 'Test Command',
-            callback: () => convertToJekyll()
+            callback: async () => {
+                this.copyToPublishedDirectory();
+                // rename markdown file to yyyy-mm-dd-title.md
+                let tFiles = await this.renameMarkdownFile();
+
+                // TODO: init jekyll from to folder
+                return await convertToJekyll(tFiles);
+
+            }
         })
 
         this.addCommand({
             id: 'check-command',
             name: 'check current file',
             callback: () => {
-                let markdownFiles = this.app.vault.getMarkdownFiles()
-                deleteCopiedMarkdownFile()
-                console.log(markdownFiles)
+                // /Users/haril/Documents/projects/devlog/_posts
+                this.renameMarkdownFile()
             }
         })
 
@@ -88,6 +94,13 @@ export default class O2Plugin extends Plugin {
         this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000))
     }
 
+    private copyToPublishedDirectory() {
+        let markdownFiles = this.app.vault.getMarkdownFiles()
+        markdownFiles.forEach(async (file: TFile) => {
+            return await this.app.vault.copy(file, file.path.replace(this.settings.draftDir, this.settings.publishedDir))
+        })
+    }
+
     onunload() {
 
     }
@@ -99,5 +112,20 @@ export default class O2Plugin extends Plugin {
     async saveSettings() {
         await this.saveData(this.settings)
     }
+
+    private async renameMarkdownFile() {
+        let dateString = Temporal.Now.plainDateISO().toString();
+        let markdownFiles = this.app.vault.getMarkdownFiles()
+        for (const file of markdownFiles) {
+            let newFileName = dateString + "-" + file.name
+            let newFilePath = file.path
+                .replace(file.name, newFileName)
+                .replace(" ", "-")
+            console.log('new File path: ' + newFilePath)
+            await this.app.vault.rename(file, newFilePath);
+        }
+        return markdownFiles
+    }
 }
+
 

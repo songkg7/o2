@@ -16,6 +16,7 @@
 	"author": "haril song",
 	"license": "MIT",
 	"devDependencies": {
+		"@js-temporal/polyfill": "^0.4.3",
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",
 		"@typescript-eslint/parser": "5.29.0",

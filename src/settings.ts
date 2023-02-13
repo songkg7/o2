@@ -2,13 +2,15 @@ import {App, PluginSettingTab, Setting} from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {
-    from: string;
-    to: string;
+    draftDir: string;
+    publishedDir: string;
+    jekyllTargetDir: string;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
-    from: 'ready',
-    to: 'published'
+    draftDir: 'ready',
+    publishedDir: 'published',
+    jekyllTargetDir: 'jekyll',
 }
 
 export class O2SettingTab extends PluginSettingTab {
@@ -24,23 +26,24 @@ export class O2SettingTab extends PluginSettingTab {
         this.containerEl.createEl('h2', {
             text: 'Settings for O2 plugin.',
         })
-        this.addReadyDirectorySetting()
+        this.addDraftDirectorySetting()
         this.addPublishedDirectorySetting()
+        this.addJekyllTargetDirectorySetting()
         this.containerEl.createEl('h2', {
             text: 'Advanced settings',
         })
     }
 
-    private addReadyDirectorySetting() {
+    private addDraftDirectorySetting() {
         new Setting(this.containerEl)
-            .setName('Ready directory')
+            .setName('Draft directory')
             .setDesc('The directory where documents ready to be published will be placed.')
             .addText(text => text
                 .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.from)
+                .setValue(this.plugin.settings.draftDir)
                 .onChange(async (value) => {
-                    console.log('From: ' + value)
-                    this.plugin.settings.from = value
+                    console.log('Draft path: ' + value)
+                    this.plugin.settings.draftDir = value
                     await this.plugin.saveSettings()
                 }))
     }
@@ -51,10 +54,24 @@ export class O2SettingTab extends PluginSettingTab {
             .setDesc('The directory where publishing will complete and the documents will be moved.')
             .addText(text => text
                 .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.to)
+                .setValue(this.plugin.settings.publishedDir)
                 .onChange(async (value) => {
-                    console.log('To: ' + value)
-                    this.plugin.settings.to = value
+                    console.log('Published path: ' + value)
+                    this.plugin.settings.publishedDir = value
+                    await this.plugin.saveSettings()
+                }))
+    }
+
+    private addJekyllTargetDirectorySetting() {
+        new Setting(this.containerEl)
+            .setName('Jekyll target directory')
+            .setDesc('The directory where Jekyll will be generated.')
+            .addText(text => text
+                .setPlaceholder('Enter directory name')
+                .setValue(this.plugin.settings.jekyllTargetDir)
+                .onChange(async (value) => {
+                    console.log('Jekyll path: ' + value)
+                    this.plugin.settings.jekyllTargetDir = value
                     await this.plugin.saveSettings()
                 }))
     }
