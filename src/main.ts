@@ -59,8 +59,8 @@ export default class O2Plugin extends Plugin {
         })
 
         this.addCommand({
-            id: 'test-command',
-            name: 'Test Command',
+            id: 'publish-command',
+            name: 'Publish command',
             callback: async () => {
                 this.copyToPublishedDirectory();
                 // rename markdown file to yyyy-mm-dd-title.md
@@ -69,14 +69,15 @@ export default class O2Plugin extends Plugin {
                 // TODO: init jekyll from to folder
                 return await convertToJekyll(tFiles);
 
+                // /Users/haril/Documents/projects/devlog/_posts
             }
         })
 
+        // for test command
         this.addCommand({
             id: 'check-command',
             name: 'check current file',
             callback: () => {
-                // /Users/haril/Documents/projects/devlog/_posts
                 this.renameMarkdownFile()
             }
         })
@@ -96,6 +97,7 @@ export default class O2Plugin extends Plugin {
 
     private copyToPublishedDirectory() {
         let markdownFiles = this.app.vault.getMarkdownFiles()
+            .filter(file => file.path.startsWith(this.settings.draftDir))
         markdownFiles.forEach(async (file: TFile) => {
             return await this.app.vault.copy(file, file.path.replace(this.settings.draftDir, this.settings.publishedDir))
         })
@@ -116,6 +118,7 @@ export default class O2Plugin extends Plugin {
     private async renameMarkdownFile() {
         let dateString = Temporal.Now.plainDateISO().toString();
         let markdownFiles = this.app.vault.getMarkdownFiles()
+            .filter(file => file.path.startsWith(this.settings.draftDir))
         for (const file of markdownFiles) {
             let newFileName = dateString + "-" + file.name
             let newFilePath = file.path
