@@ -7,7 +7,11 @@ export async function convertToJekyll(markdownFiles: TFile[]) {
         let result = await removeDoubleSquareBracketsInFiles(markdownFiles);
         // copy image to jekyll image folder
 
-
+        // '> ![NOTE] title' 를 정규표현식을 통해 검색후 parsing 시작 지점으로 설정
+        // > 가 없어지는 시점까지 가져오기
+        // title 은 제거하고 content 부분만 남김
+        // > 가 없어지는 부분에는 {: .prompt-info} 를 append
+        // '> ![NOTE|WARN|ERROR|INFO]`
 
         new Notice('Jekyll conversion complete.')
         return result
@@ -43,3 +47,4 @@ export function deleteCopiedMarkdownFile() {
     })
     console.log("deleteCopiedMarkdownFile end")
 }
+
