@@ -62,6 +62,7 @@ export default class O2Plugin extends Plugin {
             id: 'publish-command',
             name: 'Publish command',
             callback: async () => {
+                // TODO: refactoring
                 this.copyToPublishedDirectory();
                 // rename markdown file to yyyy-mm-dd-title.md
                 let tFiles = await this.renameMarkdownFile();
@@ -95,6 +96,7 @@ export default class O2Plugin extends Plugin {
         this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000))
     }
 
+    // TODO: refactoring. move to jekyll.ts
     private copyToPublishedDirectory() {
         let markdownFiles = this.app.vault.getMarkdownFiles()
             .filter(file => file.path.startsWith(this.settings.draftDir))
@@ -115,6 +117,7 @@ export default class O2Plugin extends Plugin {
         await this.saveData(this.settings)
     }
 
+    // TODO: refactoring. move to jekyll.ts
     private async renameMarkdownFile() {
         let dateString = Temporal.Now.plainDateISO().toString();
         let markdownFiles = this.app.vault.getMarkdownFiles()
