@@ -1,7 +1,18 @@
-import {App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting, TFile} from 'obsidian'
+import {
+    App,
+    Editor,
+    FileSystemAdapter,
+    MarkdownView,
+    Modal,
+    Notice,
+    Plugin,
+    PluginSettingTab,
+    Setting,
+    TFile
+} from 'obsidian'
 import {DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab} from "./settings"
 import {O2Modal} from "./o2Modal"
-import {convertToJekyll} from "./jekyll"
+import {convertToJekyll, moveFilesToJekyll} from "./jekyll"
 import {Temporal} from "@js-temporal/polyfill"
 
 export default class O2Plugin extends Plugin {
@@ -48,7 +59,7 @@ export default class O2Plugin extends Plugin {
                 if (markdownView) {
                     if (!checking) {
                         const file = markdownView.file
-                        const from = this.settings.draftDir
+                        const from = this.settings.readyDir
                         const to = this.settings.publishedDir
                         const toPath = file.path.replace(from, to)
                         this.app.vault.rename(file, toPath)
@@ -64,8 +75,6 @@ export default class O2Plugin extends Plugin {
             callback: async () => {
                 // TODO: init jekyll from to folder
                 return await convertToJekyll(this);
-
-                // /Users/haril/Documents/projects/devlog/_posts
             }
         })
 
@@ -73,9 +82,10 @@ export default class O2Plugin extends Plugin {
         this.addCommand({
             id: 'check-command',
             name: 'check current file',
-            callback: () => {
-            }
-        })
+            callback: async () => {
+                return await moveFilesToJekyll(this);
+            },
+        });
 
         // This adds a settings tab so the user can configure various aspects of the plugin
         this.addSettingTab(new O2SettingTab(this.app, this))

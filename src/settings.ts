@@ -2,13 +2,13 @@ import {App, PluginSettingTab, Setting} from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {
-    draftDir: string;
+    readyDir: string;
     publishedDir: string;
     jekyllTargetDir: string;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
-    draftDir: 'ready',
+    readyDir: 'ready',
     publishedDir: 'published',
     jekyllTargetDir: 'jekyll',
 }
@@ -40,10 +40,10 @@ export class O2SettingTab extends PluginSettingTab {
             .setDesc('The directory where documents ready to be published will be placed.')
             .addText(text => text
                 .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.draftDir)
+                .setValue(this.plugin.settings.readyDir)
                 .onChange(async (value) => {
                     console.log('Draft path: ' + value)
-                    this.plugin.settings.draftDir = value
+                    this.plugin.settings.readyDir = value
                     await this.plugin.saveSettings()
                 }))
     }

@@ -2,8 +2,11 @@ import {Notice, TFile} from "obsidian"
 import {O2PluginSettings} from "./settings";
 import {Temporal} from "@js-temporal/polyfill";
 import O2Plugin from "./main";
+import * as fs from "fs";
+import * as path from "path";
 
 export async function convertToJekyll(plugin: O2Plugin) {
+    new Notice('Jekyll conversion started.')
     try {
         await copyToPublishedDirectory(plugin)
         let markdownFiles = await renameMarkdownFile(plugin);
@@ -16,10 +19,13 @@ export async function convertToJekyll(plugin: O2Plugin) {
         // > 가 없어지는 부분에는 {: .prompt-info} 를 append
         // '> ![NOTE|WARN|ERROR|INFO]`
 
+        await moveFilesToJekyll(plugin)
+
         new Notice('Jekyll conversion complete.')
         return result
     } catch (e) {
         console.error(e)
+        // TODO: error 가 발생한 파일을 backlog 로 이동
         new Notice('Jekyll conversion failed.')
     }
 }
@@ -35,16 +41,16 @@ async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
     let markdownFiles = this.app.vault.getMarkdownFiles()
-        .filter((file: TFile) => file.path.startsWith(plugin.settings.draftDir))
+        .filter((file: TFile) => file.path.startsWith(plugin.settings.readyDir))
     markdownFiles.forEach((file: TFile) => {
-        return this.app.vault.copy(file, file.path.replace(plugin.settings.draftDir, plugin.settings.publishedDir))
+        return this.app.vault.copy(file, file.path.replace(plugin.settings.readyDir, plugin.settings.publishedDir))
     })
 }
 
 async function renameMarkdownFile(plugin: O2Plugin) {
     let dateString = Temporal.Now.plainDateISO().toString();
     let markdownFiles = this.app.vault.getMarkdownFiles()
-        .filter((file: TFile) => file.path.startsWith(plugin.settings.draftDir))
+        .filter((file: TFile) => file.path.startsWith(plugin.settings.readyDir))
     for (const file of markdownFiles) {
         let newFileName = dateString + "-" + file.name
         let newFilePath = file.path
@@ -56,26 +62,22 @@ async function renameMarkdownFile(plugin: O2Plugin) {
     return markdownFiles
 }
 
-// import * as fs from 'fs';
-// import * as path from 'path';
-//
-// const sourceFolderPath = 'path/to/source/folder';
-// const targetFolderPath = 'path/to/target/folder';
-//
-// // Read all files in the source folder
-// fs.readdir(sourceFolderPath, (err, files) => {
-//     if (err) throw err;
-//
-//     // Move each file to the target folder
-//     files.forEach((filename) => {
-//         const sourceFilePath = path.join(sourceFolderPath, filename);
-//         const targetFilePath = path.join(targetFolderPath, filename);
-//
-//         // Use fs.rename to move the file
-//         fs.rename(sourceFilePath, targetFilePath, (err) => {
-//             if (err) throw err;
-//             console.log(`Moved ${filename} to ${targetFolderPath}`);
-//         });
-//     });
-// });
+export async function moveFilesToJekyll(plugin: O2Plugin) {
+    const absolutePath = this.app.vault.adapter.getBasePath()
+    const sourceFolderPath = `${absolutePath}/${plugin.settings.readyDir}`;
+    const targetFolderPath = plugin.settings.jekyllTargetDir;
 
+    fs.readdir(sourceFolderPath, (err, files) => {
+        if (err) throw err;
+
+        files.forEach((filename) => {
+            const sourceFilePath = path.join(sourceFolderPath, filename);
+            const targetFilePath = path.join(targetFolderPath, filename);
+
+            fs.rename(sourceFilePath, targetFilePath, (err) => {
+                if (err) throw err;
+                console.log(`Moved ${filename} to ${targetFolderPath}`);
+            });
+        });
+    });
+}
