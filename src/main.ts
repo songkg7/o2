@@ -62,13 +62,8 @@ export default class O2Plugin extends Plugin {
             id: 'publish-command',
             name: 'Publish command',
             callback: async () => {
-                // TODO: refactoring
-                this.copyToPublishedDirectory();
-                // rename markdown file to yyyy-mm-dd-title.md
-                let tFiles = await this.renameMarkdownFile();
-
                 // TODO: init jekyll from to folder
-                return await convertToJekyll(tFiles);
+                return await convertToJekyll(this);
 
                 // /Users/haril/Documents/projects/devlog/_posts
             }
@@ -79,7 +74,6 @@ export default class O2Plugin extends Plugin {
             id: 'check-command',
             name: 'check current file',
             callback: () => {
-                this.renameMarkdownFile()
             }
         })
 
@@ -96,15 +90,6 @@ export default class O2Plugin extends Plugin {
         this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000))
     }
 
-    // TODO: refactoring. move to jekyll.ts
-    private copyToPublishedDirectory() {
-        let markdownFiles = this.app.vault.getMarkdownFiles()
-            .filter(file => file.path.startsWith(this.settings.draftDir))
-        markdownFiles.forEach(async (file: TFile) => {
-            return await this.app.vault.copy(file, file.path.replace(this.settings.draftDir, this.settings.publishedDir))
-        })
-    }
-
     onunload() {
 
     }
@@ -117,21 +102,6 @@ export default class O2Plugin extends Plugin {
         await this.saveData(this.settings)
     }
 
-    // TODO: refactoring. move to jekyll.ts
-    private async renameMarkdownFile() {
-        let dateString = Temporal.Now.plainDateISO().toString();
-        let markdownFiles = this.app.vault.getMarkdownFiles()
-            .filter(file => file.path.startsWith(this.settings.draftDir))
-        for (const file of markdownFiles) {
-            let newFileName = dateString + "-" + file.name
-            let newFilePath = file.path
-                .replace(file.name, newFileName)
-                .replace(" ", "-")
-            console.log('new File path: ' + newFilePath)
-            await this.app.vault.rename(file, newFilePath);
-        }
-        return markdownFiles
-    }
 }
 
 
