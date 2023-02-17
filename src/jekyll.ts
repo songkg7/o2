@@ -1,9 +1,12 @@
 import {Notice, TFile} from "obsidian"
 import {O2PluginSettings} from "./settings";
+import {Temporal} from "@js-temporal/polyfill";
+import O2Plugin from "./main";
 
-export async function convertToJekyll(markdownFiles: TFile[]) {
-    console.log(markdownFiles)
+export async function convertToJekyll(plugin: O2Plugin) {
     try {
+        await copyToPublishedDirectory(plugin)
+        let markdownFiles = await renameMarkdownFile(plugin);
         let result = await removeDoubleSquareBracketsInFiles(markdownFiles);
         // copy image to jekyll image folder
 
@@ -30,21 +33,49 @@ async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
     return markdownFiles
 }
 
-function copyMarkdownFile() {
+async function copyToPublishedDirectory(plugin: O2Plugin) {
     let markdownFiles = this.app.vault.getMarkdownFiles()
-    markdownFiles.forEach(async (file: TFile) => {
-        await this.app.vault.copy(file, file.path.replace(/.md$/, '_copy.md'))
+        .filter((file: TFile) => file.path.startsWith(plugin.settings.draftDir))
+    markdownFiles.forEach((file: TFile) => {
+        return this.app.vault.copy(file, file.path.replace(plugin.settings.draftDir, plugin.settings.publishedDir))
     })
 }
 
-export function deleteCopiedMarkdownFile() {
-    console.log("deleteCopiedMarkdownFile start")
+async function renameMarkdownFile(plugin: O2Plugin) {
+    let dateString = Temporal.Now.plainDateISO().toString();
     let markdownFiles = this.app.vault.getMarkdownFiles()
-    markdownFiles.forEach(async (file: TFile) => {
-        if (file.path.includes('_copy.md')) {
-            await this.app.vault.delete(file)
-        }
-    })
-    console.log("deleteCopiedMarkdownFile end")
+        .filter((file: TFile) => file.path.startsWith(plugin.settings.draftDir))
+    for (const file of markdownFiles) {
+        let newFileName = dateString + "-" + file.name
+        let newFilePath = file.path
+            .replace(file.name, newFileName)
+            .replace(" ", "-")
+        console.log('new File path: ' + newFilePath)
+        await this.app.vault.rename(file, newFilePath);
+    }
+    return markdownFiles
 }
+
+// import * as fs from 'fs';
+// import * as path from 'path';
+//
+// const sourceFolderPath = 'path/to/source/folder';
+// const targetFolderPath = 'path/to/target/folder';
+//
+// // Read all files in the source folder
+// fs.readdir(sourceFolderPath, (err, files) => {
+//     if (err) throw err;
+//
+//     // Move each file to the target folder
+//     files.forEach((filename) => {
+//         const sourceFilePath = path.join(sourceFolderPath, filename);
+//         const targetFilePath = path.join(targetFolderPath, filename);
+//
+//         // Use fs.rename to move the file
+//         fs.rename(sourceFilePath, targetFilePath, (err) => {
+//             if (err) throw err;
+//             console.log(`Moved ${filename} to ${targetFolderPath}`);
+//         });
+//     });
+// });
 
