@@ -1,5 +1,3 @@
-import {convertToJekyll} from "../jekyll"
-
 describe("jekyll", () => {
     // convertToJekyll()
 

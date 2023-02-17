@@ -1,4 +1,4 @@
-import {App, PluginSettingTab, Setting} from "obsidian"
+import { App, PluginSettingTab, Setting } from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {

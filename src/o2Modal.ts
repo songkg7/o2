@@ -1,18 +1,18 @@
-import {App, Modal} from "obsidian";
+import { App, Modal } from "obsidian"
 
 export class O2Modal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+    constructor(app: App) {
+        super(app)
+    }
 
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
+    onOpen() {
+        const {contentEl} = this
+        contentEl.setText('Woah!')
+    }
 
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
+    onClose() {
+        const {contentEl} = this
+        contentEl.empty()
+    }
 }
 
