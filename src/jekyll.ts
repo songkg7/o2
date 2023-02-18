@@ -19,6 +19,7 @@ export async function convertToJekyll(plugin: O2Plugin) {
         // title 은 제거하고 content 부분만 남김
         // > 가 없어지는 부분에는 {: .prompt-info} 를 append
         // '> ![NOTE|WARN|ERROR|INFO]`
+        await convertCalloutSyntax(plugin, result)
 
         await moveFilesToJekyll(plugin)
 
@@ -29,6 +30,26 @@ export async function convertToJekyll(plugin: O2Plugin) {
         // TODO: error 가 발생한 파일을 backlog 로 이동
         new Notice('Jekyll conversion failed.')
     }
+}
+
+async function convertCalloutSyntax(plugin: O2Plugin, markdownFiles: TFile[]) {
+    for (const file of markdownFiles) {
+        const content = convertCalloutSyntaxToJekyll(await this.app.vault.read(file))
+        await this.app.vault.modify(file, content)
+    }
+}
+
+export function convertCalloutSyntaxToJekyll(content: string) {
+    function replacer(match: string, p1: string, p2: string) {
+        if (p1.toLowerCase() === 'note') {
+            p1 = 'info'
+        }
+        if (p1.toLowerCase() === 'error') {
+            p1 = 'danger'
+        }
+        return `${p2}\n{: .prompt-${p1.toLowerCase()}}`
+    }
+    return content.replace(ObsidianRegex.CALLOUT, replacer)
 }
 
 async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[]) {
