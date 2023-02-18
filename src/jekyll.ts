@@ -3,7 +3,7 @@ import { Temporal } from "@js-temporal/polyfill"
 import O2Plugin from "./main"
 import * as fs from "fs"
 import * as path from "path"
-import { Regex } from "./Regex"
+import { ObsidianRegex } from "./ObsidianRegex"
 
 export async function convertToJekyll(plugin: O2Plugin) {
     new Notice('Jekyll conversion started.')
@@ -60,16 +60,16 @@ async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[])
         })
 
         // ![[image.png]] -> ![image](/assets/img/<title>/image.png)
-        const result = content.replace(Regex.OBSIDIAN_IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+        const result = content.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
         await this.app.vault.modify(file, result)
     }
 }
 
 export function extractImageName(content: string) {
-    let regExpMatchArray = content.match(Regex.OBSIDIAN_IMAGE_LINK)
+    let regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK)
     return regExpMatchArray?.map(
         (value) => {
-            return value.replace(Regex.OBSIDIAN_IMAGE_LINK, '$1')
+            return value.replace(ObsidianRegex.IMAGE_LINK, '$1')
         }
     )
 }
@@ -83,7 +83,7 @@ async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
 }
 
 export function removeSquareBrackets(content: string) {
-    return content.replace(Regex.OBSIDIAN_DOCUMENT_LINK, '$1')
+    return content.replace(ObsidianRegex.DOCUMENT_LINK, '$1')
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
