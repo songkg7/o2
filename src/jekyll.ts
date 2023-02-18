@@ -3,15 +3,17 @@ import { Temporal } from "@js-temporal/polyfill"
 import O2Plugin from "./main"
 import * as fs from "fs"
 import * as path from "path"
+import { Regex } from "./Regex"
 
 export async function convertToJekyll(plugin: O2Plugin) {
     new Notice('Jekyll conversion started.')
     try {
         await copyToPublishedDirectory(plugin)
-        let markdownFiles = await renameMarkdownFile(plugin)
-        let result = await removeDoubleSquareBracketsInFiles(markdownFiles)
-        // copy image to jekyll image folder
+        const markdownFiles = await renameMarkdownFile(plugin)
+        const result = await removeDoubleSquareBracketsInFiles(markdownFiles)
+        await convertResourceToJekyll(plugin, result)
 
+        // TODO: callout
         // '> ![NOTE] title' 를 정규표현식을 통해 검색후 parsing 시작 지점으로 설정
         // > 가 없어지는 시점까지 가져오기
         // title 은 제거하고 content 부분만 남김
@@ -29,13 +31,59 @@ export async function convertToJekyll(plugin: O2Plugin) {
     }
 }
 
+async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[]) {
+    const absolutePath = this.app.vault.adapter.getBasePath()
+    const titles = markdownFiles.map((file: TFile) => file.name.replace('.md', ''))
+    for (const title of titles) {
+        const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
+        fs.mkdirSync(resourcePath, { recursive: true })
+        console.log(`mkdir ${resourcePath}`)
+    }
+
+    // 1. markdown 파일 내에 있는 이미지 경로를 ./assets/img/폴더명/파일명 으로 변경
+    for (const file of markdownFiles) {
+        const content = await this.app.vault.read(file)
+        const title = file.name.replace('.md', '')
+        const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
+        const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
+
+        // 2. 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
+        extractImageName(content)?.forEach((imageName) => {
+            fs.copyFile(
+                `${absolutePath}/${plugin.settings.resourceDir}/${imageName}`,
+                `${resourcePath}/${imageName}`,
+                (err) => {
+                    if (err) {
+                        console.error(err)
+                    }
+                })
+        })
+
+        // ![[image.png]] -> ![image](/assets/img/<title>/image.png)
+        const result = content.replace(Regex.OBSIDIAN_IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+        await this.app.vault.modify(file, result)
+    }
+}
+
+export function extractImageName(content: string) {
+    let regExpMatchArray = content.match(Regex.OBSIDIAN_IMAGE_LINK)
+    return regExpMatchArray?.map(
+        (value) => {
+            return value.replace(Regex.OBSIDIAN_IMAGE_LINK, '$1')
+        }
+    )
+}
+
 async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
     for (const file of markdownFiles) {
-        let content = await this.app.vault.read(file)
-        content = content.replace(/\[\[([^\]]+)]]/g, '$1')
-        await this.app.vault.modify(file, content)
+        const result = removeSquareBrackets(await this.app.vault.read(file))
+        await this.app.vault.modify(file, result)
     }
     return markdownFiles
+}
+
+export function removeSquareBrackets(content: string) {
+    return content.replace(Regex.OBSIDIAN_DOCUMENT_LINK, '$1')
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
@@ -64,7 +112,7 @@ async function renameMarkdownFile(plugin: O2Plugin) {
 export async function moveFilesToJekyll(plugin: O2Plugin) {
     const absolutePath = this.app.vault.adapter.getBasePath()
     const sourceFolderPath = `${absolutePath}/${plugin.settings.readyDir}`
-    const targetFolderPath = plugin.settings.jekyllTargetDir
+    const targetFolderPath = plugin.settings.jekyllTargetPath
 
     fs.readdir(sourceFolderPath, (err, files) => {
         if (err) throw err
