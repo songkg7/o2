@@ -3,6 +3,7 @@ import { Temporal } from "@js-temporal/polyfill"
 import O2Plugin from "./main"
 import * as fs from "fs"
 import * as path from "path"
+import { Regex } from "./Regex"
 
 export async function convertToJekyll(plugin: O2Plugin) {
     new Notice('Jekyll conversion started.')
@@ -10,9 +11,6 @@ export async function convertToJekyll(plugin: O2Plugin) {
         await copyToPublishedDirectory(plugin)
         const markdownFiles = await renameMarkdownFile(plugin)
         const result = await removeDoubleSquareBracketsInFiles(markdownFiles)
-
-        // TODO: copy image to jekyll image folder
-
         await convertResourceToJekyll(plugin, result)
 
         // TODO: callout
@@ -48,7 +46,6 @@ async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[])
         const title = file.name.replace('.md', '')
         const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
         const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
-        const regex = /!\[\[(.*?)]]/g
 
         // 2. 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
         extractImageName(content)?.forEach((imageName) => {
@@ -63,17 +60,16 @@ async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[])
         })
 
         // ![[image.png]] -> ![image](/assets/img/<title>/image.png)
-        const result = content.replace(regex, `![image](/${relativeResourcePath}/${title}/$1)`)
+        const result = content.replace(Regex.OBSIDIAN_IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
         await this.app.vault.modify(file, result)
     }
 }
 
 export function extractImageName(content: string) {
-    const regex = /!\[\[(.*?)]]/g
-    let regExpMatchArray = content.match(regex)
+    let regExpMatchArray = content.match(Regex.OBSIDIAN_IMAGE_LINK)
     return regExpMatchArray?.map(
         (value) => {
-            return value.replace(regex, '$1')
+            return value.replace(Regex.OBSIDIAN_IMAGE_LINK, '$1')
         }
     )
 }
@@ -87,7 +83,7 @@ async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
 }
 
 export function removeSquareBrackets(content: string) {
-    return content.replace(/(?<!!)\[\[(.*?)]]/g, '$1')
+    return content.replace(Regex.OBSIDIAN_DOCUMENT_LINK, '$1')
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
