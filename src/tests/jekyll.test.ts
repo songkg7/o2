@@ -1,4 +1,4 @@
-import { extractImageName, removeSquareBrackets } from "../jekyll"
+import { convertCalloutSyntaxToJekyll, extractImageName, removeSquareBrackets } from "../jekyll"
 
 jest.mock('obsidian', () => ({}), { virtual: true })
 
@@ -53,6 +53,45 @@ describe("extract image name", () => {
         `
         const result = extractImageName(context)
         expect(result).toEqual(['test.png', 'image.png'])
+    })
+
+})
+
+describe("convert callout syntax", () => {
+
+    it('note => info', () => {
+        const context = `> [!NOTE] note title\n> note content`
+
+        const result = convertCalloutSyntaxToJekyll(context)
+        expect(result).toBe(`> note content\n{: .prompt-info}`)
+    })
+
+    it('tip => tip', () => {
+        const context = `> [!TIP] tip title\n> tip content`
+
+        const result = convertCalloutSyntaxToJekyll(context)
+        expect(result).toBe(`> tip content\n{: .prompt-tip}`)
+    })
+
+    it('warning => warning', () => {
+        const context = `> [!WARNING] warning title\n> warning content`
+
+        const result = convertCalloutSyntaxToJekyll(context)
+        expect(result).toBe(`> warning content\n{: .prompt-warning}`)
+    })
+
+    it('error => danger', () => {
+        const context = `> [!ERROR] error title\n> error content`
+
+        const result = convertCalloutSyntaxToJekyll(context)
+        expect(result).toBe(`> error content\n{: .prompt-danger}`)
+    })
+
+    it('danger => danger', () => {
+        const context = `> [!DANGER] danger title\n> danger content`
+
+        const result = convertCalloutSyntaxToJekyll(context)
+        expect(result).toBe(`> danger content\n{: .prompt-danger}`)
     })
 
 })

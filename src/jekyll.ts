@@ -3,7 +3,7 @@ import { Temporal } from "@js-temporal/polyfill"
 import O2Plugin from "./main"
 import * as fs from "fs"
 import * as path from "path"
-import { Regex } from "./Regex"
+import { ObsidianRegex } from "./ObsidianRegex"
 
 export async function convertToJekyll(plugin: O2Plugin) {
     new Notice('Jekyll conversion started.')
@@ -19,6 +19,7 @@ export async function convertToJekyll(plugin: O2Plugin) {
         // title 은 제거하고 content 부분만 남김
         // > 가 없어지는 부분에는 {: .prompt-info} 를 append
         // '> ![NOTE|WARN|ERROR|INFO]`
+        await convertCalloutSyntax(plugin, result)
 
         await moveFilesToJekyll(plugin)
 
@@ -29,6 +30,26 @@ export async function convertToJekyll(plugin: O2Plugin) {
         // TODO: error 가 발생한 파일을 backlog 로 이동
         new Notice('Jekyll conversion failed.')
     }
+}
+
+async function convertCalloutSyntax(plugin: O2Plugin, markdownFiles: TFile[]) {
+    for (const file of markdownFiles) {
+        const content = convertCalloutSyntaxToJekyll(await this.app.vault.read(file))
+        await this.app.vault.modify(file, content)
+    }
+}
+
+export function convertCalloutSyntaxToJekyll(content: string) {
+    function replacer(match: string, p1: string, p2: string) {
+        if (p1.toLowerCase() === 'note') {
+            p1 = 'info'
+        }
+        if (p1.toLowerCase() === 'error') {
+            p1 = 'danger'
+        }
+        return `${p2}\n{: .prompt-${p1.toLowerCase()}}`
+    }
+    return content.replace(ObsidianRegex.CALLOUT, replacer)
 }
 
 async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[]) {
@@ -60,16 +81,16 @@ async function convertResourceToJekyll(plugin: O2Plugin, markdownFiles: TFile[])
         })
 
         // ![[image.png]] -> ![image](/assets/img/<title>/image.png)
-        const result = content.replace(Regex.OBSIDIAN_IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+        const result = content.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
         await this.app.vault.modify(file, result)
     }
 }
 
 export function extractImageName(content: string) {
-    let regExpMatchArray = content.match(Regex.OBSIDIAN_IMAGE_LINK)
+    let regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK)
     return regExpMatchArray?.map(
         (value) => {
-            return value.replace(Regex.OBSIDIAN_IMAGE_LINK, '$1')
+            return value.replace(ObsidianRegex.IMAGE_LINK, '$1')
         }
     )
 }
@@ -83,7 +104,7 @@ async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
 }
 
 export function removeSquareBrackets(content: string) {
-    return content.replace(Regex.OBSIDIAN_DOCUMENT_LINK, '$1')
+    return content.replace(ObsidianRegex.DOCUMENT_LINK, '$1')
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
