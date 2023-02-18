@@ -2,17 +2,21 @@ import { App, PluginSettingTab, Setting } from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {
+    jekyllRelativeResourcePath: string
+    resourceDir: string
     readyDir: string;
     publishedDir: string;
-    jekyllTargetDir: string;
+    jekyllTargetPath: string;
     jekyllResourcePath: string;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
     readyDir: 'ready',
     publishedDir: 'published',
-    jekyllTargetDir: 'jekyll',
+    resourceDir: 'resources',
+    jekyllTargetPath: 'jekyll',
     jekyllResourcePath: '',
+    jekyllRelativeResourcePath: 'assets/img',
 }
 
 export class O2SettingTab extends PluginSettingTab {
@@ -71,10 +75,10 @@ export class O2SettingTab extends PluginSettingTab {
             .setDesc('The absolute path where Jekyll markdown will be generated.')
             .addText(text => text
                 .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllTargetDir)
+                .setValue(this.plugin.settings.jekyllTargetPath)
                 .onChange(async (value) => {
                     console.log('Jekyll path: ' + value)
-                    this.plugin.settings.jekyllTargetDir = value
+                    this.plugin.settings.jekyllTargetPath = value
                     await this.plugin.saveSettings()
                 }))
     }

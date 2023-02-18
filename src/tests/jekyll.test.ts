@@ -1,4 +1,4 @@
-import { removeSquareBrackets } from "../jekyll"
+import { extractImageName, removeSquareBrackets } from "../jekyll"
 
 jest.mock('obsidian', () => ({}), { virtual: true })
 
@@ -41,4 +41,18 @@ describe("remove square brackets", () => {
         ![[test]]
         `)
     })
+})
+
+describe("extract image name", () => {
+
+    it('should return image name array', () => {
+        const context = `![[test.png]]
+        
+        test
+        ![[image.png]]
+        `
+        const result = extractImageName(context)
+        expect(result).toEqual(['test.png', 'image.png'])
+    })
+
 })
