@@ -5,12 +5,14 @@ export interface O2PluginSettings {
     readyDir: string;
     publishedDir: string;
     jekyllTargetDir: string;
+    jekyllResourcePath: string;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
     readyDir: 'ready',
     publishedDir: 'published',
     jekyllTargetDir: 'jekyll',
+    jekyllResourcePath: '',
 }
 
 export class O2SettingTab extends PluginSettingTab {
@@ -28,7 +30,8 @@ export class O2SettingTab extends PluginSettingTab {
         })
         this.addDraftDirectorySetting()
         this.addPublishedDirectorySetting()
-        this.addJekyllTargetDirectorySetting()
+        this.addJekyllTargetPathSetting()
+        this.addJekyllResourcePathSetting()
         this.containerEl.createEl('h2', {
             text: 'Advanced settings',
         })
@@ -62,16 +65,30 @@ export class O2SettingTab extends PluginSettingTab {
                 }))
     }
 
-    private addJekyllTargetDirectorySetting() {
+    private addJekyllTargetPathSetting() {
         new Setting(this.containerEl)
-            .setName('Jekyll target directory')
-            .setDesc('The directory where Jekyll will be generated.')
+            .setName('Jekyll target path')
+            .setDesc('The absolute path where Jekyll markdown will be generated.')
             .addText(text => text
-                .setPlaceholder('Enter directory name')
+                .setPlaceholder('Enter path')
                 .setValue(this.plugin.settings.jekyllTargetDir)
                 .onChange(async (value) => {
                     console.log('Jekyll path: ' + value)
                     this.plugin.settings.jekyllTargetDir = value
+                    await this.plugin.saveSettings()
+                }))
+    }
+
+    private addJekyllResourcePathSetting() {
+        new Setting(this.containerEl)
+            .setName('Jekyll resource path')
+            .setDesc('The absolute path where the image file should be copied.')
+            .addText(text => text
+                .setPlaceholder('Enter path')
+                .setValue(this.plugin.settings.jekyllResourcePath)
+                .onChange(async (value) => {
+                    console.log('Jekyll resource path: ' + value)
+                    this.plugin.settings.jekyllResourcePath = value
                     await this.plugin.saveSettings()
                 }))
     }

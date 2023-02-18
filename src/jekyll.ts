@@ -10,7 +10,14 @@ export async function convertToJekyll(plugin: O2Plugin) {
         await copyToPublishedDirectory(plugin)
         let markdownFiles = await renameMarkdownFile(plugin)
         let result = await removeDoubleSquareBracketsInFiles(markdownFiles)
-        // copy image to jekyll image folder
+
+        // image 파일 링크가 존재하는 경우
+
+        // TODO: copy image to jekyll image folder
+        // jekyll resource path: /Users/haril/Documents/projects/devlog/assets/img
+        // 1. img 아래에 markdown title 을 폴더명으로 생성
+        // 2. markdown 파일 내에 있는 이미지를 해당 폴더로 복사
+        // 3. markdown 파일 내에 있는 이미지 경로를 ./assets/img/폴더명/파일명 으로 변경
 
         // '> ![NOTE] title' 를 정규표현식을 통해 검색후 parsing 시작 지점으로 설정
         // > 가 없어지는 시점까지 가져오기
@@ -31,11 +38,14 @@ export async function convertToJekyll(plugin: O2Plugin) {
 
 async function removeDoubleSquareBracketsInFiles(markdownFiles: TFile[]) {
     for (const file of markdownFiles) {
-        let content = await this.app.vault.read(file)
-        content = content.replace(/\[\[([^\]]+)]]/g, '$1')
-        await this.app.vault.modify(file, content)
+        const result = removeSquareBrackets(await this.app.vault.read(file))
+        await this.app.vault.modify(file, result)
     }
     return markdownFiles
+}
+
+export function removeSquareBrackets(content: string) {
+    return content.replace(/(?<!!)\[\[(.*?)]]/g, '$1')
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {

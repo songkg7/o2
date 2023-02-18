@@ -66,7 +66,7 @@ export default class O2Plugin extends Plugin {
             }
         })
 
-        // for test command
+        // for tests command
         this.addCommand({
             id: 'check-command',
             name: 'check current file',
