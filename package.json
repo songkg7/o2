@@ -1,7 +1,7 @@
 {
   "name": "o2",
-  "version": "0.1.0",
-  "description": "This is a plugin for change Obsidian markdown syntax to Jekyll markdown syntax.",
+  "version": "1.0.0",
+  "description": "This is a plugin to make obsidian markdown syntax compatible with other markdown syntax.",
   "main": "main.js",
   "scripts": {
     "dev": "node esbuild.config.mjs",
