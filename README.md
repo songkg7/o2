@@ -1,5 +1,7 @@
 # O2
 
+[![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
+
 Write once, convert to multiple platforms.
 
 O2 is a tool that converts your Obsidian markdown files to other markdown platforms such as Jekyll. 
