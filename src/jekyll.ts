@@ -37,7 +37,7 @@ export async function convertToJekyll(plugin: O2Plugin) {
             const resourceConvertedContents = contents.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
 
             // callout
-            let result = convertCalloutSyntaxToJekyll(resourceConvertedContents)
+            const result = convertCalloutSyntaxToJekyll(resourceConvertedContents)
 
             await this.app.vault.modify(file, result)
         }
@@ -65,7 +65,7 @@ export function convertCalloutSyntaxToJekyll(content: string) {
 }
 
 export function extractImageName(content: string) {
-    let regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK)
+    const regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK)
     return regExpMatchArray?.map(
         (value) => {
             return value.replace(ObsidianRegex.IMAGE_LINK, '$1')
@@ -83,18 +83,18 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
 }
 
 async function copyToPublishedDirectory(plugin: O2Plugin) {
-    let readyFiles = getFilesInReady.call(this, plugin)
+    const readyFiles = getFilesInReady.call(this, plugin)
     readyFiles.forEach((file: TFile) => {
         return this.app.vault.copy(file, file.path.replace(plugin.settings.readyDir, plugin.settings.publishedDir))
     })
 }
 
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
-    let dateString = Temporal.Now.plainDateISO().toString()
-    let markdownFiles = getFilesInReady.call(this, plugin)
+    const dateString = Temporal.Now.plainDateISO().toString()
+    const markdownFiles = getFilesInReady.call(this, plugin)
     for (const file of markdownFiles) {
-        let newFileName = dateString + "-" + file.name
-        let newFilePath = file.path
+        const newFileName = dateString + "-" + file.name
+        const newFilePath = file.path
             .replace(file.name, newFileName)
             .replace(" ", "-")
         console.log('new File path: ' + newFilePath)
