@@ -15,19 +15,19 @@ describe("jekyll", () => {
 describe("remove square brackets", () => {
 
     it('should replace match string to blank', () => {
-        let content = '[[tests]]'
+        const content = '[[tests]]'
         const result = removeSquareBrackets(content)
         expect(result).toBe('tests')
     })
 
     it('should not match if string starts with !', () => {
-        let content = '![[tests]]'
+        const content = '![[tests]]'
         const result = removeSquareBrackets(content)
         expect(result).toBe('![[tests]]')
     })
 
     it('long context', () => {
-        let content = `# test
+        const content = `# test
         ![NOTE] test
         [[test]]
         
