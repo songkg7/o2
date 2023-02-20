@@ -1,4 +1,4 @@
-import { convertCalloutSyntaxToJekyll, extractImageName, removeSquareBrackets } from "../jekyll"
+import { convertCalloutSyntaxToChirpy, extractImageName, removeSquareBrackets } from "../jekyll/chirpy"
 
 jest.mock('obsidian', () => ({}), { virtual: true })
 
@@ -15,19 +15,19 @@ describe("jekyll", () => {
 describe("remove square brackets", () => {
 
     it('should replace match string to blank', () => {
-        let content = '[[tests]]'
+        const content = '[[tests]]'
         const result = removeSquareBrackets(content)
         expect(result).toBe('tests')
     })
 
     it('should not match if string starts with !', () => {
-        let content = '![[tests]]'
+        const content = '![[tests]]'
         const result = removeSquareBrackets(content)
         expect(result).toBe('![[tests]]')
     })
 
     it('long context', () => {
-        let content = `# test
+        const content = `# test
         ![NOTE] test
         [[test]]
         
@@ -62,35 +62,35 @@ describe("convert callout syntax", () => {
     it('note => info', () => {
         const context = `> [!NOTE] note title\n> note content`
 
-        const result = convertCalloutSyntaxToJekyll(context)
+        const result = convertCalloutSyntaxToChirpy(context)
         expect(result).toBe(`> note content\n{: .prompt-info}`)
     })
 
     it('tip => tip', () => {
         const context = `> [!TIP] tip title\n> tip content`
 
-        const result = convertCalloutSyntaxToJekyll(context)
+        const result = convertCalloutSyntaxToChirpy(context)
         expect(result).toBe(`> tip content\n{: .prompt-tip}`)
     })
 
     it('warning => warning', () => {
         const context = `> [!WARNING] warning title\n> warning content`
 
-        const result = convertCalloutSyntaxToJekyll(context)
+        const result = convertCalloutSyntaxToChirpy(context)
         expect(result).toBe(`> warning content\n{: .prompt-warning}`)
     })
 
     it('error => danger', () => {
         const context = `> [!ERROR] error title\n> error content`
 
-        const result = convertCalloutSyntaxToJekyll(context)
+        const result = convertCalloutSyntaxToChirpy(context)
         expect(result).toBe(`> error content\n{: .prompt-danger}`)
     })
 
     it('danger => danger', () => {
         const context = `> [!DANGER] danger title\n> danger content`
 
-        const result = convertCalloutSyntaxToJekyll(context)
+        const result = convertCalloutSyntaxToChirpy(context)
         expect(result).toBe(`> danger content\n{: .prompt-danger}`)
     })
 

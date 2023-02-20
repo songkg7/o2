@@ -1,57 +1,61 @@
 import { Notice, TFile } from "obsidian"
 import { Temporal } from "@js-temporal/polyfill"
-import O2Plugin from "./main"
+import O2Plugin from "../main"
 import * as fs from "fs"
 import * as path from "path"
-import { ObsidianRegex } from "./ObsidianRegex"
+import { ObsidianRegex } from "../ObsidianRegex"
 
-export async function convertToJekyll(plugin: O2Plugin) {
-    new Notice('Jekyll conversion started.')
+function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
+    const absolutePath = this.app.vault.adapter.getBasePath()
+    const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
+    fs.mkdirSync(resourcePath, { recursive: true })
+    console.log(`mkdir ${resourcePath}`)
+
+    const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
+
+    // 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
+    extractImageName(contents)?.forEach((resourceName) => {
+        fs.copyFile(
+            `${absolutePath}/${plugin.settings.resourceDir}/${resourceName}`,
+            `${resourcePath}/${resourceName}`,
+            (err) => {
+                if (err) {
+                    console.error(err)
+                }
+            }
+        )
+    })
+    return contents.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+}
+
+export async function convertToChirpy(plugin: O2Plugin) {
+    new Notice('Chirpy conversion started.')
     try {
         await copyToPublishedDirectory(plugin)
-        const absolutePath = this.app.vault.adapter.getBasePath()
         const markdownFiles = await renameMarkdownFile(plugin)
         for (const file of markdownFiles) {
             // remove double square brackets
+            const title = file.name.replace('.md', '')
             const contents = removeSquareBrackets(await this.app.vault.read(file))
             // change resource link to jekyll link
-            const title = file.name.replace('.md', '')
-            const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
-            fs.mkdirSync(resourcePath, { recursive: true })
-            console.log(`mkdir ${resourcePath}`)
-
-            const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
-
-            // 2. 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
-            extractImageName(contents)?.forEach((imageName) => {
-                fs.copyFile(
-                    `${absolutePath}/${plugin.settings.resourceDir}/${imageName}`,
-                    `${resourcePath}/${imageName}`,
-                    (err) => {
-                        if (err) {
-                            console.error(err)
-                        }
-                    }
-                )
-            })
-            const resourceConvertedContents = contents.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+            const resourceConvertedContents = convertResourceLink(plugin, title, contents)
 
             // callout
-            const result = convertCalloutSyntaxToJekyll(resourceConvertedContents)
+            const result = convertCalloutSyntaxToChirpy(resourceConvertedContents)
 
             await this.app.vault.modify(file, result)
         }
 
-        await moveFilesToJekyll(plugin)
-        new Notice('Jekyll conversion complete.')
+        await moveFilesToChirpy(plugin)
+        new Notice('Chirpy conversion complete.')
     } catch (e) {
         console.error(e)
         // TODO: error 가 발생한 파일을 backlog 로 이동
-        new Notice('Jekyll conversion failed.')
+        new Notice('Chirpy conversion failed.')
     }
 }
 
-export function convertCalloutSyntaxToJekyll(content: string) {
+export function convertCalloutSyntaxToChirpy(content: string) {
     function replacer(match: string, p1: string, p2: string) {
         if (p1.toLowerCase() === 'note') {
             p1 = 'info'
@@ -61,6 +65,7 @@ export function convertCalloutSyntaxToJekyll(content: string) {
         }
         return `${p2}\n{: .prompt-${p1.toLowerCase()}}`
     }
+
     return content.replace(ObsidianRegex.CALLOUT, replacer)
 }
 
@@ -103,7 +108,7 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
     return markdownFiles
 }
 
-async function moveFilesToJekyll(plugin: O2Plugin) {
+async function moveFilesToChirpy(plugin: O2Plugin) {
     const absolutePath = this.app.vault.adapter.getBasePath()
     const sourceFolderPath = `${absolutePath}/${plugin.settings.readyDir}`
     const targetFolderPath = plugin.settings.jekyllTargetPath

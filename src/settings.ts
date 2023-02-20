@@ -8,6 +8,7 @@ export interface O2PluginSettings {
     publishedDir: string;
     jekyllTargetPath: string;
     jekyllResourcePath: string;
+    afterPropertiesSet(): boolean;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
@@ -17,6 +18,10 @@ export const DEFAULT_SETTINGS: O2PluginSettings = {
     jekyllTargetPath: 'jekyll',
     jekyllResourcePath: '',
     jekyllRelativeResourcePath: 'assets/img',
+
+    afterPropertiesSet(): boolean {
+        return this.jekyllResourcePath !== ''
+    }
 }
 
 export class O2SettingTab extends PluginSettingTab {
@@ -36,9 +41,9 @@ export class O2SettingTab extends PluginSettingTab {
         this.addPublishedDirectorySetting()
         this.addJekyllTargetPathSetting()
         this.addJekyllResourcePathSetting()
-        this.containerEl.createEl('h2', {
-            text: 'Advanced settings',
-        })
+        // this.containerEl.createEl('h2', {
+        //     text: 'Advanced settings',
+        // })
     }
 
     private addDraftDirectorySetting() {
