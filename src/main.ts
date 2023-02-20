@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian'
 import { DEFAULT_SETTINGS, O2PluginSettings, O2SettingTab } from "./settings"
-import { convertToJekyll } from "./jekyll"
+import { convertToChirpy } from "./jekyll/chirpy"
 
 export default class O2Plugin extends Plugin {
     settings: O2PluginSettings
@@ -9,11 +9,16 @@ export default class O2Plugin extends Plugin {
         await this.loadSettings()
 
         this.addCommand({
-            id: 'publish-command',
-            name: 'Publish command',
-            callback: async () => {
+            id: 'o2-converting',
+            name: 'converting',
+            checkCallback: (checking: boolean) => {
                 // TODO: init jekyll from to folder
-                return await convertToJekyll(this)
+                if (this.settings.afterPropertiesSet()) {
+                    if (checking) {
+                        return true
+                    }
+                    convertToChirpy(this)
+                }
             }
         })
 
