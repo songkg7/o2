@@ -47,5 +47,3 @@ export default class O2Plugin extends Plugin {
     }
 
 }
-
-

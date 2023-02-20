@@ -15,12 +15,12 @@ export const DEFAULT_SETTINGS: O2PluginSettings = {
     readyDir: 'ready',
     publishedDir: 'published',
     resourceDir: 'resources',
-    jekyllTargetPath: 'jekyll',
+    jekyllTargetPath: '',
     jekyllResourcePath: '',
     jekyllRelativeResourcePath: 'assets/img',
 
     afterPropertiesSet(): boolean {
-        return this.jekyllResourcePath !== ''
+        return this.jekyllResourcePath !== '' && this.jekyllTargetPath !== ''
     }
 }
 

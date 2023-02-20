@@ -1,43 +1,47 @@
 # O2
 
 [![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
+[![GitHub license](https://img.shields.io/github/license/songkg7/O2)](https://github.com/songkg7/o2/blob/main/LICENSE)
 
 Write once, convert to multiple platforms.
 
 O2 is a tool that converts your Obsidian markdown files to other markdown platforms such as Jekyll. 
 
-but, currently, it only supports Jekyll. I will add more platforms in the future.
+But, currently, it only supports Jekyll. I will add more platforms in the future.
 If you have any suggestions, please let me know.
 
 ## Prerequisites
 
 ### Directory structure of your vault
 
-you should have a directory structure like this. (you can change the directory names)
+You should have a directory structure like this. (you can change the directory names)
 
 ```
 Your vault
-├── ready (when you are ready to publish, move your files to this directory)
-├── published (when you publish your files, they will be moved to this directory)
-├── backlog (if the file is not ready, it will be moved to this directory)
+├── ready (when ready to publish, move your files to this directory)
+├── published (when publish your files, they will be moved to this directory)
+├── backlog (if the file is not ready or throw exception during convert process, it will be moved to this directory)
 └── resources (your resources should be placed here)
 ```
 
-other directories will be ignored.
+Other directories will be ignored.
 
 ## Usage
 
-if you want to convert your files, you should move them to the `ready` directory. then, run the following command `cmd + p` in Obsidian.
+If you want to convert your files, you should move them to the `ready` directory.
 
-```
-converting
-```
+then, Execute the command `O2: converting` via obsidian's `cmd + p` shortcut.
+
+### Limitations
+
+- resource file name must not contain spaces
+- backlog feature is not implemented yet
 
 ## Supported platforms
 
 ### Jekyll
 
-- chirpy
+- Chirpy
 
 ## Contributing
 
@@ -45,4 +49,4 @@ Pull requests are always welcome. For major changes, please open an issue first 
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+This project is published under [MIT](https://choosealicense.com/licenses/mit/) license.
