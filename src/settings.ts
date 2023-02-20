@@ -54,7 +54,6 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter directory name')
                 .setValue(this.plugin.settings.readyDir)
                 .onChange(async (value) => {
-                    console.log('Draft path: ' + value)
                     this.plugin.settings.readyDir = value
                     await this.plugin.saveSettings()
                 }))
@@ -68,7 +67,6 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter directory name')
                 .setValue(this.plugin.settings.publishedDir)
                 .onChange(async (value) => {
-                    console.log('Published path: ' + value)
                     this.plugin.settings.publishedDir = value
                     await this.plugin.saveSettings()
                 }))
@@ -82,7 +80,6 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter path')
                 .setValue(this.plugin.settings.jekyllTargetPath)
                 .onChange(async (value) => {
-                    console.log('Jekyll path: ' + value)
                     this.plugin.settings.jekyllTargetPath = value
                     await this.plugin.saveSettings()
                 }))
@@ -96,7 +93,6 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter path')
                 .setValue(this.plugin.settings.jekyllResourcePath)
                 .onChange(async (value) => {
-                    console.log('Jekyll resource path: ' + value)
                     this.plugin.settings.jekyllResourcePath = value
                     await this.plugin.saveSettings()
                 }))

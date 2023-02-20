@@ -9,7 +9,6 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
     const absolutePath = this.app.vault.adapter.getBasePath()
     const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
     fs.mkdirSync(resourcePath, { recursive: true })
-    console.log(`mkdir ${resourcePath}`)
 
     const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
 
@@ -20,7 +19,7 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
             `${resourcePath}/${resourceName}`,
             (err) => {
                 if (err) {
-                    console.error(err)
+                    new Notice(err.message)
                 }
             }
         )
@@ -49,7 +48,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
         await moveFilesToChirpy(plugin)
         new Notice('Chirpy conversion complete.')
     } catch (e) {
-        console.error(e)
         // TODO: error 가 발생한 파일을 backlog 로 이동
         new Notice('Chirpy conversion failed.')
     }
@@ -102,7 +100,6 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
         const newFilePath = file.path
             .replace(file.name, newFileName)
             .replace(" ", "-")
-        console.log('new File path: ' + newFilePath)
         await this.app.vault.rename(file, newFilePath)
     }
     return markdownFiles
@@ -121,8 +118,10 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
             const targetFilePath = path.join(targetFolderPath, filename)
 
             fs.rename(sourceFilePath, targetFilePath, (err) => {
-                if (err) throw err
-                console.log(`Moved ${filename} to ${targetFolderPath}`)
+                if (err) {
+                    new Notice(err.message)
+                    throw err
+                }
             })
         })
     })
