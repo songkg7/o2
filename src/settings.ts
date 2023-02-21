@@ -2,19 +2,19 @@ import { App, PluginSettingTab, Setting } from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {
-    jekyllRelativeResourcePath: string
-    resourceDir: string
+    attachmentDir: string
     readyDir: string;
     publishedDir: string;
     jekyllTargetPath: string;
     jekyllResourcePath: string;
+    jekyllRelativeResourcePath: string
     afterPropertiesSet(): boolean;
 }
 
 export const DEFAULT_SETTINGS: O2PluginSettings = {
     readyDir: 'ready',
     publishedDir: 'published',
-    resourceDir: 'resources',
+    attachmentDir: 'attachments',
     jekyllTargetPath: '',
     jekyllResourcePath: '',
     jekyllRelativeResourcePath: 'assets/img',
@@ -37,8 +37,9 @@ export class O2SettingTab extends PluginSettingTab {
         this.containerEl.createEl('h2', {
             text: 'Settings for O2 plugin.',
         })
-        this.addDraftDirectorySetting()
+        this.addReadyDirectorySetting()
         this.addPublishedDirectorySetting()
+        this.addAttachmentDirectorySetting()
         this.addJekyllTargetPathSetting()
         this.addJekyllResourcePathSetting()
         // this.containerEl.createEl('h2', {
@@ -46,9 +47,22 @@ export class O2SettingTab extends PluginSettingTab {
         // })
     }
 
-    private addDraftDirectorySetting() {
+    private addAttachmentDirectorySetting() {
         new Setting(this.containerEl)
-            .setName('Draft directory')
+            .setName('Attachment directory')
+            .setDesc('The directory where attachments will be placed.')
+            .addText(text => text
+                .setPlaceholder('Enter directory name')
+                .setValue(this.plugin.settings.attachmentDir)
+                .onChange(async (value) => {
+                    this.plugin.settings.attachmentDir = value
+                    await this.plugin.saveSettings()
+                }))
+    }
+
+    private addReadyDirectorySetting() {
+        new Setting(this.containerEl)
+            .setName('Ready directory')
             .setDesc('The directory where documents ready to be published will be placed.')
             .addText(text => text
                 .setPlaceholder('Enter directory name')

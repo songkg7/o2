@@ -15,7 +15,7 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
     // 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
     extractImageName(contents)?.forEach((resourceName) => {
         fs.copyFile(
-            `${absolutePath}/${plugin.settings.resourceDir}/${resourceName}`,
+            `${absolutePath}/${plugin.settings.attachmentDir}/${resourceName}`,
             `${resourcePath}/${resourceName}`,
             (err) => {
                 if (err) {
