@@ -5,22 +5,45 @@ export interface O2PluginSettings {
     attachmentDir: string
     readyDir: string;
     publishedDir: string;
-    jekyllTargetPath: string;
-    jekyllResourcePath: string;
-    jekyllRelativeResourcePath: string
+
+    jekyllSetting(): JekyllSetting;
+
+    targetPath(): string;
+
+    resourcePath(): string;
+
     afterPropertiesSet(): boolean;
 }
 
-export const DEFAULT_SETTINGS: O2PluginSettings = {
-    readyDir: 'ready',
-    publishedDir: 'published',
-    attachmentDir: 'attachments',
-    jekyllTargetPath: '',
-    jekyllResourcePath: '',
-    jekyllRelativeResourcePath: 'assets/img',
+export class JekyllSetting implements O2PluginSettings {
+    attachmentDir: string
+    readyDir: string
+    publishedDir: string
+    jekyllPath: string
+    jekyllRelativeResourcePath: string
+
+    constructor() {
+        this.attachmentDir = 'attachments'
+        this.readyDir = 'ready'
+        this.publishedDir = 'published'
+        this.jekyllPath = ''
+        this.jekyllRelativeResourcePath = 'assets/img'
+    }
+
+    targetPath(): string {
+        return `${this.jekyllPath}/_posts`
+    }
+
+    resourcePath(): string {
+        return `${this.jekyllPath}/${this.jekyllRelativeResourcePath}`
+    }
 
     afterPropertiesSet(): boolean {
-        return this.jekyllResourcePath !== '' && this.jekyllTargetPath !== ''
+        return this.jekyllPath != ''
+    }
+
+    jekyllSetting(): JekyllSetting {
+        return this
     }
 }
 
@@ -40,11 +63,23 @@ export class O2SettingTab extends PluginSettingTab {
         this.addReadyDirectorySetting()
         this.addPublishedDirectorySetting()
         this.addAttachmentDirectorySetting()
-        this.addJekyllTargetPathSetting()
-        this.addJekyllResourcePathSetting()
+        this.addJekyllPathSetting()
         // this.containerEl.createEl('h2', {
         //     text: 'Advanced settings',
         // })
+    }
+
+    private addJekyllPathSetting() {
+        new Setting(this.containerEl)
+            .setName('Jekyll path')
+            .setDesc('The absolute path where Jekyll is installed.')
+            .addText(text => text
+                .setPlaceholder('Enter path')
+                .setValue(this.plugin.settings.jekyllSetting().jekyllPath)
+                .onChange(async (value) => {
+                    this.plugin.settings.jekyllSetting().jekyllPath = value
+                    await this.plugin.saveSettings()
+                }))
     }
 
     private addAttachmentDirectorySetting() {
@@ -86,29 +121,4 @@ export class O2SettingTab extends PluginSettingTab {
                 }))
     }
 
-    private addJekyllTargetPathSetting() {
-        new Setting(this.containerEl)
-            .setName('Jekyll target path')
-            .setDesc('The absolute path where Jekyll markdown will be generated.')
-            .addText(text => text
-                .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllTargetPath)
-                .onChange(async (value) => {
-                    this.plugin.settings.jekyllTargetPath = value
-                    await this.plugin.saveSettings()
-                }))
-    }
-
-    private addJekyllResourcePathSetting() {
-        new Setting(this.containerEl)
-            .setName('Jekyll resource path')
-            .setDesc('The absolute path where the image file should be copied.')
-            .addText(text => text
-                .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllResourcePath)
-                .onChange(async (value) => {
-                    this.plugin.settings.jekyllResourcePath = value
-                    await this.plugin.saveSettings()
-                }))
-    }
 }

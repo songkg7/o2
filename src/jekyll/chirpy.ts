@@ -7,19 +7,21 @@ import { ObsidianRegex } from "../ObsidianRegex"
 
 function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
     const absolutePath = this.app.vault.adapter.getBasePath()
-    const resourcePath = `${plugin.settings.jekyllResourcePath}/${title}`
+    const resourcePath = `${plugin.settings.jekyllSetting().resourcePath()}/${title}`
     fs.mkdirSync(resourcePath, { recursive: true })
 
-    const relativeResourcePath = plugin.settings.jekyllRelativeResourcePath
+    const relativeResourcePath = plugin.settings.jekyllSetting().jekyllRelativeResourcePath
 
     // 변경하기 전 resourceDir/image.png 를 assets/img/<title>/image.png 로 복사
     extractImageName(contents)?.forEach((resourceName) => {
         fs.copyFile(
-            `${absolutePath}/${plugin.settings.attachmentDir}/${resourceName}`,
+            `${absolutePath}/${plugin.settings.jekyllSetting().attachmentDir}/${resourceName}`,
             `${resourcePath}/${resourceName}`,
             (err) => {
                 if (err) {
+                    console.error(err)
                     new Notice(err.message)
+                    // ignore error
                 }
             }
         )
@@ -49,6 +51,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         new Notice('Chirpy conversion complete.')
     } catch (e) {
         // TODO: error 가 발생한 파일을 backlog 로 이동
+        console.error(e)
         new Notice('Chirpy conversion failed.')
     }
 }
@@ -108,7 +111,7 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 async function moveFilesToChirpy(plugin: O2Plugin) {
     const absolutePath = this.app.vault.adapter.getBasePath()
     const sourceFolderPath = `${absolutePath}/${plugin.settings.readyDir}`
-    const targetFolderPath = plugin.settings.jekyllTargetPath
+    const targetFolderPath = plugin.settings.targetPath()
 
     fs.readdir(sourceFolderPath, (err, files) => {
         if (err) throw err
@@ -119,6 +122,7 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
 
             fs.rename(sourceFilePath, targetFilePath, (err) => {
                 if (err) {
+                    console.error(err)
                     new Notice(err.message)
                     throw err
                 }
