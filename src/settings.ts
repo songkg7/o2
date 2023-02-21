@@ -2,25 +2,48 @@ import { App, PluginSettingTab, Setting } from "obsidian"
 import O2Plugin from "./main"
 
 export interface O2PluginSettings {
-    jekyllRelativeResourcePath: string
-    resourceDir: string
+    attachmentDir: string
     readyDir: string;
     publishedDir: string;
-    jekyllTargetPath: string;
-    jekyllResourcePath: string;
+
+    jekyllSetting(): JekyllSetting;
+
+    targetPath(): string;
+
+    resourcePath(): string;
+
     afterPropertiesSet(): boolean;
 }
 
-export const DEFAULT_SETTINGS: O2PluginSettings = {
-    readyDir: 'ready',
-    publishedDir: 'published',
-    resourceDir: 'resources',
-    jekyllTargetPath: '',
-    jekyllResourcePath: '',
-    jekyllRelativeResourcePath: 'assets/img',
+export class JekyllSetting implements O2PluginSettings {
+    attachmentDir: string
+    readyDir: string
+    publishedDir: string
+    jekyllPath: string
+    jekyllRelativeResourcePath: string
+
+    constructor() {
+        this.attachmentDir = 'attachments'
+        this.readyDir = 'ready'
+        this.publishedDir = 'published'
+        this.jekyllPath = ''
+        this.jekyllRelativeResourcePath = 'assets/img'
+    }
+
+    targetPath(): string {
+        return `${this.jekyllPath}/_posts`
+    }
+
+    resourcePath(): string {
+        return `${this.jekyllPath}/${this.jekyllRelativeResourcePath}`
+    }
 
     afterPropertiesSet(): boolean {
-        return this.jekyllResourcePath !== '' && this.jekyllTargetPath !== ''
+        return this.jekyllPath != ''
+    }
+
+    jekyllSetting(): JekyllSetting {
+        return this
     }
 }
 
@@ -37,18 +60,44 @@ export class O2SettingTab extends PluginSettingTab {
         this.containerEl.createEl('h2', {
             text: 'Settings for O2 plugin.',
         })
-        this.addDraftDirectorySetting()
+        this.addReadyDirectorySetting()
         this.addPublishedDirectorySetting()
-        this.addJekyllTargetPathSetting()
-        this.addJekyllResourcePathSetting()
+        this.addAttachmentDirectorySetting()
+        this.addJekyllPathSetting()
         // this.containerEl.createEl('h2', {
         //     text: 'Advanced settings',
         // })
     }
 
-    private addDraftDirectorySetting() {
+    private addJekyllPathSetting() {
         new Setting(this.containerEl)
-            .setName('Draft directory')
+            .setName('Jekyll path')
+            .setDesc('The absolute path where Jekyll is installed.')
+            .addText(text => text
+                .setPlaceholder('Enter path')
+                .setValue(this.plugin.settings.jekyllSetting().jekyllPath)
+                .onChange(async (value) => {
+                    this.plugin.settings.jekyllSetting().jekyllPath = value
+                    await this.plugin.saveSettings()
+                }))
+    }
+
+    private addAttachmentDirectorySetting() {
+        new Setting(this.containerEl)
+            .setName('Attachment directory')
+            .setDesc('The directory where attachments will be placed.')
+            .addText(text => text
+                .setPlaceholder('Enter directory name')
+                .setValue(this.plugin.settings.attachmentDir)
+                .onChange(async (value) => {
+                    this.plugin.settings.attachmentDir = value
+                    await this.plugin.saveSettings()
+                }))
+    }
+
+    private addReadyDirectorySetting() {
+        new Setting(this.containerEl)
+            .setName('Ready directory')
             .setDesc('The directory where documents ready to be published will be placed.')
             .addText(text => text
                 .setPlaceholder('Enter directory name')
@@ -72,29 +121,4 @@ export class O2SettingTab extends PluginSettingTab {
                 }))
     }
 
-    private addJekyllTargetPathSetting() {
-        new Setting(this.containerEl)
-            .setName('Jekyll target path')
-            .setDesc('The absolute path where Jekyll markdown will be generated.')
-            .addText(text => text
-                .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllTargetPath)
-                .onChange(async (value) => {
-                    this.plugin.settings.jekyllTargetPath = value
-                    await this.plugin.saveSettings()
-                }))
-    }
-
-    private addJekyllResourcePathSetting() {
-        new Setting(this.containerEl)
-            .setName('Jekyll resource path')
-            .setDesc('The absolute path where the image file should be copied.')
-            .addText(text => text
-                .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllResourcePath)
-                .onChange(async (value) => {
-                    this.plugin.settings.jekyllResourcePath = value
-                    await this.plugin.saveSettings()
-                }))
-    }
 }

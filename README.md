@@ -23,7 +23,7 @@ Your vault
 ├── ready (when ready to publish, move your files to this directory)
 ├── published (when publish your files, they will be moved to this directory)
 ├── backlog (if the file is not ready or throw exception during convert process, it will be moved to this directory)
-└── resources (your resources should be placed here)
+└── attachments (your attachments should be placed here)
 ```
 
 Other directories will be ignored.
