@@ -118,7 +118,7 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
 
         files.forEach((filename) => {
             const sourceFilePath = path.join(sourceFolderPath, filename);
-            const targetFilePath = path.join(targetFolderPath, filename);
+            const targetFilePath = path.join(targetFolderPath, filename.replace(/\s/g, '-'));
 
             fs.rename(sourceFilePath, targetFilePath, (err) => {
                 if (err) {

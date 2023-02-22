@@ -106,4 +106,11 @@ describe("convert callout syntax", () => {
         expect(result).toBe(`> content\n{: .prompt-info}`);
     });
 
+    it('info => info, not exist custom title', () => {
+        const context = `> [!INFO]\n> info content`;
+
+        const result = convertCalloutSyntaxToChirpy(context);
+        expect(result).toBe(`> info content\n{: .prompt-info}`);
+    });
+
 });
