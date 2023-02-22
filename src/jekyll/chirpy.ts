@@ -16,7 +16,7 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
     extractImageName(contents)?.forEach((resourceName) => {
         fs.copyFile(
             `${absolutePath}/${plugin.settings.jekyllSetting().attachmentDir}/${resourceName}`,
-            `${resourcePath}/${resourceName}`,
+            `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
             (err) => {
                 if (err) {
                     console.error(err)
@@ -26,7 +26,10 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
             }
         )
     })
-    return contents.replace(ObsidianRegex.IMAGE_LINK, `![image](/${relativeResourcePath}/${title}/$1)`)
+    function replacer(match: string, p1: string) {
+        return `![image](/${relativeResourcePath}/${title}/${p1.replace(/\s/g, '-')})`
+    }
+    return contents.replace(ObsidianRegex.IMAGE_LINK, replacer)
 }
 
 export async function convertToChirpy(plugin: O2Plugin) {
@@ -36,7 +39,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         const markdownFiles = await renameMarkdownFile(plugin)
         for (const file of markdownFiles) {
             // remove double square brackets
-            const title = file.name.replace('.md', '')
+            const title = file.name.replace('.md', '').replace(/\s/g, '-')
             const contents = removeSquareBrackets(await this.app.vault.read(file))
             // change resource link to jekyll link
             const resourceConvertedContents = convertResourceLink(plugin, title, contents)
