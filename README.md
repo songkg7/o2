@@ -36,7 +36,6 @@ then, Execute the command `O2: converting` via obsidian's `cmd + p` shortcut.
 
 ### Limitations
 
-- resource file name must not contain spaces
 - backlog feature is not implemented yet
 
 ## Supported platforms
