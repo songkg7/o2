@@ -6,4 +6,6 @@ module.exports = {
     },
     transformIgnorePatterns: ['<rootDir>/node_modules'],
     moduleDirectories: ['node_modules', 'src'],
+    collectCoverage: true,
+    coverageReporters: ['text', 'cobertura'],
 };
