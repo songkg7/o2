@@ -2,7 +2,9 @@
 
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/songkg7/O2)]()
 [![CI](https://github.com/songkg7/o2/actions/workflows/ci.yml/badge.svg)](https://github.com/songkg7/o2/actions/workflows/node.js.yml)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/songkg7/o2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/songkg7/o2/tree/main)
 [![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
+[![codecov](https://codecov.io/gh/songkg7/o2/branch/main/graph/badge.svg?token=AYQGNW0SWR)](https://codecov.io/gh/songkg7/o2)
 [![GitHub license](https://img.shields.io/github/license/songkg7/O2)](https://github.com/songkg7/o2/blob/main/LICENSE)
 
 Write once, convert to multiple platforms.
