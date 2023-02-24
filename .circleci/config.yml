@@ -9,11 +9,11 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Install dependencies
-          command: npm install
+        name: Install dependencies
+        command: npm install
       - run:
-          name: Run tests and collect coverage
-          command: npm run test
+        name: Run tests and collect coverage
+        command: npm run test
       - codecov/upload
 
 workflow:
