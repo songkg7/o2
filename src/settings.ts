@@ -1,5 +1,5 @@
-import { App, PluginSettingTab, Setting } from "obsidian"
-import O2Plugin from "./main"
+import { App, PluginSettingTab, Setting } from "obsidian";
+import O2Plugin from "./main";
 
 export interface O2PluginSettings {
     attachmentDir: string
@@ -16,54 +16,54 @@ export interface O2PluginSettings {
 }
 
 export class JekyllSetting implements O2PluginSettings {
-    attachmentDir: string
-    readyDir: string
-    publishedDir: string
-    jekyllPath: string
-    jekyllRelativeResourcePath: string
+    attachmentDir: string;
+    readyDir: string;
+    publishedDir: string;
+    jekyllPath: string;
+    jekyllRelativeResourcePath: string;
 
     constructor() {
-        this.attachmentDir = 'attachments'
-        this.readyDir = 'ready'
-        this.publishedDir = 'published'
-        this.jekyllPath = ''
-        this.jekyllRelativeResourcePath = 'assets/img'
+        this.attachmentDir = 'attachments';
+        this.readyDir = 'ready';
+        this.publishedDir = 'published';
+        this.jekyllPath = '';
+        this.jekyllRelativeResourcePath = 'assets/img';
     }
 
     targetPath(): string {
-        return `${this.jekyllPath}/_posts`
+        return `${this.jekyllPath}/_posts`;
     }
 
     resourcePath(): string {
-        return `${this.jekyllPath}/${this.jekyllRelativeResourcePath}`
+        return `${this.jekyllPath}/${this.jekyllRelativeResourcePath}`;
     }
 
     afterPropertiesSet(): boolean {
-        return this.jekyllPath != ''
+        return this.jekyllPath != '';
     }
 
     jekyllSetting(): JekyllSetting {
-        return this
+        return this;
     }
 }
 
 export class O2SettingTab extends PluginSettingTab {
-    plugin: O2Plugin
+    plugin: O2Plugin;
 
     constructor(app: App, plugin: O2Plugin) {
-        super(app, plugin)
-        this.plugin = plugin
+        super(app, plugin);
+        this.plugin = plugin;
     }
 
     display(): void {
-        this.containerEl.empty()
+        this.containerEl.empty();
         this.containerEl.createEl('h2', {
             text: 'Settings for O2 plugin.',
-        })
-        this.addReadyDirectorySetting()
-        this.addPublishedDirectorySetting()
-        this.addAttachmentDirectorySetting()
-        this.addJekyllPathSetting()
+        });
+        this.addReadyDirectorySetting();
+        this.addPublishedDirectorySetting();
+        this.addAttachmentDirectorySetting();
+        this.addJekyllPathSetting();
         // this.containerEl.createEl('h2', {
         //     text: 'Advanced settings',
         // })
@@ -77,9 +77,9 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter path')
                 .setValue(this.plugin.settings.jekyllSetting().jekyllPath)
                 .onChange(async (value) => {
-                    this.plugin.settings.jekyllSetting().jekyllPath = value
-                    await this.plugin.saveSettings()
-                }))
+                    this.plugin.settings.jekyllSetting().jekyllPath = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
     private addAttachmentDirectorySetting() {
@@ -90,9 +90,9 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter directory name')
                 .setValue(this.plugin.settings.attachmentDir)
                 .onChange(async (value) => {
-                    this.plugin.settings.attachmentDir = value
-                    await this.plugin.saveSettings()
-                }))
+                    this.plugin.settings.attachmentDir = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
     private addReadyDirectorySetting() {
@@ -103,9 +103,9 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter directory name')
                 .setValue(this.plugin.settings.readyDir)
                 .onChange(async (value) => {
-                    this.plugin.settings.readyDir = value
-                    await this.plugin.saveSettings()
-                }))
+                    this.plugin.settings.readyDir = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
     private addPublishedDirectorySetting() {
@@ -116,9 +116,9 @@ export class O2SettingTab extends PluginSettingTab {
                 .setPlaceholder('Enter directory name')
                 .setValue(this.plugin.settings.publishedDir)
                 .onChange(async (value) => {
-                    this.plugin.settings.publishedDir = value
-                    await this.plugin.saveSettings()
-                }))
+                    this.plugin.settings.publishedDir = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
 }
