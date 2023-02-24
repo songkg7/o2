@@ -1,4 +1,4 @@
-name: Workflow for Codecov
+name: CI
 
 on:
   push:
