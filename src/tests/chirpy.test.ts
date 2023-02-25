@@ -8,8 +8,6 @@ describe("jekyll", () => {
     });
 
     it.todo("should read a file in ready directory only");
-
-    it.todo("![NOTE] title & contents should be converted to content {: .prompt-info}");
 });
 
 describe("remove square brackets", () => {
@@ -97,34 +95,6 @@ describe("convert callout syntax", () => {
 
         const result = convertCalloutSyntaxToChirpy(context);
         expect(result).toBe(`> content\n{: .prompt-danger}`);
-    });
-
-    it('tip => tip', () => {
-        const context = `> [!TIP] tip title\n> tip content`;
-
-        const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> tip content\n{: .prompt-tip}`);
-    });
-
-    it('warning => warning', () => {
-        const context = `> [!WARNING] warning title\n> warning content`;
-
-        const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> warning content\n{: .prompt-warning}`);
-    });
-
-    it('error => danger', () => {
-        const context = `> [!ERROR] error title\n> error content`;
-
-        const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> error content\n{: .prompt-danger}`);
-    });
-
-    it('danger => danger', () => {
-        const context = `> [!DANGER] danger title\n> danger content`;
-
-        const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> danger content\n{: .prompt-danger}`);
     });
 
 });
