@@ -8,8 +8,6 @@ describe("jekyll", () => {
     });
 
     it.todo("should read a file in ready directory only");
-
-    it.todo("![NOTE] title & contents should be converted to content {: .prompt-info}");
 });
 
 describe("remove square brackets", () => {
@@ -59,39 +57,53 @@ describe("extract image name", () => {
 
 describe("convert callout syntax", () => {
 
-    it('note => info', () => {
-        const context = `> [!NOTE] note title\n> note content`;
+    it.each([
+        ['note'], ['todo'], ['example'], ['quote'], ['cite'], ['success'], ['done'], ['check'],
+        ['NOTE'], ['TODO'], ['EXAMPLE'], ['QUOTE'], ['CITE'], ['SUCCESS'], ['DONE'], ['CHECK']
+    ])('%s => info', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> note content\n{: .prompt-info}`);
+        expect(result).toBe(`> content\n{: .prompt-info}`);
     });
 
-    it('tip => tip', () => {
-        const context = `> [!TIP] tip title\n> tip content`;
+    it.each([
+        ['tip'], ['hint'], ['important'], ['question'], ['help'], ['faq'],
+        ['TIP'], ['HINT'], ['IMPORTANT'], ['QUESTION'], ['HELP'], ['FAQ']
+    ])('%s => tip', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> tip content\n{: .prompt-tip}`);
+        expect(result).toBe(`> content\n{: .prompt-tip}`);
     });
 
-    it('warning => warning', () => {
-        const context = `> [!WARNING] warning title\n> warning content`;
+    it.each([
+        ['warning'], ['caution'], ['attention'],
+        ['WARNING'], ['CAUTION'], ['ATTENTION']
+    ])('%s => warning', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> warning content\n{: .prompt-warning}`);
+        expect(result).toBe(`> content\n{: .prompt-warning}`);
     });
 
-    it('error => danger', () => {
-        const context = `> [!ERROR] error title\n> error content`;
+    it.each([
+        ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
+        ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING']
+    ])('%s => danger', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> error content\n{: .prompt-danger}`);
+        expect(result).toBe(`> content\n{: .prompt-danger}`);
     });
 
-    it('danger => danger', () => {
-        const context = `> [!DANGER] danger title\n> danger content`;
+    it.each([
+        ['unknown']
+    ])('Unregistered keywords should be converted to info keyword', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> danger content\n{: .prompt-danger}`);
+        expect(result).toBe(`> content\n{: .prompt-info}`);
     });
 
 });

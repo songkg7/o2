@@ -4,6 +4,7 @@ import O2Plugin from "../main";
 import * as fs from "fs";
 import * as path from "path";
 import { ObsidianRegex } from "../ObsidianRegex";
+import { replaceKeyword } from "../ObsidianCallout";
 
 function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
     const absolutePath = this.app.vault.adapter.getBasePath();
@@ -63,13 +64,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
 export function convertCalloutSyntaxToChirpy(content: string) {
     function replacer(match: string, p1: string, p2: string) {
-        if (p1.toLowerCase() === 'note') {
-            p1 = 'info';
-        }
-        if (p1.toLowerCase() === 'error') {
-            p1 = 'danger';
-        }
-        return `${p2}\n{: .prompt-${p1.toLowerCase()}}`;
+        return `${p2}\n{: .prompt-${replaceKeyword(p1)}}`;
     }
 
     return content.replace(ObsidianRegex.CALLOUT, replacer);
