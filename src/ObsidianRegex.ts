@@ -3,6 +3,5 @@
 export namespace ObsidianRegex {
     export const IMAGE_LINK = /!\[\[(.*?)]]/g;
     export const DOCUMENT_LINK = /(?<!!)\[\[(.*?)]]/g;
-    export const CALLOUT =
-        /> \[!(NOTE|WARNING|ERROR|TIP|INFO|DANGER|TODO|EXAMPLE|QUOTE|CITE|SUCCESS|DONE|CHECK|MISSING|FAIL|FAILURE|BUG|ATTENTION|CAUTION|FAQ|HELP|QUESTION|IMPORTANT|HINT)] .*?\n(>.*)/ig;
+    export const CALLOUT = /> \[!(.*)] .*?\n(>.*)/ig;
 }

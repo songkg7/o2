@@ -97,4 +97,13 @@ describe("convert callout syntax", () => {
         expect(result).toBe(`> content\n{: .prompt-danger}`);
     });
 
+    it.each([
+        ['unknown']
+    ])('Unregistered keywords should be converted to info keyword', callout => {
+        const context = `> [!${callout}] title\n> content`;
+
+        const result = convertCalloutSyntaxToChirpy(context);
+        expect(result).toBe(`> content\n{: .prompt-info}`);
+    });
+
 });
