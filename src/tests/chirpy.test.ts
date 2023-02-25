@@ -59,11 +59,44 @@ describe("extract image name", () => {
 
 describe("convert callout syntax", () => {
 
-    it('note => info', () => {
-        const context = `> [!NOTE] note title\n> note content`;
+    it.each([
+        ['note'], ['todo'], ['example'], ['quote'], ['cite'], ['success'], ['done'], ['check'],
+        ['NOTE'], ['TODO'], ['EXAMPLE'], ['QUOTE'], ['CITE'], ['SUCCESS'], ['DONE'], ['CHECK']
+    ])('%s => info', callout => {
+        const context = `> [!${callout}] title\n> content`;
 
         const result = convertCalloutSyntaxToChirpy(context);
-        expect(result).toBe(`> note content\n{: .prompt-info}`);
+        expect(result).toBe(`> content\n{: .prompt-info}`);
+    });
+
+    it.each([
+        ['tip'], ['hint'], ['important'], ['question'], ['help'], ['faq'],
+        ['TIP'], ['HINT'], ['IMPORTANT'], ['QUESTION'], ['HELP'], ['FAQ']
+    ])('%s => tip', callout => {
+        const context = `> [!${callout}] title\n> content`;
+
+        const result = convertCalloutSyntaxToChirpy(context);
+        expect(result).toBe(`> content\n{: .prompt-tip}`);
+    });
+
+    it.each([
+        ['warning'], ['caution'], ['attention'],
+        ['WARNING'], ['CAUTION'], ['ATTENTION']
+    ])('%s => warning', callout => {
+        const context = `> [!${callout}] title\n> content`;
+
+        const result = convertCalloutSyntaxToChirpy(context);
+        expect(result).toBe(`> content\n{: .prompt-warning}`);
+    });
+
+    it.each([
+        ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
+        ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING']
+    ])('%s => danger', callout => {
+        const context = `> [!${callout}] title\n> content`;
+
+        const result = convertCalloutSyntaxToChirpy(context);
+        expect(result).toBe(`> content\n{: .prompt-danger}`);
     });
 
     it('tip => tip', () => {
