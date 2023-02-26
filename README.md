@@ -9,7 +9,7 @@
 
 Write once, convert to multiple platforms.
 
-O2 is a tool that converts your Obsidian markdown files to other markdown platforms such as Jekyll. 
+O2 is a tool that converts your Obsidian Markdown files to other Markdown platforms such as Jekyll. 
 
 But, currently, it only supports Jekyll. I will add more platforms in the future.
 If you have any suggestions, please let me know.
