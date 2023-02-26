@@ -16,35 +16,32 @@ If you have any suggestions, please let me know.
 
 ## Prerequisites
 
-### Directory structure of your vault
+### Structure of your vault
 
-You should have a directory structure like this. (you can change the directory names)
+You should have a folder structure like this. (of course, you can change the folder names in settings)
 
 ```
 Your vault
-├── ready (when ready to publish, move your files to this directory)
-├── published (when publish your files, they will be moved to this directory)
-├── backlog (if the file is not ready or throw exception during convert process, it will be moved to this directory)
-└── attachments (your attachments should be placed here)
+├── ready (where the notes you want to convert are placed)
+├── backup (where the original notes before converting are placed)
+└── attachments (where the attachments are placed)
 ```
 
-Other directories will be ignored.
+Other Folders will be ignored.
 
 ## Usage
 
-If you want to convert your files, you should move them to the `ready` directory.
+If you want to convert your notes, you should move them to the `ready` Folder.
 
-then, Execute the command `O2: converting` via obsidian's `cmd + p` shortcut.
+then, Execute the command `O2: convert to Jekyll Chirpy` via obsidian's `cmd + p` shortcut.
 
-### Limitations
-
-- backlog feature is not implemented yet
+if exception occurs, you can see the original note in the `backup` folder.
+(I will implement transactional functionally in the future,
+so that you can see the original note in the `ready` folder when exception occurs.)
 
 ## Supported platforms
 
-### Jekyll
-
-- Chirpy
+- Jekyll Chirpy
 
 ## Contributing
 
