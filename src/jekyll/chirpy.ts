@@ -54,7 +54,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         }
 
         await moveFilesToChirpy(plugin);
-        new Notice('Chirpy conversion complete.')
+        new Notice('Chirpy conversion complete.');
     } catch (e) {
         // TODO: error 가 발생한 파일을 backlog 로 이동
         console.error(e);
