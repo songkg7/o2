@@ -14,9 +14,6 @@
     "plugin",
     "jekyll"
   ],
-  "ts-standard": {
-    "project": "./tsconfig.json"
-  },
   "author": "haril song",
   "license": "MIT",
   "devDependencies": {

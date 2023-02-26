@@ -26,3 +26,6 @@ jobs:
           VALIDATE_ALL_CODEBASE: false
           DEFAULT_BRANCH: main
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # temporarily disable this until we can fix the errors
+          # https://github.com/github/super-linter/discussions/2745
+          VALIDATE_TYPESCRIPT_STANDARD: false
