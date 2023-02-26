@@ -129,7 +129,7 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
 }
 
 function vaultAbsolutePath(plugin: O2Plugin): string {
-    let adapter = plugin.app.vault.adapter;
+    const adapter = plugin.app.vault.adapter;
     if (adapter instanceof FileSystemAdapter) {
         return adapter.getBasePath();
     }
