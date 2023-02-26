@@ -1,6 +1,6 @@
 # O2
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/songkg7/O2)]()
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/songkg7/O2)](https://github.com/songkg7/o2/releases)
 [![CI](https://github.com/songkg7/o2/actions/workflows/ci.yml/badge.svg)](https://github.com/songkg7/o2/actions/workflows/node.js.yml)
 [![CircleCI](https://dl.circleci.com/status-badge/img/gh/songkg7/o2/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/songkg7/o2/tree/main)
 [![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
@@ -9,7 +9,7 @@
 
 Write once, convert to multiple platforms.
 
-O2 is a tool that converts your Obsidian Markdown files to other Markdown platforms such as Jekyll. 
+O2 is a tool that converts your Obsidian Markdown files to other Markdown platforms such as Jekyll.
 
 But, currently, it only supports Jekyll. I will add more platforms in the future.
 If you have any suggestions, please let me know.
@@ -20,7 +20,7 @@ If you have any suggestions, please let me know.
 
 You should have a folder structure like this. (of course, you can change the folder names in settings)
 
-```
+```text
 Your vault
 ├── ready (where the notes you want to convert are placed)
 ├── backup (where the original notes before converting are placed)
@@ -45,7 +45,8 @@ so that you can see the original note in the `ready` folder when exception occur
 
 ## Contributing
 
-Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to change.
+Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to
+change.
 
 ## License
 
