@@ -13,7 +13,7 @@
     "plugin:@typescript-eslint/recommended"
   ],
   "parserOptions": {
-    "sourceType": "module"
+    "project": "./tsconfig.json"
   },
   "rules": {
     "no-unused-vars": "off",

@@ -2,9 +2,9 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import O2Plugin from "./main";
 
 export interface O2PluginSettings {
-    attachmentDir: string
-    readyDir: string;
-    publishedDir: string;
+    attachmentsFolder: string;
+    readyFolder: string;
+    backupFolder: string;
 
     jekyllSetting(): JekyllSetting;
 
@@ -16,16 +16,16 @@ export interface O2PluginSettings {
 }
 
 export class JekyllSetting implements O2PluginSettings {
-    attachmentDir: string;
-    readyDir: string;
-    publishedDir: string;
+    attachmentsFolder: string;
+    readyFolder: string;
+    backupFolder: string;
     jekyllPath: string;
     jekyllRelativeResourcePath: string;
 
     constructor() {
-        this.attachmentDir = 'attachments';
-        this.readyDir = 'ready';
-        this.publishedDir = 'published';
+        this.attachmentsFolder = 'attachments';
+        this.readyFolder = 'ready';
+        this.backupFolder = 'backup';
         this.jekyllPath = '';
         this.jekyllRelativeResourcePath = 'assets/img';
     }
@@ -42,6 +42,8 @@ export class JekyllSetting implements O2PluginSettings {
         return this.jekyllPath != '';
     }
 
+    // FIXME: As I know, abstraction is better solution but this is something weird.
+    // temporary solution
     jekyllSetting(): JekyllSetting {
         return this;
     }
@@ -60,9 +62,9 @@ export class O2SettingTab extends PluginSettingTab {
         this.containerEl.createEl('h2', {
             text: 'Settings for O2 plugin.',
         });
-        this.addReadyDirectorySetting();
-        this.addPublishedDirectorySetting();
-        this.addAttachmentDirectorySetting();
+        this.addReadyFolderSetting();
+        this.addBackupFolderSetting();
+        this.addAttachmentsFolderSetting();
         this.addJekyllPathSetting();
         // this.containerEl.createEl('h2', {
         //     text: 'Advanced settings',
@@ -82,41 +84,41 @@ export class O2SettingTab extends PluginSettingTab {
                 }));
     }
 
-    private addAttachmentDirectorySetting() {
+    private addAttachmentsFolderSetting() {
         new Setting(this.containerEl)
-            .setName('Attachment directory')
-            .setDesc('The directory where attachments will be placed.')
+            .setName('Folder to store attachments in')
+            .setDesc('Where the attachments will be stored.')
             .addText(text => text
-                .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.attachmentDir)
+                .setPlaceholder('Enter folder name')
+                .setValue(this.plugin.settings.attachmentsFolder)
                 .onChange(async (value) => {
-                    this.plugin.settings.attachmentDir = value;
+                    this.plugin.settings.attachmentsFolder = value;
                     await this.plugin.saveSettings();
                 }));
     }
 
-    private addReadyDirectorySetting() {
+    private addReadyFolderSetting() {
         new Setting(this.containerEl)
-            .setName('Ready directory')
-            .setDesc('The directory where documents ready to be published will be placed.')
+            .setName('Folder to convert notes to another syntax in')
+            .setDesc('Where the notes will be converted to another syntax.')
             .addText(text => text
-                .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.readyDir)
+                .setPlaceholder('Enter folder name')
+                .setValue(this.plugin.settings.readyFolder)
                 .onChange(async (value) => {
-                    this.plugin.settings.readyDir = value;
+                    this.plugin.settings.readyFolder = value;
                     await this.plugin.saveSettings();
                 }));
     }
 
-    private addPublishedDirectorySetting() {
+    private addBackupFolderSetting() {
         new Setting(this.containerEl)
-            .setName('Published directory')
-            .setDesc('The directory where publishing will complete and the documents will be moved.')
+            .setName('Folder to backup notes before execute converting process in')
+            .setDesc('Where the notes will be backup before converting.')
             .addText(text => text
-                .setPlaceholder('Enter directory name')
-                .setValue(this.plugin.settings.publishedDir)
+                .setPlaceholder('Enter folder name')
+                .setValue(this.plugin.settings.backupFolder)
                 .onChange(async (value) => {
-                    this.plugin.settings.publishedDir = value;
+                    this.plugin.settings.backupFolder = value;
                     await this.plugin.saveSettings();
                 }));
     }
