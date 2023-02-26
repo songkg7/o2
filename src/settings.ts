@@ -25,7 +25,7 @@ export class JekyllSetting implements O2PluginSettings {
     constructor() {
         this.attachmentsFolder = 'attachments';
         this.readyFolder = 'ready';
-        this.backupFolder = 'published';
+        this.backupFolder = 'backup';
         this.jekyllPath = '';
         this.jekyllRelativeResourcePath = 'assets/img';
     }
@@ -42,6 +42,8 @@ export class JekyllSetting implements O2PluginSettings {
         return this.jekyllPath != '';
     }
 
+    // FIXME: As I know, abstraction is better solution but this is something weird.
+    // temporary solution
     jekyllSetting(): JekyllSetting {
         return this;
     }

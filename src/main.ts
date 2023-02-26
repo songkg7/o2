@@ -10,7 +10,7 @@ export default class O2Plugin extends Plugin {
 
         this.addCommand({
             id: 'jekyll-chirpy-syntax',
-            name: 'converting to jekyll chirpy',
+            name: 'convert to Jekyll Chirpy',
             checkCallback: (checking: boolean) => {
                 // TODO: init jekyll from to folder
                 if (this.settings.afterPropertiesSet()) {
@@ -39,3 +39,4 @@ export default class O2Plugin extends Plugin {
     }
 
 }
+
