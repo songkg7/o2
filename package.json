@@ -1,6 +1,6 @@
 {
   "name": "o2",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "This is a plugin to make obsidian markdown syntax compatible with other markdown syntax.",
   "main": "main.js",
   "scripts": {
