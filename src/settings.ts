@@ -2,7 +2,7 @@ import { App, PluginSettingTab, Setting } from "obsidian";
 import O2Plugin from "./main";
 
 export interface O2PluginSettings {
-    attachmentsFolder: string
+    attachmentsFolder: string;
     readyFolder: string;
     backupFolder: string;
 
