@@ -41,7 +41,12 @@ so that you can see the original note in the `ready` folder when exception occur
 
 ## Supported platforms
 
-- Jekyll Chirpy
+### Jekyll Chirpy
+
+#### Settings
+
+jekyllPath : the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
+`_posts` folder is child of this path. Attachments will be copied `assets/img` folder.
 
 ## Contributing
 
