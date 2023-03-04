@@ -35,6 +35,10 @@ function convertResourceLink(plugin: O2Plugin, title: string, contents: string) 
 }
 
 export async function convertToChirpy(plugin: O2Plugin) {
+    // validation
+    new Notice('Checking settings...');
+    await validateSettings(plugin);
+    new Notice('Settings are valid.');
     new Notice('Chirpy conversion started.');
     try {
         await backupOriginalNotes(plugin);
@@ -58,6 +62,23 @@ export async function convertToChirpy(plugin: O2Plugin) {
         // TODO: move file that occurred error to backlog folder
         console.error(e);
         new Notice('Chirpy conversion failed.');
+    }
+}
+
+async function validateSettings(plugin: O2Plugin) {
+    const adapter = plugin.app.vault.adapter;
+    if (!await adapter.exists(plugin.settings.attachmentsFolder)) {
+        new Notice(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`, 5000);
+        throw new Error(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`);
+    }
+    if (!await adapter.exists(plugin.settings.readyFolder)) {
+        new Notice(`Ready folder ${plugin.settings.readyFolder} does not exist.`, 5000);
+        throw new Error(`Ready folder ${plugin.settings.readyFolder} does not exist.`);
+        // or mkdir ready folder
+    }
+    if (!await adapter.exists(plugin.settings.backupFolder)) {
+        new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
+        throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
     }
 }
 
@@ -89,13 +110,8 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
 
 async function backupOriginalNotes(plugin: O2Plugin) {
     const readyFiles = getFilesInReady.call(this, plugin);
-    const adapter = plugin.app.vault.adapter;
     const backupFolder = plugin.settings.backupFolder;
     const readyFolder = plugin.settings.readyFolder;
-    if (!await adapter.exists(backupFolder)) {
-        new Notice('Backup folder does not exist. Creating backup folder...');
-        await adapter.mkdir(backupFolder);
-    }
     readyFiles.forEach((file: TFile) => {
         return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
     });
