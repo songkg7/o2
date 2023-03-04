@@ -89,8 +89,15 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
 
 async function backupOriginalNotes(plugin: O2Plugin) {
     const readyFiles = getFilesInReady.call(this, plugin);
+    const adapter = plugin.app.vault.adapter;
+    const backupFolder = plugin.settings.backupFolder;
+    const readyFolder = plugin.settings.readyFolder;
+    if (!await adapter.exists(backupFolder)) {
+        new Notice('Backup folder does not exist. Creating backup folder...');
+        await adapter.mkdir(backupFolder);
+    }
     readyFiles.forEach((file: TFile) => {
-        return plugin.app.vault.copy(file, file.path.replace(plugin.settings.readyFolder, plugin.settings.backupFolder));
+        return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
     });
 }
 

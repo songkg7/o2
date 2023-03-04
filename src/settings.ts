@@ -20,7 +20,7 @@ export class JekyllSetting implements O2PluginSettings {
     readyFolder: string;
     backupFolder: string;
     private _jekyllPath: string;
-    private readonly _jekyllRelativeResourcePath: string;
+    private _jekyllRelativeResourcePath: string;
 
     constructor() {
         this.attachmentsFolder = 'attachments';
@@ -30,16 +30,20 @@ export class JekyllSetting implements O2PluginSettings {
         this._jekyllRelativeResourcePath = 'assets/img';
     }
 
-    get jekyllRelativeResourcePath(): string {
-        return this._jekyllRelativeResourcePath;
-    }
-
     get jekyllPath(): string {
         return this._jekyllPath;
     }
 
     set jekyllPath(value: string) {
         this._jekyllPath = value;
+    }
+
+    get jekyllRelativeResourcePath(): string {
+        return this._jekyllRelativeResourcePath;
+    }
+
+    set jekyllRelativeResourcePath(value: string) {
+        this._jekyllRelativeResourcePath = value;
     }
 
     targetPath(): string {
