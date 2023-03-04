@@ -19,27 +19,39 @@ export class JekyllSetting implements O2PluginSettings {
     attachmentsFolder: string;
     readyFolder: string;
     backupFolder: string;
-    jekyllPath: string;
-    jekyllRelativeResourcePath: string;
+    private _jekyllPath: string;
+    private readonly _jekyllRelativeResourcePath: string;
 
     constructor() {
         this.attachmentsFolder = 'attachments';
         this.readyFolder = 'ready';
         this.backupFolder = 'backup';
-        this.jekyllPath = '';
-        this.jekyllRelativeResourcePath = 'assets/img';
+        this._jekyllPath = '';
+        this._jekyllRelativeResourcePath = 'assets/img';
+    }
+
+    get jekyllRelativeResourcePath(): string {
+        return this._jekyllRelativeResourcePath;
+    }
+
+    get jekyllPath(): string {
+        return this._jekyllPath;
+    }
+
+    set jekyllPath(value: string) {
+        this._jekyllPath = value;
     }
 
     targetPath(): string {
-        return `${this.jekyllPath}/_posts`;
+        return `${this._jekyllPath}/_posts`;
     }
 
     resourcePath(): string {
-        return `${this.jekyllPath}/${this.jekyllRelativeResourcePath}`;
+        return `${this._jekyllPath}/${this._jekyllRelativeResourcePath}`;
     }
 
     afterPropertiesSet(): boolean {
-        return this.jekyllPath != '';
+        return this._jekyllPath != '';
     }
 
     // FIXME: As I know, abstraction is better solution but this is something weird.
@@ -72,14 +84,15 @@ export class O2SettingTab extends PluginSettingTab {
     }
 
     private addJekyllPathSetting() {
+        const jekyllSetting = this.plugin.settings.jekyllSetting();
         new Setting(this.containerEl)
             .setName('Jekyll path')
             .setDesc('The absolute path where Jekyll is installed.')
             .addText(text => text
                 .setPlaceholder('Enter path')
-                .setValue(this.plugin.settings.jekyllSetting().jekyllPath)
+                .setValue(jekyllSetting.jekyllPath)
                 .onChange(async (value) => {
-                    this.plugin.settings.jekyllSetting().jekyllPath = value;
+                    jekyllSetting.jekyllPath = value;
                     await this.plugin.saveSettings();
                 }));
     }

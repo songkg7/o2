@@ -7,20 +7,21 @@ import { ObsidianRegex } from "../ObsidianRegex";
 import { replaceKeyword } from "../ObsidianCallout";
 
 function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
-    const resourcePath = `${plugin.settings.jekyllSetting().resourcePath()}/${title}`;
+    const jekyllSetting = plugin.settings.jekyllSetting();
+    const resourcePath = `${jekyllSetting.resourcePath()}/${title}`;
     fs.mkdirSync(resourcePath, { recursive: true });
 
-    const relativeResourcePath = plugin.settings.jekyllSetting().jekyllRelativeResourcePath;
+    const relativeResourcePath = jekyllSetting.jekyllRelativeResourcePath;
 
     extractImageName(contents)?.forEach((resourceName) => {
         fs.copyFile(
-            `${(vaultAbsolutePath(plugin))}/${plugin.settings.jekyllSetting().attachmentsFolder}/${resourceName}`,
+            `${(vaultAbsolutePath(plugin))}/${jekyllSetting.attachmentsFolder}/${resourceName}`,
             `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
             (err) => {
                 if (err) {
+                    // ignore error
                     console.error(err);
                     new Notice(err.message);
-                    // ignore error
                 }
             }
         );
@@ -54,7 +55,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         await moveFilesToChirpy(plugin);
         new Notice('Chirpy conversion complete.');
     } catch (e) {
-        // TODO: error 가 발생한 파일을 backlog 로 이동
+        // TODO: move file that occurred error to backlog folder
         console.error(e);
         new Notice('Chirpy conversion failed.');
     }
