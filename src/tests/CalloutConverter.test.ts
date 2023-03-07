@@ -1,59 +1,6 @@
-import { convertCalloutSyntaxToChirpy, extractImageName, removeSquareBrackets } from "../jekyll/chirpy";
+import { CalloutConverter } from "../jekyll/CalloutConverter";
 
-jest.mock('obsidian', () => ({}), { virtual: true });
-
-describe("jekyll", () => {
-    test('1 + 1 = 2', () => {
-        expect(1 + 1).toBe(2);
-    });
-
-    it.todo("should read a file in ready directory only");
-});
-
-describe("remove square brackets", () => {
-
-    it('should replace match string to blank', () => {
-        const content = '[[tests]]';
-        const result = removeSquareBrackets(content);
-        expect(result).toBe('tests');
-    });
-
-    it('should not match if string starts with !', () => {
-        const content = '![[tests]]';
-        const result = removeSquareBrackets(content);
-        expect(result).toBe('![[tests]]');
-    });
-
-    it('long context', () => {
-        const content = `# test
-        ![NOTE] test
-        [[test]]
-        
-        ![[test]]
-        `;
-        const result = removeSquareBrackets(content);
-        expect(result).toBe(`# test
-        ![NOTE] test
-        test
-        
-        ![[test]]
-        `);
-    });
-});
-
-describe("extract image name", () => {
-
-    it('should return image name array', () => {
-        const context = `![[test.png]]
-        
-        test
-        ![[image.png]]
-        `;
-        const result = extractImageName(context);
-        expect(result).toEqual(['test.png', 'image.png']);
-    });
-
-});
+const calloutConverter = new CalloutConverter();
 
 describe("convert callout syntax", () => {
 
@@ -63,7 +10,7 @@ describe("convert callout syntax", () => {
     ])('%s => info', callout => {
         const context = `> [!${callout}] title\n> content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> content\n{: .prompt-info}`);
     });
 
@@ -73,7 +20,7 @@ describe("convert callout syntax", () => {
     ])('%s => tip', callout => {
         const context = `> [!${callout}] title\n> content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> content\n{: .prompt-tip}`);
     });
 
@@ -83,7 +30,7 @@ describe("convert callout syntax", () => {
     ])('%s => warning', callout => {
         const context = `> [!${callout}] title\n> content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> content\n{: .prompt-warning}`);
     });
 
@@ -93,7 +40,7 @@ describe("convert callout syntax", () => {
     ])('%s => danger', callout => {
         const context = `> [!${callout}] title\n> content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> content\n{: .prompt-danger}`);
     });
 
@@ -102,14 +49,14 @@ describe("convert callout syntax", () => {
     ])('Unregistered keywords should be converted to info keyword', callout => {
         const context = `> [!${callout}] title\n> content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> content\n{: .prompt-info}`);
     });
 
     it('info => info, not exist custom title', () => {
         const context = `> [!INFO]\n> info content`;
 
-        const result = convertCalloutSyntaxToChirpy(context);
+        const result = calloutConverter.convert(context);
         expect(result).toBe(`> info content\n{: .prompt-info}`);
     });
 

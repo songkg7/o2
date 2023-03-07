@@ -1,4 +1,6 @@
-import { convertFrontMatter } from "../jekyll/convertFrontMatter";
+import { FrontMatterConverter } from "../jekyll/FrontMatterConverter";
+
+const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img");
 
 describe("convert front matter", () => {
     const contents = `---
@@ -21,12 +23,12 @@ categories: [test]
 
 # test
 `;
-        const result = convertFrontMatter("2023-01-01-test-title", mockContents, "assets/img");
+        const result = frontMatterConverter.convert(mockContents);
         expect(result).toBe(mockContents);
     });
 
     it('should image path changed', () => {
-        const result = convertFrontMatter("2023-01-01-test-title", contents, "assets/img");
+        const result = frontMatterConverter.convert(contents);
         expect(result).toBe(`---
 title: "test"
 date: 2021-01-01
@@ -47,7 +49,7 @@ describe("if does not exist front matter", () => {
 image: test.png
 `;
     it('should Nothing', () => {
-        const result = convertFrontMatter("2023-01-01-test-title", contents, "assets/img");
+        const result = frontMatterConverter.convert(contents);
         expect(result).toBe(contents);
     });
 });
@@ -63,7 +65,7 @@ image: test.png
 ---
 `;
     it('should be distinct', () => {
-        const result = convertFrontMatter("2023-01-01-test-title", contents, "assets/img");
+        const result = frontMatterConverter.convert(contents);
 
         expect(result).toBe(`---
 title: "test"
@@ -85,7 +87,7 @@ image: test.png
 # test
 `;
         it('should Nothing', () => {
-            const result = convertFrontMatter("2023-01-01-test-title", contents, "assets/img");
+            const result = frontMatterConverter.convert(contents);
             expect(result).toBe(contents);
         });
     });
@@ -101,7 +103,7 @@ image: ![[test.png]]
 # test
 `;
     it('should be converted', () => {
-        const result = convertFrontMatter("2023-01-01-test-title", contents, "assets/img");
+        const result = frontMatterConverter.convert(contents);
         expect(result).toBe(`---
 title: "test"
 date: 2021-01-01
