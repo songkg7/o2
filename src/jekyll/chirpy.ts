@@ -23,7 +23,8 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
             const frontMatterConverter = new FrontMatterConverter(
                 title,
-                plugin.settings.jekyllSetting().jekyllRelativeResourcePath
+                plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
+                plugin.settings.jekyllSetting().isEnableBanner
             );
             const bracketConverter = new BracketConverter();
             const resourceLinkConverter = new ResourceLinkConverter(plugin, title);

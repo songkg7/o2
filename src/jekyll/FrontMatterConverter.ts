@@ -6,14 +6,20 @@ export class FrontMatterConverter extends AbstractConverter {
 
     private readonly fileName: string;
     private readonly resourcePath: string;
+    private readonly isEnable: boolean;
 
-    constructor(fileName: string, resourcePath: string) {
+    constructor(fileName: string, resourcePath: string, isEnable = false) {
         super();
         this.fileName = fileName;
         this.resourcePath = resourcePath;
+        this.isEnable = isEnable;
     }
 
     convert(input: string): string {
+        if (!this.isEnable) {
+            return super.convert(input);
+        }
+
         const [frontMatter, body] = parseFrontMatter(input);
 
         if (!frontMatter.image) {

@@ -1,6 +1,6 @@
 import { FrontMatterConverter } from "../jekyll/FrontMatterConverter";
 
-const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img");
+const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", true);
 
 describe("convert front matter", () => {
     const contents = `---
@@ -42,6 +42,13 @@ image: /assets/img/2023-01-01-test-title/test.png
         );
     });
 
+    describe('when isEnable option is false', () => {
+        const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", false);
+        it('should Nothing', () => {
+            const result = frontMatterConverter.convert(contents);
+            expect(result).toBe(contents);
+        });
+    });
 });
 
 describe("if does not exist front matter", () => {
