@@ -21,6 +21,7 @@ export class JekyllSetting implements O2PluginSettings {
     backupFolder: string;
     private _jekyllPath: string;
     private _jekyllRelativeResourcePath: string;
+    private _isEnableBanner: boolean;
 
     constructor() {
         this.attachmentsFolder = 'attachments';
@@ -44,6 +45,14 @@ export class JekyllSetting implements O2PluginSettings {
 
     set jekyllRelativeResourcePath(value: string) {
         this._jekyllRelativeResourcePath = value;
+    }
+
+    get isEnableBanner(): boolean {
+        return this._isEnableBanner;
+    }
+
+    set isEnableBanner(value: boolean) {
+        this._isEnableBanner = value;
     }
 
     targetPath(): string {
@@ -82,9 +91,23 @@ export class O2SettingTab extends PluginSettingTab {
         this.addBackupFolderSetting();
         this.addAttachmentsFolderSetting();
         this.addJekyllPathSetting();
-        // this.containerEl.createEl('h2', {
-        //     text: 'Advanced settings',
-        // })
+        this.containerEl.createEl('h2', {
+            text: 'Experimental features',
+        });
+        this.enableBannerSetting();
+    }
+
+    private enableBannerSetting() {
+        const jekyllSetting = this.plugin.settings.jekyllSetting();
+        new Setting(this.containerEl)
+            .setName('Banner Conversion')
+            .setDesc('Convert image path of front matter to jekyll banner.')
+            .addToggle(toggle => toggle
+                .setValue(jekyllSetting.isEnableBanner)
+                .onChange(async (value) => {
+                    jekyllSetting.isEnableBanner = value;
+                    await this.plugin.saveSettings();
+                }));
     }
 
     private addJekyllPathSetting() {

@@ -1,38 +1,13 @@
-import { FileSystemAdapter, Notice, TFile } from "obsidian";
 import { Temporal } from "@js-temporal/polyfill";
 import O2Plugin from "../main";
 import * as fs from "fs";
 import * as path from "path";
-import { ObsidianRegex } from "../ObsidianRegex";
-import { replaceKeyword } from "../ObsidianCallout";
-
-function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
-    const jekyllSetting = plugin.settings.jekyllSetting();
-    const resourcePath = `${jekyllSetting.resourcePath()}/${title}`;
-    fs.mkdirSync(resourcePath, { recursive: true });
-
-    const relativeResourcePath = jekyllSetting.jekyllRelativeResourcePath;
-
-    extractImageName(contents)?.forEach((resourceName) => {
-        fs.copyFile(
-            `${(vaultAbsolutePath(plugin))}/${jekyllSetting.attachmentsFolder}/${resourceName}`,
-            `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
-            (err) => {
-                if (err) {
-                    // ignore error
-                    console.error(err);
-                    new Notice(err.message);
-                }
-            }
-        );
-    });
-
-    function replacer(match: string, p1: string) {
-        return `![image](/${relativeResourcePath}/${title}/${p1.replace(/\s/g, '-')})`;
-    }
-
-    return contents.replace(ObsidianRegex.IMAGE_LINK, replacer);
-}
+import { BracketConverter } from "./BracketConverter";
+import { ResourceLinkConverter } from "./ResourceLinkConverter";
+import { Notice, TFile } from "obsidian";
+import { CalloutConverter } from "./CalloutConverter";
+import { FrontMatterConverter } from "./FrontMatterConverter";
+import { vaultAbsolutePath } from "../utils";
 
 export async function convertToChirpy(plugin: O2Plugin) {
     // validation
@@ -44,15 +19,22 @@ export async function convertToChirpy(plugin: O2Plugin) {
         await backupOriginalNotes(plugin);
         const markdownFiles = await renameMarkdownFile(plugin);
         for (const file of markdownFiles) {
-            // remove double square brackets
             const title = file.name.replace('.md', '').replace(/\s/g, '-');
-            const contents = removeSquareBrackets(await plugin.app.vault.read(file));
-            // change resource link to jekyll link
-            const resourceConvertedContents = convertResourceLink(plugin, title, contents);
 
-            // callout
-            const result = convertCalloutSyntaxToChirpy(resourceConvertedContents);
+            const frontMatterConverter = new FrontMatterConverter(
+                title,
+                plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
+                plugin.settings.jekyllSetting().isEnableBanner
+            );
+            const bracketConverter = new BracketConverter();
+            const resourceLinkConverter = new ResourceLinkConverter(plugin, title);
+            const calloutConverter = new CalloutConverter();
 
+            frontMatterConverter.setNext(bracketConverter)
+                .setNext(resourceLinkConverter)
+                .setNext(calloutConverter);
+
+            const result = frontMatterConverter.convert(await plugin.app.vault.read(file));
             await plugin.app.vault.modify(file, result);
         }
 
@@ -80,27 +62,6 @@ async function validateSettings(plugin: O2Plugin) {
         new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
         throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
     }
-}
-
-export function convertCalloutSyntaxToChirpy(content: string) {
-    function replacer(match: string, p1: string, p2: string) {
-        return `${p2}\n{: .prompt-${replaceKeyword(p1)}}`;
-    }
-
-    return content.replace(ObsidianRegex.CALLOUT, replacer);
-}
-
-export function extractImageName(content: string) {
-    const regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK);
-    return regExpMatchArray?.map(
-        (value) => {
-            return value.replace(ObsidianRegex.IMAGE_LINK, '$1');
-        }
-    );
-}
-
-export function removeSquareBrackets(content: string) {
-    return content.replace(ObsidianRegex.DOCUMENT_LINK, '$1');
 }
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
@@ -150,13 +111,4 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
             });
         });
     });
-}
-
-function vaultAbsolutePath(plugin: O2Plugin): string {
-    const adapter = plugin.app.vault.adapter;
-    if (adapter instanceof FileSystemAdapter) {
-        return adapter.getBasePath();
-    }
-    new Notice('Vault is not a file system adapter');
-    throw new Error('Vault is not a file system adapter');
 }
