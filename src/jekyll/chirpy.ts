@@ -5,6 +5,7 @@ import * as fs from "fs";
 import * as path from "path";
 import { ObsidianRegex } from "../ObsidianRegex";
 import { replaceKeyword } from "../ObsidianCallout";
+import { convertFrontMatter } from "./convertFrontMatter";
 
 function convertResourceLink(plugin: O2Plugin, title: string, contents: string) {
     const jekyllSetting = plugin.settings.jekyllSetting();
@@ -46,7 +47,12 @@ export async function convertToChirpy(plugin: O2Plugin) {
         for (const file of markdownFiles) {
             // remove double square brackets
             const title = file.name.replace('.md', '').replace(/\s/g, '-');
-            const contents = removeSquareBrackets(await plugin.app.vault.read(file));
+            const convertedFrontMatter = convertFrontMatter(
+                title,
+                await plugin.app.vault.read(file),
+                plugin.settings.jekyllSetting().jekyllRelativeResourcePath
+            );
+            const contents = removeSquareBrackets(convertedFrontMatter);
             // change resource link to jekyll link
             const resourceConvertedContents = convertResourceLink(plugin, title, contents);
 
