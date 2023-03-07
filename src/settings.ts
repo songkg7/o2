@@ -1,4 +1,4 @@
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import O2Plugin from "./main";
 
 export interface O2PluginSettings {
@@ -64,7 +64,11 @@ export class JekyllSetting implements O2PluginSettings {
     }
 
     afterPropertiesSet(): boolean {
-        return this._jekyllPath != '';
+        if (this._jekyllPath === '') {
+            new Notice('Jekyll path is not set.', 5000);
+            return false;
+        }
+        return true;
     }
 
     // FIXME: As I know, abstraction is better solution but this is something weird.
