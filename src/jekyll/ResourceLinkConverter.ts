@@ -18,11 +18,12 @@ export class ResourceLinkConverter extends AbstractConverter {
     convert(input: string): string {
         const jekyllSetting = this.plugin.settings.jekyllSetting();
         const resourcePath = `${jekyllSetting.resourcePath()}/${this.title}`;
-        fs.mkdirSync(resourcePath, { recursive: true });
 
-        const relativeResourcePath = jekyllSetting.jekyllRelativeResourcePath;
-
-        extractImageName(input)?.forEach((resourceName) => {
+        const resourceNames = extractResourceNames(input);
+        if (!(resourceNames === undefined || resourceNames.length === 0)) {
+            fs.mkdirSync(resourcePath, { recursive: true });
+        }
+        resourceNames?.forEach((resourceName) => {
             fs.copyFile(
                 `${(vaultAbsolutePath(this.plugin))}/${jekyllSetting.attachmentsFolder}/${resourceName}`,
                 `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
@@ -36,6 +37,7 @@ export class ResourceLinkConverter extends AbstractConverter {
             );
         });
 
+        const relativeResourcePath = jekyllSetting.jekyllRelativeResourcePath;
         const replacer = (match: string, p1: string) =>
             `![image](/${relativeResourcePath}/${this.title}/${p1.replace(/\s/g, '-')})`;
 
@@ -45,7 +47,7 @@ export class ResourceLinkConverter extends AbstractConverter {
     }
 }
 
-export function extractImageName(content: string) {
+export function extractResourceNames(content: string) {
     const regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK);
     return regExpMatchArray?.map(
         (value) => {
