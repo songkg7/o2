@@ -16,4 +16,12 @@ describe('Image link', () => {
 
         expect(result).toEqual('test.png ');
     });
+
+    // TODO: not yet implemented
+    xit('should not match embedded syntax', () => {
+        const context = '![[Obsidian#What is Obsidian?]]';
+        const result = context.match(ObsidianRegex.IMAGE_LINK);
+
+        expect(result).toBeNull();
+    });
 });
