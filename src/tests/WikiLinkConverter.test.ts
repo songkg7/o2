@@ -16,4 +16,26 @@ describe('WikiLinkConverter', () => {
         const result = converter.convert(input);
         expect(result).toEqual(expected);
     });
+
+    it('long context', () => {
+        const input = `# test
+        ![NOTE] test
+        [[test]]
+        
+        ![[test]]
+        `;
+        const result = converter.convert(input);
+        expect(result).toBe(`# test
+        ![NOTE] test
+        test
+        
+        ![[test]]
+        `);
+    });
+
+    it('should not match if string starts with !', () => {
+        const input = '![[tests]]';
+        const result = converter.convert(input);
+        expect(result).toBe('![[tests]]');
+    });
 });
