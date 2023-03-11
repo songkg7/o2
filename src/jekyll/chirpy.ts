@@ -8,6 +8,7 @@ import { Notice, TFile } from "obsidian";
 import { CalloutConverter } from "./CalloutConverter";
 import { FrontMatterConverter } from "./FrontMatterConverter";
 import { vaultAbsolutePath } from "../utils";
+import { FootnotesConverter } from "./FootnotesConverter";
 
 export async function convertToChirpy(plugin: O2Plugin) {
     // validation
@@ -35,10 +36,12 @@ export async function convertToChirpy(plugin: O2Plugin) {
                 plugin.settings.jekyllSetting().jekyllRelativeResourcePath
             );
             const calloutConverter = new CalloutConverter();
+            const footnotesConverter = new FootnotesConverter();
 
             frontMatterConverter.setNext(wikiLinkConverter)
                 .setNext(resourceLinkConverter)
-                .setNext(calloutConverter);
+                .setNext(calloutConverter)
+                .setNext(footnotesConverter);
 
             const result = frontMatterConverter.convert(await plugin.app.vault.read(file));
             await plugin.app.vault.modify(file, result);
