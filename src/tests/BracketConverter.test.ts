@@ -1,6 +1,6 @@
-import { BracketConverter } from "../jekyll/BracketConverter";
+import { WikiLinkConverter } from "../jekyll/WikiLinkConverter";
 
-const bracketConverter = new BracketConverter();
+const bracketConverter = new WikiLinkConverter();
 
 describe("remove square brackets", () => {
 

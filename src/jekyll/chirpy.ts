@@ -2,7 +2,7 @@ import { Temporal } from "@js-temporal/polyfill";
 import O2Plugin from "../main";
 import * as fs from "fs";
 import * as path from "path";
-import { BracketConverter } from "./BracketConverter";
+import { WikiLinkConverter } from "./WikiLinkConverter";
 import { ResourceLinkConverter } from "./ResourceLinkConverter";
 import { Notice, TFile } from "obsidian";
 import { CalloutConverter } from "./CalloutConverter";
@@ -26,7 +26,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
                 plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
                 plugin.settings.jekyllSetting().isEnableBanner
             );
-            const bracketConverter = new BracketConverter();
+            const wikiLinkConverter = new WikiLinkConverter();
             const resourceLinkConverter = new ResourceLinkConverter(
                 fileName,
                 plugin.settings.jekyllSetting().resourcePath(),
@@ -36,7 +36,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
             );
             const calloutConverter = new CalloutConverter();
 
-            frontMatterConverter.setNext(bracketConverter)
+            frontMatterConverter.setNext(wikiLinkConverter)
                 .setNext(resourceLinkConverter)
                 .setNext(calloutConverter);
 
