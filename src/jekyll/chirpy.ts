@@ -19,15 +19,21 @@ export async function convertToChirpy(plugin: O2Plugin) {
         await backupOriginalNotes(plugin);
         const markdownFiles = await renameMarkdownFile(plugin);
         for (const file of markdownFiles) {
-            const title = file.name.replace('.md', '').replace(/\s/g, '-');
+            const fileName = file.name.replace('.md', '').replace(/\s/g, '-');
 
             const frontMatterConverter = new FrontMatterConverter(
-                title,
+                fileName,
                 plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
                 plugin.settings.jekyllSetting().isEnableBanner
             );
             const bracketConverter = new BracketConverter();
-            const resourceLinkConverter = new ResourceLinkConverter(plugin, title);
+            const resourceLinkConverter = new ResourceLinkConverter(
+                fileName,
+                plugin.settings.jekyllSetting().resourcePath(),
+                vaultAbsolutePath(plugin),
+                plugin.settings.attachmentsFolder,
+                plugin.settings.jekyllSetting().jekyllRelativeResourcePath
+            );
             const calloutConverter = new CalloutConverter();
 
             frontMatterConverter.setNext(bracketConverter)
