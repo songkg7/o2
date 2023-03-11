@@ -38,8 +38,9 @@ export class ResourceLinkConverter extends AbstractConverter {
         });
 
         const relativeResourcePath = jekyllSetting.jekyllRelativeResourcePath;
-        const replacer = (match: string, p1: string) =>
-            `![image](/${relativeResourcePath}/${this.title}/${p1.replace(/\s/g, '-')})`;
+
+        const replacer = (match: string, p1: string, imageSize: string | undefined) =>
+            `![image](/${relativeResourcePath}/${this.title}/${p1.replace(/\s/g, '-')})${convertImageSize(imageSize)}`;
 
         const result = input.replace(ObsidianRegex.IMAGE_LINK, replacer);
 
@@ -48,11 +49,16 @@ export class ResourceLinkConverter extends AbstractConverter {
 }
 
 export function extractResourceNames(content: string) {
-    const regExpMatchArray = content.match(ObsidianRegex.IMAGE_LINK);
-    return regExpMatchArray?.map(
-        (value) => {
-            return value.replace(ObsidianRegex.IMAGE_LINK, '$1');
-        }
-    );
+    const result = content.match(ObsidianRegex.IMAGE_LINK);
+    if (result === null) {
+        return undefined;
+    }
+    return result.map((imageLink) => imageLink.replace(ObsidianRegex.IMAGE_LINK, '$1'));
 }
 
+function convertImageSize(imageSize: string | undefined) {
+    if (imageSize === undefined || imageSize.length === 0) {
+        return '';
+    }
+    return `{ width="${imageSize}" }`;
+}
