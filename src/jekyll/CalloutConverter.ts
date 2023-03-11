@@ -9,11 +9,10 @@ export class CalloutConverter extends AbstractConverter {
     }
 }
 
-export function convertCalloutSyntaxToChirpy(content: string) {
+function convertCalloutSyntaxToChirpy(content: string) {
     function replacer(match: string, p1: string, p2: string) {
         return `${p2}\n{: .prompt-${replaceKeyword(p1)}}`;
     }
 
     return content.replace(ObsidianRegex.CALLOUT, replacer);
 }
-
