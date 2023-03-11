@@ -18,6 +18,12 @@ describe("extract image name", () => {
         expect(result).toEqual(['test.png', 'image.png']);
     });
 
+    it('should return undefined', () => {
+        const context = `test`;
+        const result = extractResourceNames(context);
+        expect(result).toBeUndefined();
+    });
+
 });
 
 describe("convert called", () => {
@@ -31,5 +37,9 @@ describe("convert called", () => {
 
     it('should return converted post', () => {
         expect(converter.convert(`![[test.png]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png)`);
+    });
+
+    it('should return converted post with image size', () => {
+        expect(converter.convert(`![[test.png|100]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png){ width="100" }`);
     });
 });
