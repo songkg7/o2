@@ -1,15 +1,14 @@
 import { parseFrontMatter } from "./parseFrontMatter";
 import { ObsidianRegex } from "../ObsidianRegex";
-import { AbstractConverter } from "../core/Converter";
+import { Converter } from "../core/Converter";
 
-export class FrontMatterConverter extends AbstractConverter {
+export class FrontMatterConverter implements Converter {
 
     private readonly fileName: string;
     private readonly resourcePath: string;
     private readonly isEnable: boolean;
 
     constructor(fileName: string, resourcePath: string, isEnable = false) {
-        super();
         this.fileName = fileName;
         this.resourcePath = resourcePath;
         this.isEnable = isEnable;
@@ -17,7 +16,7 @@ export class FrontMatterConverter extends AbstractConverter {
 
     convert(input: string): string {
         if (!this.isEnable) {
-            return super.convert(input);
+            return input;
         }
 
         const [frontMatter, body] = parseFrontMatter(input);
@@ -35,15 +34,13 @@ export class FrontMatterConverter extends AbstractConverter {
 
         frontMatter.image = convertImagePath(this.fileName, frontMatter.image, this.resourcePath);
 
-        const result = `---
+        return `---
 ${Object.entries(frontMatter)
             .map(([key, value]) => `${key}: ${value}`)
             .join("\n")}
 ---
 
 ${body}`;
-
-        return super.convert(result);
     }
 }
 

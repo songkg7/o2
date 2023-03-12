@@ -1,9 +1,8 @@
-import { AbstractConverter } from "../core/Converter";
 import { ObsidianRegex } from "../ObsidianRegex";
+import { Converter } from "../core/Converter";
 
-export class WikiLinkConverter extends AbstractConverter {
+export class WikiLinkConverter implements Converter {
     convert(input: string): string {
-        const result = input.replace(ObsidianRegex.WIKI_LINK, (match, p1, p2) => (p2 ? p2 : p1));
-        return super.convert(result);
+        return input.replace(ObsidianRegex.WIKI_LINK, (match, p1, p2) => (p2 ? p2 : p1));
     }
 }

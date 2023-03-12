@@ -1,13 +1,12 @@
-import { AbstractConverter } from "../core/Converter";
 import { ObsidianRegex } from "../ObsidianRegex";
+import { Converter } from "../core/Converter";
 
-export class FootnotesConverter extends AbstractConverter {
+export class FootnotesConverter implements Converter {
 
     convert(input: string): string {
-        const result = input.replace(ObsidianRegex.SIMPLE_FOOTNOTE, (match, key) => {
+        return input.replace(ObsidianRegex.SIMPLE_FOOTNOTE, (match, key) => {
             return `[^fn-nth-${key}]`;
         });
-        return super.convert(result);
     }
 
 }

@@ -9,6 +9,7 @@ import { CalloutConverter } from "./CalloutConverter";
 import { FrontMatterConverter } from "./FrontMatterConverter";
 import { vaultAbsolutePath } from "../utils";
 import { FootnotesConverter } from "./FootnotesConverter";
+import { ConverterChain } from "../core/ConverterChain";
 
 export async function convertToChirpy(plugin: O2Plugin) {
     // validation
@@ -38,12 +39,14 @@ export async function convertToChirpy(plugin: O2Plugin) {
             const calloutConverter = new CalloutConverter();
             const footnotesConverter = new FootnotesConverter();
 
-            frontMatterConverter.setNext(wikiLinkConverter)
-                .setNext(resourceLinkConverter)
-                .setNext(calloutConverter)
-                .setNext(footnotesConverter);
+            const result = ConverterChain.create()
+                .chaining(frontMatterConverter)
+                .chaining(wikiLinkConverter)
+                .chaining(resourceLinkConverter)
+                .chaining(calloutConverter)
+                .chaining(footnotesConverter)
+                .converting(await plugin.app.vault.read(file));
 
-            const result = frontMatterConverter.convert(await plugin.app.vault.read(file));
             await plugin.app.vault.modify(file, result);
         }
 
@@ -87,6 +90,7 @@ async function backupOriginalNotes(plugin: O2Plugin) {
     });
 }
 
+// FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
     const dateString = Temporal.Now.plainDateISO().toString();
     const markdownFiles = getFilesInReady.call(this, plugin);
