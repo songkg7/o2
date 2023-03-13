@@ -1,9 +1,9 @@
-import { AbstractConverter } from "../core/Converter";
 import fs from "fs";
 import { ObsidianRegex } from "../ObsidianRegex";
 import { Notice } from "obsidian";
+import { Converter } from "../core/Converter";
 
-export class ResourceLinkConverter extends AbstractConverter {
+export class ResourceLinkConverter implements Converter {
     private readonly fileName: string;
     private readonly resourcePath: string;
     private readonly absolutePath: string;
@@ -11,7 +11,6 @@ export class ResourceLinkConverter extends AbstractConverter {
     private readonly relativeResourcePath: string;
 
     constructor(fileName: string, resourcePath: string, absolutePath: string, attachmentsFolder: string, relativeResourcePath: string) {
-        super();
         this.fileName = fileName;
         this.resourcePath = resourcePath;
         this.absolutePath = absolutePath;
@@ -43,9 +42,7 @@ export class ResourceLinkConverter extends AbstractConverter {
         const replacer = (match: string, p1: string, imageSize: string | undefined) =>
             `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')})${convertImageSize(imageSize)}`;
 
-        const result = input.replace(ObsidianRegex.IMAGE_LINK, replacer);
-
-        return super.convert(result);
+        return input.replace(ObsidianRegex.IMAGE_LINK, replacer);
     }
 }
 

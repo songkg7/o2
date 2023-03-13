@@ -1,11 +1,10 @@
-import { AbstractConverter } from "../core/Converter";
 import { replaceKeyword } from "../ObsidianCallout";
 import { ObsidianRegex } from "../ObsidianRegex";
+import { Converter } from "../core/Converter";
 
-export class CalloutConverter extends AbstractConverter {
+export class CalloutConverter implements Converter {
     convert(input: string): string {
-        const result = convertCalloutSyntaxToChirpy(input);
-        return super.convert(result);
+        return convertCalloutSyntaxToChirpy(input);
     }
 }
 
