@@ -10,6 +10,7 @@ import { FrontMatterConverter } from "./FrontMatterConverter";
 import { vaultAbsolutePath } from "../utils";
 import { FootnotesConverter } from "./FootnotesConverter";
 import { ConverterChain } from "../core/ConverterChain";
+import { CommentsConverter } from "./CommentsConverter";
 
 export async function convertToChirpy(plugin: O2Plugin) {
     // validation
@@ -28,7 +29,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
                 plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
                 plugin.settings.jekyllSetting().isEnableBanner
             );
-            const wikiLinkConverter = new WikiLinkConverter();
             const resourceLinkConverter = new ResourceLinkConverter(
                 fileName,
                 plugin.settings.jekyllSetting().resourcePath(),
@@ -36,15 +36,13 @@ export async function convertToChirpy(plugin: O2Plugin) {
                 plugin.settings.attachmentsFolder,
                 plugin.settings.jekyllSetting().jekyllRelativeResourcePath
             );
-            const calloutConverter = new CalloutConverter();
-            const footnotesConverter = new FootnotesConverter();
-
             const result = ConverterChain.create()
                 .chaining(frontMatterConverter)
-                .chaining(wikiLinkConverter)
                 .chaining(resourceLinkConverter)
-                .chaining(calloutConverter)
-                .chaining(footnotesConverter)
+                .chaining(new WikiLinkConverter())
+                .chaining(new CalloutConverter())
+                .chaining(new FootnotesConverter())
+                .chaining(new CommentsConverter())
                 .converting(await plugin.app.vault.read(file));
 
             await plugin.app.vault.modify(file, result);
