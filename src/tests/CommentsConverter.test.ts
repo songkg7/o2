@@ -9,4 +9,11 @@ describe("CommentConverter", () => {
         const actual = converter.convert(input);
         expect(actual).toEqual(expected);
     });
+
+    it("should convert multiple comments", () => {
+        const input = "%%This is a comment%% %%This is another comment%%";
+        const expected = "<!--This is a comment--> <!--This is another comment-->";
+        const actual = converter.convert(input);
+        expect(actual).toEqual(expected);
+    });
 });
