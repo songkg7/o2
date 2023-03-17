@@ -25,10 +25,10 @@ export class FrontMatterConverter implements Converter {
             return input;
         }
 
-        if (ObsidianRegex.IMAGE_LINK.test(frontMatter.image)) {
-            const match = frontMatter.image.match(ObsidianRegex.IMAGE_LINK);
+        if (ObsidianRegex.ATTACHMENT_LINK.test(frontMatter.image)) {
+            const match = frontMatter.image.match(ObsidianRegex.ATTACHMENT_LINK);
             if (match) {
-                frontMatter.image = frontMatter.image.replace(ObsidianRegex.IMAGE_LINK, '$1');
+                frontMatter.image = frontMatter.image.replace(ObsidianRegex.ATTACHMENT_LINK, '$1');
             }
         }
 

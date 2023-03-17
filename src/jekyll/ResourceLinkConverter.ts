@@ -42,16 +42,16 @@ export class ResourceLinkConverter implements Converter {
         const replacer = (match: string, p1: string, imageSize: string | undefined) =>
             `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')})${convertImageSize(imageSize)}`;
 
-        return input.replace(ObsidianRegex.IMAGE_LINK, replacer);
+        return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
     }
 }
 
 export function extractResourceNames(content: string) {
-    const result = content.match(ObsidianRegex.IMAGE_LINK);
+    const result = content.match(ObsidianRegex.ATTACHMENT_LINK);
     if (result === null) {
         return undefined;
     }
-    return result.map((imageLink) => imageLink.replace(ObsidianRegex.IMAGE_LINK, '$1'));
+    return result.map((imageLink) => imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1'));
 }
 
 function convertImageSize(imageSize: string | undefined) {
