@@ -1,5 +1,6 @@
 export const ObsidianRegex = {
-    ATTACHMENT_LINK: /!\[\[([^|\]]+)\|?(\d*)]]/g,
+    ATTACHMENT_LINK: /!\[\[([^|\]]+)\.(\w+)\|?(\d*)]]/g,
+    EMBEDDED_LINK: /!\[\[([\w\s-]+)[#^]*([\w\s]*)]]/g,
     WIKI_LINK: /(?<!!)\[\[([^|\]]+)\|?(.*)]]/g,
     CALLOUT: /> \[!(.*)].*?\n(>.*)/ig,
     SIMPLE_FOOTNOTE: /\[\^(\d+)]/g,
