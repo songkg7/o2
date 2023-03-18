@@ -28,7 +28,7 @@ export class FrontMatterConverter implements Converter {
         if (ObsidianRegex.ATTACHMENT_LINK.test(frontMatter.image)) {
             const match = frontMatter.image.match(ObsidianRegex.ATTACHMENT_LINK);
             if (match) {
-                frontMatter.image = frontMatter.image.replace(ObsidianRegex.ATTACHMENT_LINK, '$1');
+                frontMatter.image = frontMatter.image.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2');
             }
         }
 

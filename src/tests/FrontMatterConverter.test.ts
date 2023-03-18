@@ -24,12 +24,12 @@ categories: [test]
 # test
 `;
         const result = frontMatterConverter.convert(mockContents);
-        expect(result).toBe(mockContents);
+        expect(result).toEqual(mockContents);
     });
 
     it('should image path changed', () => {
         const result = frontMatterConverter.convert(contents);
-        expect(result).toBe(`---
+        expect(result).toEqual(`---
 title: "test"
 date: 2021-01-01
 tags: [test]
@@ -46,7 +46,7 @@ image: /assets/img/2023-01-01-test-title/test.png
         const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", false);
         it('should Nothing', () => {
             const result = frontMatterConverter.convert(contents);
-            expect(result).toBe(contents);
+            expect(result).toEqual(contents);
         });
     });
 });
@@ -57,7 +57,7 @@ image: test.png
 `;
     it('should Nothing', () => {
         const result = frontMatterConverter.convert(contents);
-        expect(result).toBe(contents);
+        expect(result).toEqual(contents);
     });
 });
 
@@ -74,7 +74,7 @@ image: test.png
     it('should be distinct', () => {
         const result = frontMatterConverter.convert(contents);
 
-        expect(result).toBe(`---
+        expect(result).toEqual(`---
 title: "test"
 date: 2021-01-01
 image: /assets/img/2023-01-01-test-title/test.png
@@ -95,7 +95,7 @@ image: test.png
 `;
         it('should Nothing', () => {
             const result = frontMatterConverter.convert(contents);
-            expect(result).toBe(contents);
+            expect(result).toEqual(contents);
         });
     });
 });
@@ -111,7 +111,7 @@ image: ![[test.png]]
 `;
     it('should be converted', () => {
         const result = frontMatterConverter.convert(contents);
-        expect(result).toBe(`---
+        expect(result).toEqual(`---
 title: "test"
 date: 2021-01-01
 image: /assets/img/2023-01-01-test-title/test.png

@@ -39,8 +39,8 @@ export class ResourceLinkConverter implements Converter {
             );
         });
 
-        const replacer = (match: string, p1: string, imageSize: string | undefined) =>
-            `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')})${convertImageSize(imageSize)}`;
+        const replacer = (match: string, p1: string, suffix: string, imageSize: string | undefined) =>
+            `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')}.${suffix})${convertImageSize(imageSize)}`;
 
         return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
     }
@@ -51,7 +51,7 @@ export function extractResourceNames(content: string) {
     if (result === null) {
         return undefined;
     }
-    return result.map((imageLink) => imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1'));
+    return result.map((imageLink) => imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2'));
 }
 
 function convertImageSize(imageSize: string | undefined) {

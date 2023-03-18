@@ -11,7 +11,9 @@ import { vaultAbsolutePath } from "../utils";
 import { FootnotesConverter } from "./FootnotesConverter";
 import { ConverterChain } from "../core/ConverterChain";
 import { CommentsConverter } from "./CommentsConverter";
+import { EmbedsConverter } from "./EmbedsConverter";
 
+// TODO: write test
 export async function convertToChirpy(plugin: O2Plugin) {
     // validation
     new Notice('Checking settings...');
@@ -43,6 +45,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
                 .chaining(new CalloutConverter())
                 .chaining(new FootnotesConverter())
                 .chaining(new CommentsConverter())
+                .chaining(new EmbedsConverter())
                 .converting(await plugin.app.vault.read(file));
 
             await plugin.app.vault.modify(file, result);
