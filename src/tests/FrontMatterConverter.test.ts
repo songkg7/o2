@@ -1,6 +1,7 @@
 import { FrontMatterConverter } from "../jekyll/FrontMatterConverter";
 
 const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", true);
+const disableImageConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", false);
 
 describe("convert front matter", () => {
     const contents = `---
@@ -48,6 +49,36 @@ image: /assets/img/2023-01-01-test-title/test.png
             const result = frontMatterConverter.convert(contents);
             expect(result).toEqual(contents);
         });
+    });
+
+    it('should create mermaid key value if body contains mermaid block', () => {
+        const contents = `---
+title: "test"
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+
+`;
+        const result = disableImageConverter.convert(contents);
+        expect(result).toEqual(`---
+title: "test"
+mermaid: true
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+
+`
+        );
     });
 });
 
