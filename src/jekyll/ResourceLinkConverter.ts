@@ -39,8 +39,8 @@ export class ResourceLinkConverter implements Converter {
             );
         });
 
-        const replacer = (match: string, p1: string, suffix: string, imageSize: string | undefined) =>
-            `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')}.${suffix})${convertImageSize(imageSize)}`;
+        const replacer = (match: string, p1: string, suffix: string, imageSize: string | undefined, caption: string) =>
+            `![image](/${this.relativeResourcePath}/${this.fileName}/${p1.replace(/\s/g, '-')}.${suffix})${convertImageSize(imageSize)}${convertImageCaption(caption)}`;
 
         return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
     }
@@ -59,4 +59,11 @@ function convertImageSize(imageSize: string | undefined) {
         return '';
     }
     return `{ width="${imageSize}" }`;
+}
+
+function convertImageCaption(caption: string | undefined) {
+    if (caption === undefined || caption.length === 0) {
+        return '';
+    }
+    return `\n${caption}`;
 }
