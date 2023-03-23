@@ -1,6 +1,7 @@
 import { FrontMatterConverter } from "../jekyll/FrontMatterConverter";
 
 const frontMatterConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", true);
+const disableImageConverter = new FrontMatterConverter("2023-01-01-test-title", "assets/img", false);
 
 describe("convert front matter", () => {
     const contents = `---
@@ -49,7 +50,90 @@ image: /assets/img/2023-01-01-test-title/test.png
             expect(result).toEqual(contents);
         });
     });
+
 });
+
+describe("mermaid front matter", () => {
+
+    it('should create mermaid key value if body contains mermaid block', () => {
+        const contents = `---
+title: "test"
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+
+`;
+        const result = disableImageConverter.convert(contents);
+        expect(result).toEqual(`---
+title: "test"
+mermaid: true
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+
+`
+        );
+    });
+
+    it('should not create mermaid key value if body does not contain mermaid block', () => {
+        const contents = `---
+title: "test"
+---
+
+# test
+
+`;
+        const result = disableImageConverter.convert(contents);
+        expect(result).toEqual(`---
+title: "test"
+---
+
+# test
+
+`
+        );
+    });
+
+    it('should not create mermaid key value if body contains mermaid block but front matter already has mermaid key', () => {
+        const contents = `---
+title: "test"
+mermaid: true
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+`;
+        const result = disableImageConverter.convert(contents);
+        expect(result).toEqual(`---
+title: "test"
+mermaid: true
+---
+
+# test
+
+\`\`\`mermaid
+graph TD
+    A-->B
+\`\`\`
+`
+        );
+    });
+});
+
 
 describe("if does not exist front matter", () => {
     const contents = `# test
