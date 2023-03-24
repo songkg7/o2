@@ -29,7 +29,7 @@ Your vault
 
 Other Folders will be ignored.
 
-## Usage
+## How to use
 
 If you want to convert your notes, you should move them to the `ready` Folder.
 
@@ -45,8 +45,30 @@ so that you can see the original note in the `ready` folder when exception occur
 
 #### Settings
 
-jekyllPath : the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
-`_posts` folder is child of this path. Attachments will be copied `assets/img` folder.
+```text
+your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
+├── _posts (where the converted notes are placed)
+└── assets
+    └── img
+        └── yyyy-MM-dd (where the attachments are placed. yyyy-MM-dd is replaced by the date of converting)
+```
+
+- jekyllPath is the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
+- Attachments will be copied by the date under the `assets/img/<yyyy-MM-dd>` folder.
+
+#### Syntax
+
+| Feature      | Obsidian (AS-IS)                  | Jekyll Chirpy (TO-BE)                                             | Description                                        |
+|--------------|-----------------------------------|-------------------------------------------------------------------|----------------------------------------------------|
+| Wiki link    | `[[What is Obsidian?]]`           | What is Obsidian?                                                 |
+| Image        | `![[NewJeans.png]]`               | `![image](/assets/img/<yyyy-MM-dd>/NewJeans.png)`                 | `yyyy-MM-dd` is replaced by the date of converting |
+| Resize image | `![[NewJeans.png&#124;100]]`      | `![image](/assets/img/<yyyy-MM-dd>/NewJeans.png){: width="100" }` |
+| Embeds       | `![[Obsidian#This is Obsidian!]]` | Obsidian                                                          |
+| Comments     | `%% This is a comment %%`         | `<!-- This is a comment -->`                                      |
+| Footnotes    | `[^1]`                            | `[^fn-nth-1]`                                                     | Currently, only supports the simple syntax         |
+
+Grammars not in the table are ignored. If there is a syntax you would like to convert, please let me know in an
+issue.
 
 ## Contributing
 
