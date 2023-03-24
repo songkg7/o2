@@ -50,7 +50,7 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 ├── _posts (where the converted notes are placed)
 └── assets
     └── img
-        └── yyyy-MM-dd (where the attachments are placed. yyyy-MM-dd is replaced by the date of converting)
+        └── yyyy-MM-dd-title (where the attachments are placed. yyyy-MM-dd is replaced by the date of converting)
 ```
 
 - jekyllPath is the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
@@ -61,8 +61,8 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 | Feature      | Obsidian (AS-IS)                  | Jekyll Chirpy (TO-BE)                                             | Description                                        |
 |--------------|-----------------------------------|-------------------------------------------------------------------|----------------------------------------------------|
 | Wiki link    | `[[What is Obsidian?]]`           | What is Obsidian?                                                 |
-| Image        | `![[NewJeans.png]]`               | `![image](/assets/img/<yyyy-MM-dd>/NewJeans.png)`                 | `yyyy-MM-dd` is replaced by the date of converting |
-| Resize image | `![[NewJeans.png&#124;100]]`      | `![image](/assets/img/<yyyy-MM-dd>/NewJeans.png){: width="100" }` |
+| Image        | `![[NewJeans.png]]`               | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png)`                 | `yyyy-MM-dd` is replaced by the date of converting |
+| Resize image | `![[NewJeans.png&#124;100]]`      | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" }` |
 | Embeds       | `![[Obsidian#This is Obsidian!]]` | Obsidian                                                          |
 | Comments     | `%% This is a comment %%`         | `<!-- This is a comment -->`                                      |
 | Footnotes    | `[^1]`                            | `[^fn-nth-1]`                                                     | Currently, only supports the simple syntax         |
