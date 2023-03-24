@@ -42,10 +42,11 @@ export class ResourceLinkConverter implements Converter {
     const replacer = (match: string,
                       contents: string,
                       suffix: string,
-                      imageSize: string | undefined,
+                      width: string | undefined,
+                      height: string | undefined,
                       caption: string | undefined) =>
       `![image](/${this.relativeResourcePath}/${this.fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
-      + `${convertImageSize(imageSize)}`
+      + `${convertImageSize(width, height)}`
       + `${convertImageCaption(caption)}`;
 
     return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
@@ -60,11 +61,14 @@ export function extractResourceNames(content: string) {
   return result.map((imageLink) => imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2'));
 }
 
-function convertImageSize(imageSize: string | undefined) {
-  if (imageSize === undefined || imageSize.length === 0) {
+function convertImageSize(width: string | undefined, height: string | undefined) {
+  if (width === undefined || width.length === 0) {
     return '';
   }
-  return `{ width="${imageSize}" }`;
+  if (height === undefined || height.length === 0) {
+    return `{ width="${width}" }`;
+  }
+  return `{: width="${width}" height="${height}" }`;
 }
 
 function convertImageCaption(caption: string | undefined) {
