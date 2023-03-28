@@ -44,6 +44,7 @@ export class ResourceLinkConverter implements Converter {
                       suffix: string,
                       width: string | undefined,
                       height: string | undefined,
+                      space: string | undefined,
                       caption: string | undefined) =>
       `![image](/${this.relativeResourcePath}/${this.fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
       + `${convertImageSize(width, height)}`

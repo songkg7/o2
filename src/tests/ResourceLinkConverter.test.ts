@@ -114,4 +114,21 @@ _This is a test image._
 `);
   });
 
+  it('should nothing if does not exist image caption', () => {
+    const context = `
+![[test.png]]
+
+## Header
+
+`;
+
+    const result = converter.convert(context);
+    expect(result).toEqual(`
+![image](/assets/2023-01-01-post-mock/test.png)
+
+## Header
+
+`);
+  });
+
 });
