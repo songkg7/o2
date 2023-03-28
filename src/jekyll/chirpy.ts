@@ -12,6 +12,7 @@ import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
+import { FilenameConverter } from './FilenameConverter';
 
 // TODO: write test
 export async function convertToChirpy(plugin: O2Plugin) {
@@ -20,11 +21,14 @@ export async function convertToChirpy(plugin: O2Plugin) {
   await validateSettings(plugin);
   new Notice('Settings are valid.');
   new Notice('Chirpy conversion started.');
+  await backupOriginalNotes(plugin);
+
+  const filenameConverter = new FilenameConverter();
+
   try {
-    await backupOriginalNotes(plugin);
     const markdownFiles = await renameMarkdownFile(plugin);
     for (const file of markdownFiles) {
-      const fileName = file.name.replace('.md', '').replace(/\s/g, '-');
+      const fileName = filenameConverter.convert(file.name);
 
       const frontMatterConverter = new FrontMatterConverter(
         fileName,
