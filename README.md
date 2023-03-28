@@ -58,15 +58,15 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 
 #### Syntax
 
-| Feature                       | Obsidian (AS-IS)                  | Jekyll Chirpy (TO-BE)                                                                  | Description                                        |
-|-------------------------------|-----------------------------------|----------------------------------------------------------------------------------------|----------------------------------------------------|
-| Wiki link                     | `[[What is Obsidian?]]`           | What is Obsidian?                                                                      |
-| Image                         | `![[NewJeans.png]]`               | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png)`                              | `yyyy-MM-dd` is replaced by the date of converting |
-| Resize image (width)          | `![[NewJeans.png&#124;100]]`      | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" }`              |
-| Resize image (width & height) | `![[NewJeans.png&#124;100x200]]`  | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" height="200" }` |
-| Embeds                        | `![[Obsidian#This is Obsidian!]]` | Obsidian                                                                               |
-| Comments                      | `%% This is a comment %%`         | `<!-- This is a comment -->`                                                           |
-| Footnotes                     | `[^1]`                            | `[^fn-nth-1]`                                                                          | Currently, only supports the simple syntax         |
+| Feature                       | Obsidian (AS-IS)                | Jekyll Chirpy (TO-BE)                                                                  | Description                                        |
+|-------------------------------|---------------------------------|----------------------------------------------------------------------------------------|----------------------------------------------------|
+| Wiki link                     | [[What is Obsidian?]]           | What is Obsidian?                                                                      |
+| Image                         | ![[NewJeans.png]]               | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png)`                              | `yyyy-MM-dd` is replaced by the date of converting |
+| Resize image (width)          | ![[NewJeans.png&#124;100]]      | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" }`              |
+| Resize image (width & height) | ![[NewJeans.png&#124;100x200]]  | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" height="200" }` |
+| Embeds                        | ![[Obsidian#This is Obsidian!]] | Obsidian                                                                               |
+| Comments                      | %% This is a comment %%         | `<!-- This is a comment -->`                                                           |
+| Footnotes                     | [^1]                            | `[^fn-nth-1]`                                                                          | Currently, only supports the simple syntax         |
 
 Grammars not in the table are ignored. If there is a syntax you would like to convert, please let me know in an
 issue.
