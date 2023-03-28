@@ -2,7 +2,7 @@
 
 Please check if your PR fulfills the following requirements:
 
-- [ ] Tests for the changes have been added (for bug fixes / features)
+- [ ] Tests for the changes have been added (for bugfixes / features)
 
 ## PR Type
 
