@@ -5,4 +5,5 @@ export const ObsidianRegex = {
   CALLOUT: /> \[!(.*)].*?\n(>.*)/ig,
   SIMPLE_FOOTNOTE: /\[\^(\d+)]/g,
   COMMENT: /%%(.*?)%%/g,
+  DOUBLE_CURLY_BRACES: /{{(.*?)}}/g,
 } as const;

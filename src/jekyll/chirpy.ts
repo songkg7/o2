@@ -13,6 +13,7 @@ import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
 import { FilenameConverter } from './FilenameConverter';
+import { CurlyBraceConverter } from './CurlyBraceConverter';
 
 // TODO: write test
 export async function convertToChirpy(plugin: O2Plugin) {
@@ -42,9 +43,13 @@ export async function convertToChirpy(plugin: O2Plugin) {
         plugin.settings.attachmentsFolder,
         plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
       );
+      const curlyBraceConverter = new CurlyBraceConverter(
+        plugin.settings.jekyllSetting().isEnableCurlyBraceConvertMode,
+      );
       const result = ConverterChain.create()
         .chaining(frontMatterConverter)
         .chaining(resourceLinkConverter)
+        .chaining(curlyBraceConverter)
         .chaining(new WikiLinkConverter())
         .chaining(new CalloutConverter())
         .chaining(new FootnotesConverter())

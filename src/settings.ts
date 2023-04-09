@@ -22,6 +22,7 @@ export class JekyllSetting implements O2PluginSettings {
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
   private _isEnableBanner: boolean;
+  private _isEnableCurlyBraceConvertMode: boolean;
 
   constructor() {
     this.attachmentsFolder = 'attachments';
@@ -53,6 +54,14 @@ export class JekyllSetting implements O2PluginSettings {
 
   set isEnableBanner(value: boolean) {
     this._isEnableBanner = value;
+  }
+
+  get isEnableCurlyBraceConvertMode(): boolean {
+    return this._isEnableCurlyBraceConvertMode;
+  }
+
+  set isEnableCurlyBraceConvertMode(value: boolean) {
+    this._isEnableCurlyBraceConvertMode = value;
   }
 
   targetPath(): string {
@@ -95,10 +104,24 @@ export class O2SettingTab extends PluginSettingTab {
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
     this.addJekyllPathSetting();
+    this.enableCurlyBraceSetting();
     this.containerEl.createEl('h2', {
       text: 'Experimental features',
     });
     this.enableBannerSetting();
+  }
+
+  private enableCurlyBraceSetting() {
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    new Setting(this.containerEl)
+      .setName('Curly Brace Conversion')
+      .setDesc('Convert double curly braces to jekyll raw tag.')
+      .addToggle(toggle => toggle
+        .setValue(jekyllSetting.isEnableCurlyBraceConvertMode)
+        .onChange(async (value) => {
+          jekyllSetting.isEnableCurlyBraceConvertMode = value;
+          await this.plugin.saveSettings();
+        }));
   }
 
   private enableBannerSetting() {
