@@ -3,6 +3,8 @@ name: Release O2
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     tags:
       - "*"
 env:
