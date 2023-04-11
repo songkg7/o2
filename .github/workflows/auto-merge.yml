@@ -4,9 +4,7 @@ on:
     types:
       - labeled
       - unlabeled
-      - synchronize
       - opened
-      - edited
       - ready_for_review
       - reopened
       - unlocked
@@ -23,3 +21,7 @@ jobs:
         uses: "pascalgn/automerge-action@v0.15.6"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          MERGE_LABELS: "automerge,!work in progress"
+          MERGE_REMOVE_LABELS: "automerge"
+          MERGE_METHOD: "squash"
+          UPDATE_METHOD: "rebase"
