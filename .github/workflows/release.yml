@@ -3,6 +3,8 @@ name: Release O2
 on:
   workflow_dispatch:
   push:
+    tags:
+      - '*'
     branches:
       - main
 
@@ -11,9 +13,8 @@ env:
 
 jobs:
   build:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/'))
+    if: contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
       - name: Use Node.js

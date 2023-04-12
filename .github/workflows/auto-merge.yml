@@ -11,7 +11,6 @@ on:
   pull_request_review:
     types:
       - submitted
-  status: {}
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
@@ -21,7 +20,6 @@ jobs:
         uses: "pascalgn/automerge-action@v0.15.6"
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          MERGE_LABELS: "automerge,!work in progress"
           MERGE_REMOVE_LABELS: "automerge"
           MERGE_METHOD: "squash"
           UPDATE_METHOD: "rebase"
