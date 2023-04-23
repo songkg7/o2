@@ -18,10 +18,7 @@ import { CurlyBraceConverter } from './CurlyBraceConverter';
 // TODO: write test
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation
-  new Notice('Checking settings...');
   await validateSettings(plugin);
-  new Notice('Settings are valid.');
-  new Notice('Chirpy conversion started.');
   await backupOriginalNotes(plugin);
 
   const filenameConverter = new FilenameConverter();
