@@ -10,8 +10,6 @@ describe('WikiLinkConverter', () => {
     expect(result).toEqual(expected);
   });
 
-  //     ['[[develop obsidian plugin|O2]]', 'O2'],
-
   it.each([
     ['[[develop obsidian plugin|O2]]', 'O2'],
     ['[[Link|Alias]]', 'Alias'],
