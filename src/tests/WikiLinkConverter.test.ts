@@ -10,9 +10,10 @@ describe('WikiLinkConverter', () => {
     expect(result).toEqual(expected);
   });
 
-  it('should remove wiki links but remain alias only', () => {
-    const input = '[[Link|Alias]]';
-    const expected = 'Alias';
+  it.each([
+    ['[[develop obsidian plugin|O2]]', 'O2'],
+    ['[[Link|Alias]]', 'Alias'],
+  ])('should remove wiki links but remain alias only', (input, expected) => {
     const result = converter.convert(input);
     expect(result).toEqual(expected);
   });
@@ -32,6 +33,25 @@ describe('WikiLinkConverter', () => {
         ![[test]]
         `);
   });
+
+  it('long context 2', () => {
+    const input = `# test
+        ![NOTE] test
+        [[test]]
+        [[develop obsidian plugin|O2]] and [[Jekyll]]
+        
+        ![[test]]
+        `;
+    const result = converter.convert(input);
+    expect(result).toBe(`# test
+        ![NOTE] test
+        test
+        O2 and Jekyll
+        
+        ![[test]]
+        `);
+  });
+
 
   it('should not match if string starts with !', () => {
     const input = '![[tests]]';
