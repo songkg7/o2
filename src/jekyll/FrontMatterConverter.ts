@@ -9,12 +9,19 @@ export class FrontMatterConverter implements Converter {
 
   private readonly fileName: string;
   private readonly resourcePath: string;
-  private readonly isEnable: boolean;
+  private readonly isEnableBanner: boolean;
+  private readonly isEnableUpdateFrontmatterTimeOnEdit: boolean;
 
-  constructor(fileName: string, resourcePath: string, isEnable = false) {
+  constructor(
+    fileName: string,
+    resourcePath: string,
+    isEnableBanner = false,
+    isEnableUpdateFrontmatterTimeOnEdit = false,
+  ) {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
-    this.isEnable = isEnable;
+    this.isEnableBanner = isEnableBanner;
+    this.isEnableUpdateFrontmatterTimeOnEdit = isEnableUpdateFrontmatterTimeOnEdit;
   }
 
   parseFrontMatter(content: string): [FrontMatter, string] {
@@ -54,10 +61,12 @@ export class FrontMatterConverter implements Converter {
       frontMatter.mermaid = true.toString();
     }
 
+    // FIXME: abstraction, like chain of responsibility
     const convertedFrontMatter = this.convertImageFrontMatter({ ...frontMatter });
+    const result = replaceDateFrontMatter({ ...convertedFrontMatter }, this.isEnableUpdateFrontmatterTimeOnEdit);
 
     return `---
-${Object.entries(convertedFrontMatter)
+${Object.entries(result)
       .map(([key, value]) => `${key}: ${value}`)
       .join('\n')}
 ---
@@ -66,7 +75,7 @@ ${body}`;
   }
 
   convertImageFrontMatter(frontMatter: FrontMatter) {
-    if (!this.isEnable) {
+    if (!this.isEnableBanner) {
       return frontMatter;
     }
 
@@ -90,3 +99,13 @@ function convertImagePath(postTitle: string, imagePath: string, resourcePath: st
   return `/${resourcePath}/${postTitle}/${imagePath}`;
 }
 
+function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): FrontMatter {
+  if (!isEnable) {
+    return frontMatter;
+  }
+  if (frontMatter.updated.length > 0) {
+    frontMatter.date = frontMatter.updated;
+    delete frontMatter.updated;
+  }
+  return frontMatter;
+}

@@ -72,6 +72,10 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 Grammars not in the table are ignored. If there is a syntax you would like to convert, please let me know in an
 issue.
 
+## Supported Other Plugins
+
+- [Update frontmatter time on edit](https://github.com/beaussan/update-time-on-edit-obsidian)
+
 ## Contributing
 
 Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to
