@@ -21,8 +21,11 @@ export class JekyllSetting implements O2PluginSettings {
   backupFolder: string;
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
+
+  // FIXME: abstraction
   private _isEnableBanner: boolean;
   private _isEnableCurlyBraceConvertMode: boolean;
+  private _isEnableUpdateFrontmatterTimeOnEdit: boolean;
 
   constructor() {
     this.attachmentsFolder = 'attachments';
@@ -64,6 +67,14 @@ export class JekyllSetting implements O2PluginSettings {
     this._isEnableCurlyBraceConvertMode = value;
   }
 
+  get isEnableUpdateFrontmatterTimeOnEdit(): boolean {
+    return this._isEnableUpdateFrontmatterTimeOnEdit;
+  }
+
+  set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
+    this._isEnableUpdateFrontmatterTimeOnEdit = value;
+  }
+
   targetPath(): string {
     return `${this._jekyllPath}/_posts`;
   }
@@ -97,18 +108,38 @@ export class O2SettingTab extends PluginSettingTab {
 
   display(): void {
     this.containerEl.empty();
+    this.containerEl.createEl('h1', {
+      text: 'Settings for O2 plugin',
+    });
     this.containerEl.createEl('h2', {
-      text: 'Settings for O2 plugin.',
+      text: 'Path Settings',
     });
     this.addReadyFolderSetting();
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
     this.addJekyllPathSetting();
+    this.containerEl.createEl('h2', {
+      text: 'Features',
+    });
     this.enableCurlyBraceSetting();
+    this.enableUpdateFrontmatterTimeOnEditSetting();
     this.containerEl.createEl('h2', {
       text: 'Experimental features',
     });
     this.enableBannerSetting();
+  }
+
+  private enableUpdateFrontmatterTimeOnEditSetting() {
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    new Setting(this.containerEl)
+      .setName('Replace date frontmatter to updated time')
+      .setDesc('If \'updated\' frontmatter exists, replace the value of \'date\' frontmatter with the value of \'updated\' frontmatter.')
+      .addToggle(toggle => toggle
+        .setValue(jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit)
+        .onChange(async (value) => {
+          jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit = value;
+          await this.plugin.saveSettings();
+        }));
   }
 
   private enableCurlyBraceSetting() {

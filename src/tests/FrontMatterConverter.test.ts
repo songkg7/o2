@@ -207,3 +207,27 @@ image: /assets/img/2023-01-01-test-title/test.png
   });
 
 });
+
+describe('updated front matter', () => {
+  const updatedConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true, true);
+  const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+updated: 2022-01-02 12:00:00 +0900
+---
+
+# test
+`;
+  it('should be converted', () => {
+    const result = updatedConverter.convert(contents);
+    expect(result).toEqual(`---
+title: "test"
+date: 2022-01-02 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
+
+});
