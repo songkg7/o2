@@ -86,3 +86,5 @@ change.
 ## License
 
 This project is published under [MIT](https://choosealicense.com/licenses/mit/) license.
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V8KX38Q)
