@@ -100,7 +100,7 @@ function convertImagePath(postTitle: string, imagePath: string, resourcePath: st
 }
 
 function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): FrontMatter {
-  if (!isEnable) {
+  if (!isEnable || frontMatter.updated === undefined) {
     return frontMatter;
   }
   if (frontMatter.updated.length > 0) {
