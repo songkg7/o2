@@ -5,7 +5,7 @@ orbs:
 jobs:
   build:
     docker:
-      - image: cimg/node:current
+      - image: cimg/node:18
     steps:
       - checkout
       - run:
