@@ -250,6 +250,19 @@ date: 2021-01-01 12:00:00 +0900
 
 describe('tags', () => {
 
+  it('comma separated tags array should nothing', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+tags: [test1, test2]
+---
+
+# test
+`;
+    const result = frontMatterConverter.convert(contents);
+    expect(result).toEqual(contents);
+  });
+
   describe('bullet point tags convert to array', () => {
     const contents = `---
 title: "test"
