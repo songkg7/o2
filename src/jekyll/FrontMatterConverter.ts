@@ -26,23 +26,20 @@ export class FrontMatterConverter implements Converter {
   }
 
   parseFrontMatter(content: string): [FrontMatter, string] {
-    let body = content;
-
     if (!content.startsWith('---')) {
-      return [{}, body];
+      return [{}, content];
     }
 
     // for define front matter boundary
     const endOfFrontMatter = content.indexOf('---', 3);
     if (endOfFrontMatter === -1) {
-      return [{}, body];
+      return [{}, content];
     }
 
     const frontMatterLines = content.substring(3, endOfFrontMatter);
-    body = content.substring(endOfFrontMatter + 3).trimStart();
+    const body = content.substring(endOfFrontMatter + 3).trimStart();
 
     const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
-
     return [frontMatter, body];
   }
 
