@@ -39,7 +39,7 @@ export class FrontMatterConverter implements Converter {
     }
 
     const frontMatterLines = content.substring(3, endOfFrontMatter);
-    body = content.substring(endOfFrontMatter + 3).trimLeft();
+    body = content.substring(endOfFrontMatter + 3).trimStart();
 
     const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
 
