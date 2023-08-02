@@ -60,4 +60,10 @@ describe('convert callout syntax', () => {
     expect(result).toBe(`> info content\n{: .prompt-info}`);
   });
 
+  it('remove foldable callouts', () => {
+    const context = `> [!faq]- Are callouts foldable?\n> content`;
+    const result = calloutConverter.convert(context);
+    expect(result).toBe(`> content\n{: .prompt-tip}`);
+  });
+
 });
