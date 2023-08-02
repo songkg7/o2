@@ -252,8 +252,7 @@ date: 2021-01-01 12:00:00 +0900
 
 describe('tags', () => {
 
-  it('comma separated tags array should nothing', () => {
-    const contents = `---
+  const expected = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
 tags: [test1, test2]
@@ -261,11 +260,13 @@ tags: [test1, test2]
 
 # test
 `;
-    const result = frontMatterConverter.convert(contents);
-    expect(result).toEqual(contents);
+
+  it('comma separated tags array should nothing', () => {
+    const result = frontMatterConverter.convert(expected);
+    expect(result).toEqual(expected);
   });
 
-  describe('bullet point tags convert to array', () => {
+  it('bullet point', () => {
     const contents = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
@@ -276,22 +277,11 @@ tags:
 
 # test
 `;
-
-    it('should be converted', () => {
-      const result = frontMatterConverter.convert(contents);
-      expect(result).toEqual(`---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-tags: [test1, test2]
----
-
-# test
-`,
-      );
-    });
+    const result = frontMatterConverter.convert(contents);
+    expect(result).toEqual(expected);
   });
 
-  describe('comma separated tags convert to array', () => {
+  it('comma separated', () => {
     const contents = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
@@ -300,19 +290,8 @@ tags: test1, test2
 
 # test
 `;
-
-    it('should be converted', () => {
-      const result = frontMatterConverter.convert(contents);
-      expect(result).toEqual(`---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-tags: [test1, test2]
----
-
-# test
-`,
-      );
-    });
+    const result = frontMatterConverter.convert(contents);
+    expect(result).toEqual(expected);
   });
 
 });
