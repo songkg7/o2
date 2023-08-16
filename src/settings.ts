@@ -21,6 +21,7 @@ export class JekyllSetting implements O2PluginSettings {
   backupFolder: string;
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
+  private _isAutoCreateFolder: boolean;
 
   // FIXME: abstraction
   private _isEnableBanner: boolean;
@@ -33,6 +34,7 @@ export class JekyllSetting implements O2PluginSettings {
     this.backupFolder = 'backup';
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
+    this._isAutoCreateFolder = false;
   }
 
   get jekyllPath(): string {
@@ -73,6 +75,14 @@ export class JekyllSetting implements O2PluginSettings {
 
   set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
     this._isEnableUpdateFrontmatterTimeOnEdit = value;
+  }
+
+  get isAutoCreateFolder(): boolean {
+    return this._isAutoCreateFolder;
+  }
+
+  set isAutoCreateFolder(value: boolean) {
+    this._isAutoCreateFolder = value;
   }
 
   targetPath(): string {
@@ -138,6 +148,19 @@ export class O2SettingTab extends PluginSettingTab {
         .setValue(jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit)
         .onChange(async (value) => {
           jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit = value;
+          await this.plugin.saveSettings();
+        }));
+  }
+  
+  private enableAutoCreateFolderSetting() {
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    new Setting(this.containerEl)
+      .setName('Auto create folders')
+      .setDesc('Automatically create necessary folders if they do not exist.')
+      .addToggle(toggle => toggle
+        .setValue(jekyllSetting.isAutoCreateFolder)
+        .onChange(async (value) => {
+          jekyllSetting.isAutoCreateFolder = value;
           await this.plugin.saveSettings();
         }));
   }
