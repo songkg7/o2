@@ -133,10 +133,7 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.enableCurlyBraceSetting();
     this.enableUpdateFrontmatterTimeOnEditSetting();
-    this.containerEl.createEl('h2', {
-      text: 'Experimental features',
-    });
-    this.enableBannerSetting();
+    this.enableAutoCreateFolderSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
