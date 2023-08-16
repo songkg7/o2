@@ -70,17 +70,31 @@ export async function convertToChirpy(plugin: O2Plugin) {
 async function validateSettings(plugin: O2Plugin) {
   const adapter = plugin.app.vault.adapter;
   if (!await adapter.exists(plugin.settings.attachmentsFolder)) {
-    new Notice(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`, 5000);
-    throw new Error(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`);
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create attachments folder: ${plugin.settings.attachmentsFolder}.`, 5000);
+      await adapter.mkdir(plugin.settings.attachmentsFolder);
+    } else {
+      new Notice(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`, 5000);
+      throw new Error(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`);
+    }
   }
   if (!await adapter.exists(plugin.settings.readyFolder)) {
-    new Notice(`Ready folder ${plugin.settings.readyFolder} does not exist.`, 5000);
-    throw new Error(`Ready folder ${plugin.settings.readyFolder} does not exist.`);
-    // or mkdir ready folder
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create ready folder: ${plugin.settings.readyFolder}.`, 5000);
+      await adapter.mkdir(plugin.settings.readyFolder);
+    } else {
+      new Notice(`Ready folder ${plugin.settings.readyFolder} does not exist.`, 5000);
+      throw new Error(`Ready folder ${plugin.settings.readyFolder} does not exist.`);
+    }
   }
   if (!await adapter.exists(plugin.settings.backupFolder)) {
-    new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
-    throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create backup folder: ${plugin.settings.backupFolder}.`, 5000);
+      await adapter.mkdir(plugin.settings.backupFolder);
+    } else {
+      new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
+      throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
+    }
   }
 }
 
