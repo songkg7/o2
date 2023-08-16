@@ -61,9 +61,12 @@ export async function convertToChirpy(plugin: O2Plugin) {
     await moveFilesToChirpy(plugin);
     new Notice('Chirpy conversion complete.');
   } catch (e) {
-    // TODO: move file that occurred error to backlog folder
     console.error(e);
     new Notice('Chirpy conversion failed.');
+    for (const file of markdownFiles) {
+      const backlogPath = plugin.settings.backlogFolder + '/' + file.name;
+      await plugin.app.vault.rename(file, backlogPath);
+    }
   }
 }
 
@@ -81,6 +84,9 @@ async function validateSettings(plugin: O2Plugin) {
   if (!await adapter.exists(plugin.settings.backupFolder)) {
     new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
     throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
+  }
+  if (!await adapter.exists(plugin.settings.backlogFolder)) {
+    await adapter.mkdir(plugin.settings.backlogFolder);
   }
 }
 
