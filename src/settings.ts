@@ -5,6 +5,7 @@ export interface O2PluginSettings {
   attachmentsFolder: string;
   readyFolder: string;
   backupFolder: string;
+  backlogFolder: string;
 
   jekyllSetting(): JekyllSetting;
 
@@ -19,6 +20,7 @@ export class JekyllSetting implements O2PluginSettings {
   attachmentsFolder: string;
   readyFolder: string;
   backupFolder: string;
+  backlogFolder: string;
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
 
@@ -31,6 +33,7 @@ export class JekyllSetting implements O2PluginSettings {
     this.attachmentsFolder = 'attachments';
     this.readyFolder = 'ready';
     this.backupFolder = 'backup';
+    this.backlogFolder = 'backlog';
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
   }
