@@ -101,7 +101,7 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
     .filter((file: TFile) => file.path.startsWith(plugin.settings.sourceFolder));
 }
 
-""
+"";
 
 // FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
