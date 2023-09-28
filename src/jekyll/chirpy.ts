@@ -19,7 +19,6 @@ import { CurlyBraceConverter } from './CurlyBraceConverter';
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation
   await validateSettings(plugin);
-  await backupOriginalNotes(plugin);
 
   const filenameConverter = new FilenameConverter();
 
@@ -61,7 +60,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
     await moveFilesToChirpy(plugin);
     new Notice('Chirpy conversion complete.');
   } catch (e) {
-    // TODO: move file that occurred error to backlog folder
     console.error(e);
     new Notice('Chirpy conversion failed.');
   }
@@ -78,39 +76,32 @@ async function validateSettings(plugin: O2Plugin) {
       throw new Error(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.settings.readyFolder)) {
+  if (!await adapter.exists(plugin.settings.sourceFolder)) {
     if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create ready folder: ${plugin.settings.readyFolder}.`, 5000);
-      await adapter.mkdir(plugin.settings.readyFolder);
+      new Notice(`Auto create source folder: ${plugin.settings.sourceFolder}.`, 5000);
+      await adapter.mkdir(plugin.settings.sourceFolder);
     } else {
-      new Notice(`Ready folder ${plugin.settings.readyFolder} does not exist.`, 5000);
-      throw new Error(`Ready folder ${plugin.settings.readyFolder} does not exist.`);
+      new Notice(`Source folder ${plugin.settings.sourceFolder} does not exist.`, 5000);
+      throw new Error(`Source folder ${plugin.settings.sourceFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.settings.backupFolder)) {
+  if (!await adapter.exists(plugin.settings.outputFolder)) {
     if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create backup folder: ${plugin.settings.backupFolder}.`, 5000);
-      await adapter.mkdir(plugin.settings.backupFolder);
+      new Notice(`Auto create output folder: ${plugin.settings.outputFolder}.`, 5000);
+      await adapter.mkdir(plugin.settings.outputFolder);
     } else {
-      new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
-      throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
+      new Notice(`Output folder ${plugin.settings.outputFolder} does not exist.`, 5000);
+      throw new Error(`Output folder ${plugin.settings.outputFolder} does not exist.`);
     }
   }
 }
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
   return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.settings.readyFolder));
+    .filter((file: TFile) => file.path.startsWith(plugin.settings.sourceFolder));
 }
 
-async function backupOriginalNotes(plugin: O2Plugin) {
-  const readyFiles = getFilesInReady.call(this, plugin);
-  const backupFolder = plugin.settings.backupFolder;
-  const readyFolder = plugin.settings.readyFolder;
-  readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
-  });
-}
+""
 
 // FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
@@ -127,8 +118,8 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 }
 
 async function moveFilesToChirpy(plugin: O2Plugin) {
-  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.settings.readyFolder}`;
-  const targetFolderPath = plugin.settings.targetPath();
+  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.settings.sourceFolder}`;
+  const targetFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.settings.outputFolder}`;
 
   fs.readdir(sourceFolderPath, (err, files) => {
     if (err) throw err;
