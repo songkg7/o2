@@ -98,13 +98,17 @@ async function validateSettings(plugin: O2Plugin) {
   }
 }
 
-function getFilesInReady(plugin: O2Plugin): TFile[] {
+function getFilesToPublish(plugin: O2Plugin): TFile[] {
+  const frontMatterConverter = new FrontMatterConverter();
   return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.settings.readyFolder));
+    .filter((file: TFile) => {
+      const frontMatter = frontMatterConverter.getFrontMatter(file);
+      return frontMatter.publish === true;
+    });
 }
 
 async function backupOriginalNotes(plugin: O2Plugin) {
-  const readyFiles = getFilesInReady.call(this, plugin);
+  const readyFiles = getFilesToPublish.call(this, plugin);
   const backupFolder = plugin.settings.backupFolder;
   const readyFolder = plugin.settings.readyFolder;
   readyFiles.forEach((file: TFile) => {
@@ -115,7 +119,7 @@ async function backupOriginalNotes(plugin: O2Plugin) {
 // FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
   const dateString = Temporal.Now.plainDateISO().toString();
-  const markdownFiles = getFilesInReady.call(this, plugin);
+  const markdownFiles = getFilesToPublish.call(this, plugin);
   for (const file of markdownFiles) {
     const newFileName = dateString + '-' + file.name;
     const newFilePath = file.path
