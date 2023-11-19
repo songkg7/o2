@@ -18,7 +18,7 @@
   "license": "MIT",
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.4",
-    "@types/jest": "^29.5.7",
+    "@types/jest": "^29.5.8",
     "@types/node": "^20.9.1",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
