@@ -19,7 +19,7 @@
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.4",
     "@types/jest": "^29.5.8",
-    "@types/node": "^20.9.1",
+    "@types/node": "^20.9.4",
     "@typescript-eslint/eslint-plugin": "5.61.0",
     "@typescript-eslint/parser": "5.61.0",
     "builtin-modules": "3.3.0",
