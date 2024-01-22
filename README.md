@@ -75,8 +75,9 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 Grammars not in the table are ignored. If there is a syntax you would like to convert, please let me know in an
 issue.
 
-## Supported Other Plugins
+## Plugins that work well together
 
+- [imgur](https://github.com/gavvvr/obsidian-imgur-plugin): Recommanded
 - [Update frontmatter time on edit](https://github.com/beaussan/update-time-on-edit-obsidian)
 
 ## Contributing
@@ -89,3 +90,4 @@ change.
 This project is published under [MIT](https://choosealicense.com/licenses/mit/) license.
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V8KX38Q)
+
