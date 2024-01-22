@@ -207,7 +207,7 @@ export class O2SettingTab extends PluginSettingTab {
     const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Relative resource path')
-      .setDesc('The relative path where resources are stored.')
+      .setDesc('The relative path where resources are stored. (default: assets/img)')
       .addText(text => text
         .setPlaceholder('Enter path')
         .setValue(jekyllSetting.jekyllRelativeResourcePath)
