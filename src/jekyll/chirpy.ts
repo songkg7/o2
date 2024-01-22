@@ -120,7 +120,7 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
     const newFileName = dateString + '-' + file.name;
     const newFilePath = file.path
       .replace(file.name, newFileName)
-      .replace(' ', '-');
+      .replace(/\s/g, '-');
     await plugin.app.vault.rename(file, newFilePath);
   }
   return markdownFiles;
