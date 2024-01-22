@@ -128,6 +128,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
     this.addJekyllPathSetting();
+    this.addJekyllRelativeResourcePathSetting();
     this.containerEl.createEl('h2', {
       text: 'Features',
     });
@@ -148,7 +149,7 @@ export class O2SettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         }));
   }
-  
+
   private enableAutoCreateFolderSetting() {
     const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
@@ -198,6 +199,20 @@ export class O2SettingTab extends PluginSettingTab {
         .setValue(jekyllSetting.jekyllPath)
         .onChange(async (value) => {
           jekyllSetting.jekyllPath = value;
+          await this.plugin.saveSettings();
+        }));
+  }
+
+  private addJekyllRelativeResourcePathSetting() {
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    new Setting(this.containerEl)
+      .setName('Relative resource path')
+      .setDesc('The relative path where resources are stored.')
+      .addText(text => text
+        .setPlaceholder('Enter path')
+        .setValue(jekyllSetting.jekyllRelativeResourcePath)
+        .onChange(async (value) => {
+          jekyllSetting.jekyllRelativeResourcePath = value;
           await this.plugin.saveSettings();
         }));
   }
