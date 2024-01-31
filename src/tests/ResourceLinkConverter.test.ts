@@ -10,7 +10,7 @@ describe('extract image name', () => {
 
   it('should return image name array', () => {
     const context = `![[test.png]]
-        
+
         test
         ![[image.png]]
         `;
@@ -51,7 +51,7 @@ describe('resize image', () => {
   );
 
   it('should return converted attachments with width', () => {
-    expect(converter.convert(`![[test.png|100]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png){ width="100" }`);
+    expect(converter.convert(`![[test.png|100]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png){: width="100" }`);
   });
 
   it('should return converted attachments with width and height', () => {
