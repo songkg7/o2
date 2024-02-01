@@ -38,8 +38,6 @@ If you want to convert your notes, you should move them to the `ready` Folder.
 then, Execute the command `O2: convert to Jekyll Chirpy` via obsidian's `cmd + p` shortcut.
 
 if exception occurs, you can see the original note in the `backup` folder.
-(I will implement transactional functionally in the future,
-so that you can see the original note in the `ready` folder when exception occurs.)
 
 ## Supported platforms
 
