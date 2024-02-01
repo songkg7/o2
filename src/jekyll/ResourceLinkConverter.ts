@@ -67,7 +67,7 @@ function convertImageSize(width: string | undefined, height: string | undefined)
     return '';
   }
   if (height === undefined || height.length === 0) {
-    return `{ width="${width}" }`;
+    return `{: width="${width}" }`;
   }
   return `{: width="${width}" height="${height}" }`;
 }
