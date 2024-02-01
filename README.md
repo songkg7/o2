@@ -83,6 +83,10 @@ issue.
 Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to
 change.
 
+## Articles
+
+- [O2 plugin 개발하기](https://songkg7.github.io/posts/develop-obsidian-plugin/)
+
 ## License
 
 This project is published under [MIT](https://choosealicense.com/licenses/mit/) license.
