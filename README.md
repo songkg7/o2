@@ -80,8 +80,11 @@ issue.
 
 ## Contributing
 
-Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to
+Pull requests are always welcome! For major changes, please open an issue(or discussion) first to discuss what you would like to
 change.
+
+For the detailed information about building and developing O2,
+please visit [Obsidian Docs](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin).
 
 ## Articles
 
