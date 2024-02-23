@@ -1,10 +1,8 @@
 # O2
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/songkg7/O2)](https://github.com/songkg7/o2/releases)
 [![CI](https://github.com/songkg7/o2/actions/workflows/ci.yml/badge.svg)](https://github.com/songkg7/o2/actions/workflows/node.js.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
 [![codecov](https://codecov.io/gh/songkg7/o2/branch/main/graph/badge.svg?token=AYQGNW0SWR)](https://codecov.io/gh/songkg7/o2)
-[![GitHub license](https://img.shields.io/github/license/songkg7/O2)](https://github.com/songkg7/o2/blob/main/LICENSE)
 [![Obsidian downloads](https://img.shields.io/badge/dynamic/json?logo=Obsidian&color=%238b6cef&label=downloads&query=o2.downloads&url=https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json)][community-plugin]
 
 [community-plugin]: https://obsidian.md/plugins?id=o2
@@ -80,8 +78,11 @@ issue.
 
 ## Contributing
 
-Pull requests are always welcome. For major changes, please open an issue first to discuss what you would like to
+Pull requests are always welcome! For major changes, please open an issue(or discussion) first to discuss what you would like to
 change.
+
+For the detailed information about building and developing O2,
+please visit [Obsidian Docs](https://docs.obsidian.md/Plugins/Getting+started/Build+a+plugin).
 
 ## Articles
 
