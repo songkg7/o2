@@ -191,7 +191,7 @@ tags: [test]
 
 # test
 `;
-  it.skip('should be converted', () => {
+  it('should be converted', () => {
     const result = frontMatterConverter.convert(contents);
     expect(result).toEqual(`---
 title: "test"
