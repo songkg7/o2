@@ -48,7 +48,7 @@ export class ResourceLinkConverter implements Converter {
                       caption: string | undefined) =>
       `![image](/${this.relativeResourcePath}/${this.fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
       + `${convertImageSize(width, height)}`
-      + `${convertImageCaption(caption)}`;
+      + `${caption !== undefined && caption.startsWith('_') ? caption : '\n' + caption}`;
 
     return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
   }
