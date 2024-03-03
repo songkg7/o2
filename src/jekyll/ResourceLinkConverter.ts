@@ -71,7 +71,9 @@ function convertImageSize(width: string | undefined, height: string | undefined)
   }
   return `{: width="${width}" height="${height}" }`;
 }
-
+    // Remove newline between image markdown and immediately following italicized text
+    const processedInput = input.replace(/(!\[.*\]\(.*\))\n(_.*_)/g, '$1$2');
+    return processedInput;
 function convertImageCaption(caption: string | undefined) {
   if (caption === undefined || caption.length === 0) {
     return '';
