@@ -110,6 +110,11 @@ _This is a test image._
     const result = converter.convert(context);
     expect(result).toEqual(`
 ![image](/assets/2023-01-01-post-mock/test.png)
+it('should convert image followed by italics without an empty line and include "image" in square brackets', () => {
+  const context = `![](https://image.link)_description_`;
+  const result = converter.convert(context);
+  expect(result).toEqual(`![image](https://image.link)_description_`);
+});
 _This is a test image._
 `);
   });
