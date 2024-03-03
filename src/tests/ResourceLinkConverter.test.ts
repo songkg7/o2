@@ -114,6 +114,13 @@ _This is a test image._
 `);
   });
 
+  it('should convert image followed by italics without inserting unnecessary spaces', () => {
+    const context = `![[test.png]]_This is a test image._`;
+
+    const result = converter.convert(context);
+    expect(result).toEqual(`![image](/assets/2023-01-01-post-mock/test.png)_This is a test image._`);
+  });
+
   it('should nothing if does not exist image caption', () => {
     const context = `
 ![[test.png]]
