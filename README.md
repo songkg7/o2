@@ -95,5 +95,9 @@ Welcome to write articles about O2!
 
 This project is published under [MIT](https://choosealicense.com/licenses/mit/) license.
 
+---
+
+If you ever want to buy me a coffee, don't hesitate.
+
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/V7V8KX38Q)
 
