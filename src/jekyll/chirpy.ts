@@ -104,7 +104,7 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
 }
 
 async function backupOriginalNotes(plugin: O2Plugin) {
-  const readyFiles = getFilesInReady.call(this, plugin);
+  const readyFiles = getFilesInReady(plugin);
   const backupFolder = plugin.settings.backupFolder;
   const readyFolder = plugin.settings.readyFolder;
   readyFiles.forEach((file: TFile) => {
@@ -115,7 +115,7 @@ async function backupOriginalNotes(plugin: O2Plugin) {
 // FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
   const dateString = Temporal.Now.plainDateISO().toString();
-  const markdownFiles = getFilesInReady.call(this, plugin);
+  const markdownFiles = getFilesInReady(plugin);
   for (const file of markdownFiles) {
     const newFileName = dateString + '-' + file.name;
     const newFilePath = file.path
@@ -128,7 +128,9 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 
 async function moveFilesToChirpy(plugin: O2Plugin) {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.settings.readyFolder}`;
-  const targetFolderPath = plugin.settings.targetPath();
+  // FIXME: sourceFolderPath 의 하위 폴더들을 찾아서 targetFolderPath 에 복사해야 함
+  // - 하위 폴더가 없다면 기본값으로 _posts 로 복사
+  const targetFolderPath = plugin.settings.targetPath() + '/_posts';
 
   fs.readdir(sourceFolderPath, (err, files) => {
     if (err) throw err;
