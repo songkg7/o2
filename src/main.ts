@@ -1,5 +1,5 @@
 import { Plugin } from 'obsidian';
-import { JekyllSetting, O2PluginSettings, O2SettingTab } from './settings';
+import { O2PluginSettings, O2Settings, O2SettingTab } from './settings';
 import { convertToChirpy } from './jekyll/chirpy';
 
 export default class O2Plugin extends Plugin {
@@ -30,7 +30,7 @@ export default class O2Plugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign(new JekyllSetting(), await this.loadData());
+    this.settings = Object.assign(new O2Settings(), await this.loadData());
   }
 
   async saveSettings() {
