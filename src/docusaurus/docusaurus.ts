@@ -5,7 +5,6 @@ import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
-import { convertDateFrontMatter } from '../jekyll/FrontMatterConverter';
 import fs from 'fs';
 import path from 'path';
 import { Notice } from 'obsidian';
@@ -21,7 +20,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
   for (const file of markdownFiles) {
     const contents: Contents = await plugin.app.vault.read(file);
-    const result = convertDateFrontMatter(true,
+    const result =
       convertComments(
         convertDocusaurusCallout(
           convertFootnotes(
@@ -30,8 +29,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
             ),
           ),
         ),
-      ),
-    );
+      );
 
     await plugin.app.vault.modify(file, result);
   }

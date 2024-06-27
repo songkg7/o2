@@ -123,7 +123,8 @@ function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): Fr
   return frontMatter;
 }
 
-export const convertDateFrontMatter = (isEnable: boolean, contents: string) => {
+// TODO: "tag: mise, something" -> "tag: [mise, something]"
+const convertDateFrontMatter = (isEnable: boolean, contents: string) => {
   if (!isEnable) {
     return contents;
   }
