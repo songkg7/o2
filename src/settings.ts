@@ -2,6 +2,7 @@ import { App, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
+import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export interface O2PluginSettings {
   attachmentsFolder: string;
@@ -46,6 +47,7 @@ export class O2SettingTab extends PluginSettingTab {
       text: 'Docusaurus',
     });
     this.addDocusaurusPathSetting();
+    this.dateExtractionPatternSetting();
 
     this.containerEl.createEl('h2', {
       text: 'Features',
@@ -173,5 +175,20 @@ export class O2SettingTab extends PluginSettingTab {
           docusaurus.docusaurusPath = value;
           await this.plugin.saveSettings();
         }));
+  }
+
+  private dateExtractionPatternSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Date extraction pattern')
+      .setDesc('The pattern to extract date from note title.')
+      .addDropdown(dropdown => {
+        dropdown.addOptions(DateExtractionPattern);
+        dropdown.setValue(docusaurus.dateExtractionPattern);
+        dropdown.onChange(async (value) => {
+          docusaurus.dateExtractionPattern = value;
+          await this.plugin.saveSettings();
+        });
+      });
   }
 }

@@ -7,6 +7,7 @@ export default class DocusaurusSettings implements O2PluginSettings {
   docusaurusPath: string;
   docusaurusRelativeResourcePath: string;
   isAutoCreateFolder: boolean;
+  dateExtractionPattern: string;
 
   targetPath(): string {
     throw new Error('Method not implemented.');
@@ -15,6 +16,6 @@ export default class DocusaurusSettings implements O2PluginSettings {
     throw new Error('Method not implemented.');
   }
   afterPropertiesSet(): boolean {
-    throw new Error('Method not implemented.');
+    return this.docusaurusPath.length !== 0;
   }
 }
