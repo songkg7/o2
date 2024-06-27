@@ -1,6 +1,5 @@
 import { Plugin } from 'obsidian';
 import { O2PluginSettings, O2SettingTab } from './settings';
-import { convertToChirpy } from './jekyll/chirpy';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 
@@ -15,12 +14,11 @@ export default class O2Plugin extends Plugin {
       id: 'jekyll-chirpy-syntax',
       name: 'convert to Jekyll Chirpy',
       checkCallback: (checking: boolean) => {
-        // TODO: init jekyll from to folder
         if (this.jekyll.afterPropertiesSet()) {
           if (checking) {
             return true;
           }
-          convertToChirpy(this);
+          // convertToChirpy(this);
         }
 
         if (this.docusaurus.afterPropertiesSet()) {

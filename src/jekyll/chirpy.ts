@@ -12,22 +12,20 @@ import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
-import { FilenameConverter } from './FilenameConverter';
 import { CurlyBraceConverter } from './CurlyBraceConverter';
 import JekyllSetting from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
+import convertFileName from './FilenameConverter';
 
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation
   await validateSettings(plugin);
   await backupOriginalNotes(plugin);
 
-  const filenameConverter = new FilenameConverter();
-
   try {
     const markdownFiles = await renameMarkdownFile(plugin);
     for (const file of markdownFiles) {
-      const fileName = filenameConverter.convert(file.name);
+      const fileName = convertFileName(file.name);
 
       const jekyll = plugin.jekyll as JekyllSetting;
       const frontMatterConverter = new FrontMatterConverter(
