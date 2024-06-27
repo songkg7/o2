@@ -15,34 +15,34 @@ function convertCalloutSyntaxToChirpy(content: string) {
   return content.replace(ObsidianRegex.CALLOUT, replacer);
 }
 
-const map = new Map<string, string>();
-map.set('note', 'info');
-map.set('info', 'info');
-map.set('todo', 'info');
-map.set('example', 'info');
-map.set('quote', 'info');
-map.set('cite', 'info');
-map.set('success', 'info');
-map.set('done', 'info');
-map.set('check', 'info');
-map.set('tip', 'tip');
-map.set('hint', 'tip');
-map.set('important', 'tip');
-map.set('question', 'tip');
-map.set('help', 'tip');
-map.set('faq', 'tip');
-map.set('failure', 'danger');
-map.set('fail', 'danger');
-map.set('missing', 'danger');
-map.set('error', 'danger');
-map.set('danger', 'danger');
-map.set('bug', 'danger');
-map.set('warning', 'warning');
-map.set('caution', 'warning');
-map.set('attention', 'warning');
+const jekyllCalloutMap = new Map<string, string>();
+jekyllCalloutMap.set('note', 'info');
+jekyllCalloutMap.set('info', 'info');
+jekyllCalloutMap.set('todo', 'info');
+jekyllCalloutMap.set('example', 'info');
+jekyllCalloutMap.set('quote', 'info');
+jekyllCalloutMap.set('cite', 'info');
+jekyllCalloutMap.set('success', 'info');
+jekyllCalloutMap.set('done', 'info');
+jekyllCalloutMap.set('check', 'info');
+jekyllCalloutMap.set('tip', 'tip');
+jekyllCalloutMap.set('hint', 'tip');
+jekyllCalloutMap.set('important', 'tip');
+jekyllCalloutMap.set('question', 'tip');
+jekyllCalloutMap.set('help', 'tip');
+jekyllCalloutMap.set('faq', 'tip');
+jekyllCalloutMap.set('failure', 'danger');
+jekyllCalloutMap.set('fail', 'danger');
+jekyllCalloutMap.set('missing', 'danger');
+jekyllCalloutMap.set('error', 'danger');
+jekyllCalloutMap.set('danger', 'danger');
+jekyllCalloutMap.set('bug', 'danger');
+jekyllCalloutMap.set('warning', 'warning');
+jekyllCalloutMap.set('caution', 'warning');
+jekyllCalloutMap.set('attention', 'warning');
 
 function replaceKeyword(target: string) {
-  return map.get(target.toLowerCase()) || 'info';
+  return jekyllCalloutMap.get(target.toLowerCase()) || 'info';
 }
 
 /// note, tip, info, warning, danger
@@ -56,5 +56,32 @@ export const convertDocusaurusCallout = (input: string) => {
 };
 
 const replaceDocusaurusKeyword = (target: string) => {
-  return map.get(target.toLowerCase()) || 'note';
+  return docusaurusCalloutMap[target.toLowerCase()] || 'note';
+};
+
+const docusaurusCalloutMap: { [key: string]: string } = {
+  note: 'note',
+  info: 'info',
+  todo: 'note',
+  example: 'note',
+  quote: 'note',
+  cite: 'note',
+  success: 'note',
+  done: 'note',
+  check: 'note',
+  tip: 'tip',
+  hint: 'tip',
+  important: 'tip',
+  question: 'tip',
+  help: 'tip',
+  faq: 'tip',
+  failure: 'danger',
+  fail: 'danger',
+  missing: 'danger',
+  error: 'danger',
+  danger: 'danger',
+  bug: 'danger',
+  warning: 'warning',
+  caution: 'warning',
+  attention: 'warning',
 };

@@ -76,6 +76,6 @@ describe('Docusaurus: convert callout syntax', () => {
     const context = `> [!${callout}] This is Title!\n> content`;
 
     const result = convertDocusaurusCallout(context);
-    expect(result).toBe(`:::info[This is Title!]\n\ncontent\nn:::`);
+    expect(result).toBe(`:::note[This is Title!]\n\ncontent\n:::`);
   });
 });
