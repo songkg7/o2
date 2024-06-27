@@ -1,9 +1,12 @@
 import { Plugin } from 'obsidian';
-import { JekyllSetting, O2PluginSettings, O2SettingTab } from './settings';
+import { O2PluginSettings, O2SettingTab } from './settings';
 import { convertToChirpy } from './jekyll/chirpy';
+import JekyllSetting from './jekyll/settings/JekyllSettings';
+import { DocusaurusSettings } from './docusaurus/settings/DocusaurusSettings';
 
 export default class O2Plugin extends Plugin {
-  settings: O2PluginSettings;
+  jekyll: O2PluginSettings;
+  docusaurus: O2PluginSettings;
 
   async onload() {
     await this.loadSettings();
@@ -13,7 +16,7 @@ export default class O2Plugin extends Plugin {
       name: 'convert to Jekyll Chirpy',
       checkCallback: (checking: boolean) => {
         // TODO: init jekyll from to folder
-        if (this.settings.afterPropertiesSet()) {
+        if (this.jekyll.afterPropertiesSet()) {
           if (checking) {
             return true;
           }
@@ -30,14 +33,15 @@ export default class O2Plugin extends Plugin {
   }
 
   async loadSettings() {
-    this.settings = Object.assign(new JekyllSetting(), await this.loadData());
+    this.jekyll = Object.assign(new JekyllSetting(), await this.loadData());
+    this.docusaurus = Object.assign(new DocusaurusSettings(), await this.loadData());
   }
 
   async saveSettings() {
-    this.settings = {
-      ...this.settings,
+    this.jekyll = {
+      ...this.jekyll,
     };
-    await this.saveData(this.settings);
+    await this.saveData(this.jekyll);
   }
 }
 

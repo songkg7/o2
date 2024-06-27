@@ -30,19 +30,19 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
       const frontMatterConverter = new FrontMatterConverter(
         fileName,
-        plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
-        plugin.settings.jekyllSetting().isEnableBanner,
-        plugin.settings.jekyllSetting().isEnableUpdateFrontmatterTimeOnEdit,
+        plugin.jekyll.jekyllSetting().jekyllRelativeResourcePath,
+        plugin.jekyll.jekyllSetting().isEnableBanner,
+        plugin.jekyll.jekyllSetting().isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,
-        plugin.settings.jekyllSetting().resourcePath(),
+        plugin.jekyll.jekyllSetting().resourcePath(),
         vaultAbsolutePath(plugin),
-        plugin.settings.attachmentsFolder,
-        plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
+        plugin.jekyll.attachmentsFolder,
+        plugin.jekyll.jekyllSetting().jekyllRelativeResourcePath,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
-        plugin.settings.jekyllSetting().isEnableCurlyBraceConvertMode,
+        plugin.jekyll.jekyllSetting().isEnableCurlyBraceConvertMode,
       );
       const result = ConverterChain.create()
         .chaining(frontMatterConverter)
@@ -69,44 +69,44 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
 async function validateSettings(plugin: O2Plugin) {
   const adapter = plugin.app.vault.adapter;
-  if (!await adapter.exists(plugin.settings.attachmentsFolder)) {
-    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create attachments folder: ${plugin.settings.attachmentsFolder}.`, 5000);
-      await adapter.mkdir(plugin.settings.attachmentsFolder);
+  if (!await adapter.exists(plugin.jekyll.attachmentsFolder)) {
+    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create attachments folder: ${plugin.jekyll.attachmentsFolder}.`, 5000);
+      await adapter.mkdir(plugin.jekyll.attachmentsFolder);
     } else {
-      new Notice(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`, 5000);
-      throw new Error(`Attachments folder ${plugin.settings.attachmentsFolder} does not exist.`);
+      new Notice(`Attachments folder ${plugin.jekyll.attachmentsFolder} does not exist.`, 5000);
+      throw new Error(`Attachments folder ${plugin.jekyll.attachmentsFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.settings.readyFolder)) {
-    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create ready folder: ${plugin.settings.readyFolder}.`, 5000);
-      await adapter.mkdir(plugin.settings.readyFolder);
+  if (!await adapter.exists(plugin.jekyll.readyFolder)) {
+    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create ready folder: ${plugin.jekyll.readyFolder}.`, 5000);
+      await adapter.mkdir(plugin.jekyll.readyFolder);
     } else {
-      new Notice(`Ready folder ${plugin.settings.readyFolder} does not exist.`, 5000);
-      throw new Error(`Ready folder ${plugin.settings.readyFolder} does not exist.`);
+      new Notice(`Ready folder ${plugin.jekyll.readyFolder} does not exist.`, 5000);
+      throw new Error(`Ready folder ${plugin.jekyll.readyFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.settings.backupFolder)) {
-    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create backup folder: ${plugin.settings.backupFolder}.`, 5000);
-      await adapter.mkdir(plugin.settings.backupFolder);
+  if (!await adapter.exists(plugin.jekyll.backupFolder)) {
+    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
+      new Notice(`Auto create backup folder: ${plugin.jekyll.backupFolder}.`, 5000);
+      await adapter.mkdir(plugin.jekyll.backupFolder);
     } else {
-      new Notice(`Backup folder ${plugin.settings.backupFolder} does not exist.`, 5000);
-      throw new Error(`Backup folder ${plugin.settings.backupFolder} does not exist.`);
+      new Notice(`Backup folder ${plugin.jekyll.backupFolder} does not exist.`, 5000);
+      throw new Error(`Backup folder ${plugin.jekyll.backupFolder} does not exist.`);
     }
   }
 }
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
   return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.settings.readyFolder));
+    .filter((file: TFile) => file.path.startsWith(plugin.jekyll.readyFolder));
 }
 
 async function backupOriginalNotes(plugin: O2Plugin) {
   const readyFiles = getFilesInReady.call(this, plugin);
-  const backupFolder = plugin.settings.backupFolder;
-  const readyFolder = plugin.settings.readyFolder;
+  const backupFolder = plugin.jekyll.backupFolder;
+  const readyFolder = plugin.jekyll.readyFolder;
   readyFiles.forEach((file: TFile) => {
     return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
   });
@@ -127,8 +127,8 @@ async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 }
 
 async function moveFilesToChirpy(plugin: O2Plugin) {
-  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.settings.readyFolder}`;
-  const targetFolderPath = plugin.settings.targetPath();
+  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.jekyll.readyFolder}`;
+  const targetFolderPath = plugin.jekyll.targetPath();
 
   fs.readdir(sourceFolderPath, (err, files) => {
     if (err) throw err;
