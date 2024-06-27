@@ -25,6 +25,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   display(): void {
+    this.containerEl.empty(); // Clear the container. prevent duplicate settings
     this.containerEl.createEl('h1', {
       text: 'Settings for O2 plugin',
     });
