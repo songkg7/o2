@@ -129,7 +129,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.addReadyFolderSetting();
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
-    this.addTargetPlatformPathSetting();
+    this.addJekyllPathSetting();
     this.addJekyllRelativeResourcePathSetting();
     this.containerEl.createEl('h2', {
       text: 'Features',
@@ -209,12 +209,11 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
-  private addTargetPlatformPathSetting() {
+  private addJekyllPathSetting() {
     const o2Settings = this.plugin.settings.o2Settings();
     new Setting(this.containerEl)
-      .setName('Target workspace path')
-      .setDesc('The absolute path where target platform workspace is located.')
-      .setTooltip('e.g. /Users/username/Documents/your-blog')
+      .setName('Jekyll path')
+      .setDesc('The absolute path where Jekyll is installed.')
       .addText(text => text
         .setPlaceholder('Enter path')
         .setValue(o2Settings.jekyllPath)
