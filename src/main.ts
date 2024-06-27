@@ -23,7 +23,6 @@ export default class O2Plugin extends Plugin {
     });
 
     this.addSettingTab(new O2SettingTab(this.app, this));
-
   }
 
   onunload() {
@@ -35,8 +34,10 @@ export default class O2Plugin extends Plugin {
   }
 
   async saveSettings() {
+    this.settings = {
+      ...this.settings,
+    };
     await this.saveData(this.settings);
   }
-
 }
 
