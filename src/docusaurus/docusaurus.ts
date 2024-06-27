@@ -33,9 +33,6 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
   // move files to docusaurus folder
   await moveFiles(plugin, plugin.docusaurus)
-    .then(() => {
-      new Notice('Docusaurus conversion completed.');
-    })
     .finally(() => {
       cleanUp(plugin);
     });
@@ -48,13 +45,11 @@ const cleanUp = (plugin: O2Plugin) => {
     .filter((file) => file.path.includes(prefix));
 
   markdownFiles.forEach((file) => {
-    fs.unlink(file.path, (err) => {
-      if (err) {
-        console.error(err);
-        new Notice(err.message);
-        throw err;
-      }
-    });
+    plugin.app.vault.delete(file)
+      .catch((error) => {
+        console.error(error);
+        new Notice('Failed to delete temp file, see console for more information.', 5000);
+      });
   });
 };
 
