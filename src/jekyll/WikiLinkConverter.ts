@@ -6,3 +6,7 @@ export class WikiLinkConverter implements Converter {
     return input.replace(ObsidianRegex.WIKI_LINK, (match, p1, p2) => (p2 ? p2 : p1));
   }
 }
+
+export function convertWikiLink(input: string) {
+  return input.replace(ObsidianRegex.WIKI_LINK, (match, p1, p2) => (p2 ? p2 : p1));
+}

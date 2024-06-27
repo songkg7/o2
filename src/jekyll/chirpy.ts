@@ -1,13 +1,12 @@
-import { Temporal } from '@js-temporal/polyfill';
 import O2Plugin from '../main';
 import * as fs from 'fs';
 import * as path from 'path';
 import { WikiLinkConverter } from './WikiLinkConverter';
 import { ResourceLinkConverter } from './ResourceLinkConverter';
-import { Notice, TFile } from 'obsidian';
+import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { FrontMatterConverter } from './FrontMatterConverter';
-import { vaultAbsolutePath } from '../utils';
+import { backupOriginalNotes, renameMarkdownFile, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -67,34 +66,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
   }
 }
 
-function getFilesInReady(plugin: O2Plugin): TFile[] {
-  return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.jekyll.readyFolder));
-}
-
-async function backupOriginalNotes(plugin: O2Plugin) {
-  const readyFiles = getFilesInReady.call(this, plugin);
-  const backupFolder = plugin.jekyll.backupFolder;
-  const readyFolder = plugin.jekyll.readyFolder;
-  readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
-  });
-}
-
 // FIXME: SRP, renameMarkdownFile(file: TFile): string
-async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
-  const dateString = Temporal.Now.plainDateISO().toString();
-  const markdownFiles = getFilesInReady.call(this, plugin);
-  for (const file of markdownFiles) {
-    const newFileName = dateString + '-' + file.name;
-    const newFilePath = file.path
-      .replace(file.name, newFileName)
-      .replace(/\s/g, '-');
-    await plugin.app.vault.rename(file, newFilePath);
-  }
-  return markdownFiles;
-}
-
 async function moveFilesToChirpy(plugin: O2Plugin) {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.jekyll.readyFolder}`;
   const targetFolderPath = plugin.jekyll.targetPath();
