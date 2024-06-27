@@ -7,8 +7,6 @@ export interface O2PluginSettings {
   readyFolder: string;
   backupFolder: string;
 
-  jekyllSetting(): JekyllSetting;
-
   targetPath(): string;
 
   resourcePath(): string;
@@ -70,7 +68,7 @@ export class O2SettingTab extends PluginSettingTab {
   // }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
       .setName('Replace date frontmatter to updated time')
       .setDesc('If \'updated\' frontmatter exists, replace the value of \'date\' frontmatter with the value of \'updated\' frontmatter.')
@@ -83,7 +81,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableAutoCreateFolderSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
@@ -96,7 +94,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableCurlyBraceSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
       .setName('Curly Brace Conversion')
       .setDesc('Convert double curly braces to jekyll raw tag.')
@@ -108,21 +106,8 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
-  private enableBannerSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
-    new Setting(this.containerEl)
-      .setName('Banner Conversion')
-      .setDesc('Convert image path of front matter to jekyll banner.')
-      .addToggle(toggle => toggle
-        .setValue(jekyllSetting.isEnableBanner)
-        .onChange(async (value) => {
-          jekyllSetting.isEnableBanner = value;
-          await this.plugin.saveSettings();
-        }));
-  }
-
   private addJekyllPathSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
       .setName('Jekyll path')
       .setDesc('The absolute path where Jekyll workspace is located.')
@@ -136,7 +121,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private addJekyllRelativeResourcePathSetting() {
-    const jekyllSetting = this.plugin.jekyll.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
       .setName('Relative resource path')
       .setDesc('The relative path where resources are stored. (default: assets/img)')

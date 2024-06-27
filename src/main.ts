@@ -22,6 +22,14 @@ export default class O2Plugin extends Plugin {
           }
           convertToChirpy(this);
         }
+
+        if (this.docusaurus.afterPropertiesSet()) {
+          if (checking) {
+            return true;
+          }
+          // convertToDocusaurus(this);
+          console.log('convert to docusaurus');
+        }
       },
     });
 
