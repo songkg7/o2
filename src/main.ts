@@ -3,6 +3,7 @@ import { O2PluginSettings, O2SettingTab } from './settings';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { convertToChirpy } from './jekyll/chirpy';
+import { convertToDocusaurus } from './docusaurus/docusaurus';
 
 export default class O2Plugin extends Plugin {
   jekyll: O2PluginSettings;
@@ -26,7 +27,8 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          // convertToDocusaurus(this);
+
+          convertToDocusaurus(this);
           console.log('convert to docusaurus');
         }
       },
@@ -46,6 +48,7 @@ export default class O2Plugin extends Plugin {
 
   async saveSettings() {
     await this.saveData(this.jekyll);
+    await this.saveData(this.docusaurus);
   }
 }
 
