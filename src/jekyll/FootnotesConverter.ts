@@ -8,5 +8,10 @@ export class FootnotesConverter implements Converter {
       return `[^fn-nth-${key}]`;
     });
   }
-
 }
+
+export const convertFootnotes = (input: string) =>
+  input.replace(
+    ObsidianRegex.SIMPLE_FOOTNOTE,
+    (match, key) => `[^fn-nth-${key}]`,
+  );
