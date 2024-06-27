@@ -14,7 +14,7 @@ import { EmbedsConverter } from './EmbedsConverter';
 import { CurlyBraceConverter } from './CurlyBraceConverter';
 import JekyllSetting from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
-import convertFileName from './FilenameConverter';
+import { convertFileName } from './FilenameConverter';
 
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation

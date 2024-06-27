@@ -2,6 +2,7 @@ import { Plugin } from 'obsidian';
 import { O2PluginSettings, O2SettingTab } from './settings';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
+import { convertToChirpy } from './jekyll/chirpy';
 
 export default class O2Plugin extends Plugin {
   jekyll: O2PluginSettings;
@@ -18,7 +19,7 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          // convertToChirpy(this);
+          convertToChirpy(this);
         }
 
         if (this.docusaurus.afterPropertiesSet()) {
