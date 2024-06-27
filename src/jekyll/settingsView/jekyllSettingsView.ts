@@ -1,6 +1,6 @@
 import { Setting } from 'obsidian';
 
-export function jekyllSettingsView() {
+export default function jekyllSettingsView() {
   addJekyllPathSetting();
   addJekyllRelativeResourcePathSetting();
 }

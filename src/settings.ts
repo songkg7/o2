@@ -1,6 +1,6 @@
 import { App, Notice, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
-import { jekyllSettingsView } from './jekyll/settingsView/jekyllSettingsView';
+import jekyllSettingsView from './jekyll/settingsView/jekyllSettingsView';
 
 export interface O2PluginSettings {
   targetPlatform: string;
