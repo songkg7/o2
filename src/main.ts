@@ -2,7 +2,7 @@ import { Plugin } from 'obsidian';
 import { O2PluginSettings, O2SettingTab } from './settings';
 import { convertToChirpy } from './jekyll/chirpy';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
-import { DocusaurusSettings } from './docusaurus/settings/DocusaurusSettings';
+import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 
 export default class O2Plugin extends Plugin {
   jekyll: O2PluginSettings;

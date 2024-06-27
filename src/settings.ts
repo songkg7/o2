@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
 import JekyllSetting from './jekyll/settings/JekyllSettings';
+import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 
 export interface O2PluginSettings {
   attachmentsFolder: string;
@@ -44,7 +45,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.containerEl.createEl('h2', {
       text: 'Docusaurus',
     });
-    // this.addDocusaurusPathSetting();
+    this.addDocusaurusPathSetting();
 
     this.containerEl.createEl('h2', {
       text: 'Features',
@@ -160,4 +161,17 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
+  private addDocusaurusPathSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Docusaurus path')
+      .setDesc('The absolute path where Docusaurus workspace is located.')
+      .addText(text => text
+        .setPlaceholder('Enter path')
+        .setValue(docusaurus.docusaurusPath)
+        .onChange(async (value) => {
+          docusaurus.docusaurusPath = value;
+          await this.plugin.saveSettings();
+        }));
+  }
 }
