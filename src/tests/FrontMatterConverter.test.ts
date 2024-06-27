@@ -1,4 +1,4 @@
-import { convertDateFrontMatter, FrontMatterConverter } from '../jekyll/FrontMatterConverter';
+import { FrontMatterConverter } from '../jekyll/FrontMatterConverter';
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
@@ -221,24 +221,6 @@ updated: 2022-01-02 12:00:00 +0900
     const result = updatedConverter.convert(contents);
     expect(result).toEqual(`---
 title: "test"
-date: 2022-01-02 12:00:00 +0900
----
-
-# test
-`,
-    );
-  });
-
-  it('should be converted, functional', () => {
-    const contents = `---
-date: 2021-01-01 12:00:00 +0900
-updated: 2022-01-02 12:00:00 +0900
----
-
-# test
-`;
-    const result = convertDateFrontMatter(true, contents);
-    expect(result).toEqual(`---
 date: 2022-01-02 12:00:00 +0900
 ---
 
