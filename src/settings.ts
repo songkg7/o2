@@ -7,7 +7,7 @@ export interface O2PluginSettings {
   readyFolder: string;
   backupFolder: string;
 
-  o2Settings(): O2Settings;
+  jekyllSetting(): JekyllSetting;
 
   targetPath(): string;
 
@@ -16,7 +16,7 @@ export interface O2PluginSettings {
   afterPropertiesSet(): boolean;
 }
 
-export class O2Settings implements O2PluginSettings {
+export class JekyllSetting implements O2PluginSettings {
   targetPlatform: string;
   attachmentsFolder: string;
   readyFolder: string;
@@ -105,7 +105,7 @@ export class O2Settings implements O2PluginSettings {
 
   // FIXME: As I know, abstraction is better solution but this is something weird.
   // temporary solution
-  o2Settings(): O2Settings {
+  jekyllSetting(): JekyllSetting {
     return this;
   }
 }
@@ -158,81 +158,81 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Replace date frontmatter to updated time')
       .setDesc('If \'updated\' frontmatter exists, replace the value of \'date\' frontmatter with the value of \'updated\' frontmatter.')
       .addToggle(toggle => toggle
-        .setValue(o2Settings.isEnableUpdateFrontmatterTimeOnEdit)
+        .setValue(jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit)
         .onChange(async (value) => {
-          o2Settings.isEnableUpdateFrontmatterTimeOnEdit = value;
+          jekyllSetting.isEnableUpdateFrontmatterTimeOnEdit = value;
           await this.plugin.saveSettings();
         }));
   }
 
   private enableAutoCreateFolderSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
       .addToggle(toggle => toggle
-        .setValue(o2Settings.isAutoCreateFolder)
+        .setValue(jekyllSetting.isAutoCreateFolder)
         .onChange(async (value) => {
-          o2Settings.isAutoCreateFolder = value;
+          jekyllSetting.isAutoCreateFolder = value;
           await this.plugin.saveSettings();
         }));
   }
 
   private enableCurlyBraceSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Curly Brace Conversion')
       .setDesc('Convert double curly braces to jekyll raw tag.')
       .addToggle(toggle => toggle
-        .setValue(o2Settings.isEnableCurlyBraceConvertMode)
+        .setValue(jekyllSetting.isEnableCurlyBraceConvertMode)
         .onChange(async (value) => {
-          o2Settings.isEnableCurlyBraceConvertMode = value;
+          jekyllSetting.isEnableCurlyBraceConvertMode = value;
           await this.plugin.saveSettings();
         }));
   }
 
   private enableBannerSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Banner Conversion')
       .setDesc('Convert image path of front matter to jekyll banner.')
       .addToggle(toggle => toggle
-        .setValue(o2Settings.isEnableBanner)
+        .setValue(jekyllSetting.isEnableBanner)
         .onChange(async (value) => {
-          o2Settings.isEnableBanner = value;
+          jekyllSetting.isEnableBanner = value;
           await this.plugin.saveSettings();
         }));
   }
 
   private addJekyllPathSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Jekyll path')
       .setDesc('The absolute path where Jekyll is installed.')
       .addText(text => text
         .setPlaceholder('Enter path')
-        .setValue(o2Settings.jekyllPath)
+        .setValue(jekyllSetting.jekyllPath)
         .onChange(async (value) => {
-          o2Settings.jekyllPath = value;
+          jekyllSetting.jekyllPath = value;
           await this.plugin.saveSettings();
         }));
   }
 
   private addJekyllRelativeResourcePathSetting() {
-    const o2Settings = this.plugin.settings.o2Settings();
+    const jekyllSetting = this.plugin.settings.jekyllSetting();
     new Setting(this.containerEl)
       .setName('Relative resource path')
       .setDesc('The relative path where resources are stored. (default: assets/img)')
       .addText(text => text
         .setPlaceholder('Enter path')
-        .setValue(o2Settings.jekyllRelativeResourcePath)
+        .setValue(jekyllSetting.jekyllRelativeResourcePath)
         .onChange(async (value) => {
-          o2Settings.jekyllRelativeResourcePath = value;
+          jekyllSetting.jekyllRelativeResourcePath = value;
           await this.plugin.saveSettings();
         }));
   }

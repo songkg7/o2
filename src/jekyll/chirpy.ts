@@ -30,19 +30,19 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
       const frontMatterConverter = new FrontMatterConverter(
         fileName,
-        plugin.settings.o2Settings().jekyllRelativeResourcePath,
-        plugin.settings.o2Settings().isEnableBanner,
-        plugin.settings.o2Settings().isEnableUpdateFrontmatterTimeOnEdit,
+        plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
+        plugin.settings.jekyllSetting().isEnableBanner,
+        plugin.settings.jekyllSetting().isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,
-        plugin.settings.o2Settings().resourcePath(),
+        plugin.settings.jekyllSetting().resourcePath(),
         vaultAbsolutePath(plugin),
         plugin.settings.attachmentsFolder,
-        plugin.settings.o2Settings().jekyllRelativeResourcePath,
+        plugin.settings.jekyllSetting().jekyllRelativeResourcePath,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
-        plugin.settings.o2Settings().isEnableCurlyBraceConvertMode,
+        plugin.settings.jekyllSetting().isEnableCurlyBraceConvertMode,
       );
       const result = ConverterChain.create()
         .chaining(frontMatterConverter)
@@ -70,7 +70,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
 async function validateSettings(plugin: O2Plugin) {
   const adapter = plugin.app.vault.adapter;
   if (!await adapter.exists(plugin.settings.attachmentsFolder)) {
-    if (plugin.settings.o2Settings().isAutoCreateFolder) {
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
       new Notice(`Auto create attachments folder: ${plugin.settings.attachmentsFolder}.`, 5000);
       await adapter.mkdir(plugin.settings.attachmentsFolder);
     } else {
@@ -79,7 +79,7 @@ async function validateSettings(plugin: O2Plugin) {
     }
   }
   if (!await adapter.exists(plugin.settings.readyFolder)) {
-    if (plugin.settings.o2Settings().isAutoCreateFolder) {
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
       new Notice(`Auto create ready folder: ${plugin.settings.readyFolder}.`, 5000);
       await adapter.mkdir(plugin.settings.readyFolder);
     } else {
@@ -88,7 +88,7 @@ async function validateSettings(plugin: O2Plugin) {
     }
   }
   if (!await adapter.exists(plugin.settings.backupFolder)) {
-    if (plugin.settings.o2Settings().isAutoCreateFolder) {
+    if (plugin.settings.jekyllSetting().isAutoCreateFolder) {
       new Notice(`Auto create backup folder: ${plugin.settings.backupFolder}.`, 5000);
       await adapter.mkdir(plugin.settings.backupFolder);
     } else {
