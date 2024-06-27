@@ -9,8 +9,8 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
   const markdownFiles = await renameMarkdownFile(plugin);
   for (const file of markdownFiles) {
     const contents: Contents = await plugin.app.vault.read(file);
-    convertFootnotes(
-      convertWikiLink(contents)
-    );
+    (convertFootnotes(
+      convertWikiLink(contents),
+    ));
   }
 };

@@ -44,3 +44,17 @@ map.set('attention', 'warning');
 function replaceKeyword(target: string) {
   return map.get(target.toLowerCase()) || 'info';
 }
+
+/// note, tip, info, warning, danger
+// :::note[title]
+export const convertDocusaurusCallout = (input: string) => {
+  function replacer(match: string, p1: string, p2: string) {
+    return `:::${replaceDocusaurusKeyword(p1)}\n\n${p2}\n\n:::`;
+  }
+
+  return input.replace(ObsidianRegex.CALLOUT, replacer);
+};
+
+const replaceDocusaurusKeyword = (target: string) => {
+  return map.get(target.toLowerCase()) || 'note';
+};

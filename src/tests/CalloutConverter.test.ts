@@ -1,8 +1,8 @@
-import { CalloutConverter } from '../jekyll/CalloutConverter';
+import { CalloutConverter, convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 
 const calloutConverter = new CalloutConverter();
 
-describe('convert callout syntax', () => {
+describe('Jekyll: convert callout syntax', () => {
 
   it.each([
     ['note'], ['todo'], ['example'], ['quote'], ['cite'], ['success'], ['done'], ['check'],
@@ -66,4 +66,16 @@ describe('convert callout syntax', () => {
     expect(result).toBe(`> content\n{: .prompt-tip}`);
   });
 
+});
+
+describe('Docusaurus: convert callout syntax', () => {
+  it.each([
+    ['todo'], ['example'], ['quote'], ['cite'], ['success'], ['done'], ['check'],
+    ['TODO'], ['EXAMPLE'], ['QUOTE'], ['CITE'], ['SUCCESS'], ['DONE'], ['CHECK'],
+  ])('%s => info', callout => {
+    const context = `> [!${callout}] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::info[This is Title!]\n\ncontent\nn:::`);
+  });
 });
