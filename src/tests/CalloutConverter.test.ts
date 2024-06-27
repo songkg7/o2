@@ -78,4 +78,58 @@ describe('Docusaurus: convert callout syntax', () => {
     const result = convertDocusaurusCallout(context);
     expect(result).toBe(`:::note[This is Title!]\n\ncontent\n\n:::`);
   });
+
+  it.each([
+    ['note'],
+    ['NOTE'],
+  ])('%s => note', callout => {
+    const context = `> [!${callout}] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::note[This is Title!]\n\ncontent\n\n:::`);
+  });
+
+  it.each([
+    ['tip'], ['hint'], ['important'], ['question'], ['help'],
+    ['TIP'], ['HINT'], ['IMPORTANT'], ['QUESTION'], ['HELP'],
+  ])('%s => tip', callout => {
+    const context = `> [!${callout}] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::tip[This is Title!]\n\ncontent\n\n:::`);
+  });
+
+  it.each([
+    ['warning'], ['caution'], ['attention'],
+    ['WARNING'], ['CAUTION'], ['ATTENTION'],
+  ])('%s => warning', callout => {
+    const context = `> [!${callout}] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::warning[This is Title!]\n\ncontent\n\n:::`);
+  });
+
+  it.each([
+    ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
+    ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING'],
+  ])('%s => danger', callout => {
+    const context = `> [!${callout}] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::danger[This is Title!]\n\ncontent\n\n:::`);
+  });
+
+  it('unknown => note', () => {
+    const context = `> [!unknown] This is Title!\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::note[This is Title!]\n\ncontent\n\n:::`);
+  });
+
+  it('not exist custom title', () => {
+    const context = `> [!INFO]\n> content`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::info\n\ncontent\n\n:::`);
+  });
 });

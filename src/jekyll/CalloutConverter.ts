@@ -41,8 +41,10 @@ function replaceKeyword(target: string) {
   return jekyllCalloutMap.get(target.toLowerCase()) || 'info';
 }
 
-const docusaurusReplacer = (match: string, p1: string, p2: string, p3: string) =>
-  `:::${replaceDocusaurusKeyword(p1)}[${p2.trim()}]\n\n${replaceDocusaurusContents(p3)}\n\n:::`;
+const docusaurusReplacer = (match: string, p1: string, p2: string, p3: string) => {
+  const title = p2 ? `[${p2.trim()}]` : '';
+  return `:::${replaceDocusaurusKeyword(p1)}${title}\n\n${replaceDocusaurusContents(p3)}\n\n:::`;
+};
 
 export const convertDocusaurusCallout = (input: string) => input.replace(ObsidianRegex.CALLOUT, docusaurusReplacer);
 
