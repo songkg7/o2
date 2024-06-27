@@ -14,8 +14,8 @@ import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
 import { FilenameConverter } from './FilenameConverter';
 import { CurlyBraceConverter } from './CurlyBraceConverter';
+import JekyllSetting from './settings/JekyllSettings';
 
-// TODO: write test
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation
   await validateSettings(plugin);
@@ -28,21 +28,22 @@ export async function convertToChirpy(plugin: O2Plugin) {
     for (const file of markdownFiles) {
       const fileName = filenameConverter.convert(file.name);
 
+      const jekyll = plugin.jekyll as JekyllSetting;
       const frontMatterConverter = new FrontMatterConverter(
         fileName,
-        plugin.jekyll.jekyllSetting().jekyllRelativeResourcePath,
-        plugin.jekyll.jekyllSetting().isEnableBanner,
-        plugin.jekyll.jekyllSetting().isEnableUpdateFrontmatterTimeOnEdit,
+        jekyll.jekyllRelativeResourcePath,
+        jekyll.isEnableBanner,
+        jekyll.isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,
-        plugin.jekyll.jekyllSetting().resourcePath(),
+        jekyll.resourcePath(),
         vaultAbsolutePath(plugin),
-        plugin.jekyll.attachmentsFolder,
-        plugin.jekyll.jekyllSetting().jekyllRelativeResourcePath,
+        jekyll.attachmentsFolder,
+        jekyll.jekyllRelativeResourcePath,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
-        plugin.jekyll.jekyllSetting().isEnableCurlyBraceConvertMode,
+        jekyll.isEnableCurlyBraceConvertMode,
       );
       const result = ConverterChain.create()
         .chaining(frontMatterConverter)
@@ -69,31 +70,32 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
 async function validateSettings(plugin: O2Plugin) {
   const adapter = plugin.app.vault.adapter;
-  if (!await adapter.exists(plugin.jekyll.attachmentsFolder)) {
-    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create attachments folder: ${plugin.jekyll.attachmentsFolder}.`, 5000);
-      await adapter.mkdir(plugin.jekyll.attachmentsFolder);
+  const jekyll = plugin.jekyll as JekyllSetting;
+  if (!await adapter.exists(jekyll.attachmentsFolder)) {
+    if (jekyll.isAutoCreateFolder) {
+      new Notice(`Auto create attachments folder: ${jekyll.attachmentsFolder}.`, 5000);
+      await adapter.mkdir(jekyll.attachmentsFolder);
     } else {
-      new Notice(`Attachments folder ${plugin.jekyll.attachmentsFolder} does not exist.`, 5000);
-      throw new Error(`Attachments folder ${plugin.jekyll.attachmentsFolder} does not exist.`);
+      new Notice(`Attachments folder ${jekyll.attachmentsFolder} does not exist.`, 5000);
+      throw new Error(`Attachments folder ${jekyll.attachmentsFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.jekyll.readyFolder)) {
-    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create ready folder: ${plugin.jekyll.readyFolder}.`, 5000);
-      await adapter.mkdir(plugin.jekyll.readyFolder);
+  if (!await adapter.exists(jekyll.readyFolder)) {
+    if (jekyll.isAutoCreateFolder) {
+      new Notice(`Auto create ready folder: ${jekyll.readyFolder}.`, 5000);
+      await adapter.mkdir(jekyll.readyFolder);
     } else {
-      new Notice(`Ready folder ${plugin.jekyll.readyFolder} does not exist.`, 5000);
-      throw new Error(`Ready folder ${plugin.jekyll.readyFolder} does not exist.`);
+      new Notice(`Ready folder ${jekyll.readyFolder} does not exist.`, 5000);
+      throw new Error(`Ready folder ${jekyll.readyFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(plugin.jekyll.backupFolder)) {
-    if (plugin.jekyll.jekyllSetting().isAutoCreateFolder) {
-      new Notice(`Auto create backup folder: ${plugin.jekyll.backupFolder}.`, 5000);
-      await adapter.mkdir(plugin.jekyll.backupFolder);
+  if (!await adapter.exists(jekyll.backupFolder)) {
+    if (jekyll.isAutoCreateFolder) {
+      new Notice(`Auto create backup folder: ${jekyll.backupFolder}.`, 5000);
+      await adapter.mkdir(jekyll.backupFolder);
     } else {
-      new Notice(`Backup folder ${plugin.jekyll.backupFolder} does not exist.`, 5000);
-      throw new Error(`Backup folder ${plugin.jekyll.backupFolder} does not exist.`);
+      new Notice(`Backup folder ${jekyll.backupFolder} does not exist.`, 5000);
+      throw new Error(`Backup folder ${jekyll.backupFolder} does not exist.`);
     }
   }
 }

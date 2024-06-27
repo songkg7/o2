@@ -54,19 +54,6 @@ export class O2SettingTab extends PluginSettingTab {
     this.enableAutoCreateFolderSetting();
   }
 
-  // private addDocusaurusPathSetting() {
-  //   new Setting(this.containerEl)
-  //     .setName('Docusaurus path')
-  //     .setDesc('The absolute path where Docusaurus workspace is located.')
-  //     .addText(text => text
-  //       .setPlaceholder('Enter path')
-  //       .setValue(this.plugin.settings.docusaurusPath)
-  //       .onChange(async (value) => {
-  //         this.plugin.settings.docusaurusPath = value;
-  //         await this.plugin.saveSettings();
-  //       }));
-  // }
-
   private enableUpdateFrontmatterTimeOnEditSetting() {
     const jekyllSetting = this.plugin.jekyll as JekyllSetting;
     new Setting(this.containerEl)
