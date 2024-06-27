@@ -10,12 +10,16 @@ import fs from 'fs';
 import path from 'path';
 import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../settings';
+import DocusaurusSettings from './settings/DocusaurusSettings';
 
 const PREFIX = 'o2-temp.';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
+  // TODO: prepare path related to docusaurus date extraction type
+  // e.g. directory candidates that should be created have to refer to date extraction type.
+
   for (const file of markdownFiles) {
     const contents: Contents = await plugin.app.vault.read(file);
     const result = convertDateFrontMatter(true,
@@ -59,8 +63,6 @@ const cleanUp = (plugin: O2Plugin) => {
 const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
   const targetFolderPath = settings.targetPath();
-  // refer to date extraction type
-
 
   // only temp files
   fs.readdir(sourceFolderPath, (err, files) => {
