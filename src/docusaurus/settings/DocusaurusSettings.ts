@@ -17,6 +17,6 @@ export default class DocusaurusSettings implements O2PluginSettings {
   }
 
   afterPropertiesSet(): boolean {
-    return this.docusaurusPath.length !== 0;
+    return this.docusaurusPath !== undefined && this.docusaurusPath.length !== 0;
   }
 }

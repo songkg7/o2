@@ -46,9 +46,6 @@ export default class O2Plugin extends Plugin {
   }
 
   async saveSettings() {
-    this.jekyll = {
-      ...this.jekyll,
-    };
     await this.saveData(this.jekyll);
   }
 }
