@@ -11,6 +11,8 @@ import path from 'path';
 import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../settings';
 
+const PREFIX = 'o2-temp.';
+
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
@@ -33,6 +35,9 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
   // move files to docusaurus folder
   await moveFiles(plugin, plugin.docusaurus)
+    .then(() => {
+      new Notice('Converted to Docusaurus successfully.', 5000);
+    })
     .finally(() => {
       cleanUp(plugin);
     });
@@ -40,15 +45,13 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
 const cleanUp = (plugin: O2Plugin) => {
   // remove temp files
-  const prefix = 'o2-temp.';
   const markdownFiles = plugin.app.vault.getMarkdownFiles()
-    .filter((file) => file.path.includes(prefix));
+    .filter((file) => file.path.includes(PREFIX));
 
   markdownFiles.forEach((file) => {
-    plugin.app.vault.delete(file)
-      .catch((error) => {
-        console.error(error);
-        new Notice('Failed to delete temp file, see console for more information.', 5000);
+    plugin.app.vault.delete(file) // FIXME: print error message
+      .then(() => {
+        console.log(`Deleted temp file: ${file.path}`);
       });
   });
 };
@@ -56,21 +59,26 @@ const cleanUp = (plugin: O2Plugin) => {
 const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
   const targetFolderPath = settings.targetPath();
+  // refer to date extraction type
 
+
+  // only temp files
   fs.readdir(sourceFolderPath, (err, files) => {
     if (err) throw err;
 
-    files.forEach((filename) => {
-      const sourceFilePath = path.join(sourceFolderPath, filename);
-      const targetFilePath = path.join(targetFolderPath, filename.replace(/\s/g, '-'));
+    files
+      .filter((filename) => filename.startsWith(PREFIX))
+      .forEach((filename) => {
+        const sourceFilePath = path.join(sourceFolderPath, filename);
+        const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
 
-      fs.rename(sourceFilePath, targetFilePath, (err) => {
-        if (err) {
-          console.error(err);
-          new Notice(err.message);
-          throw err;
-        }
+        fs.rename(sourceFilePath, targetFilePath, (err) => {
+          if (err) {
+            console.error(err);
+            new Notice(err.message);
+            throw err;
+          }
+        });
       });
-    });
   });
 };

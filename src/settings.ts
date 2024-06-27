@@ -146,7 +146,7 @@ export class O2SettingTab extends PluginSettingTab {
       .addText(text => text
         .setPlaceholder('Enter folder name')
         .setValue(this.plugin.jekyll.readyFolder)
-        .setValue(this.plugin.docusaurus.readyFolder)
+        .setValue(this.plugin.docusaurus.readyFolder) // FIXME: global settings for path
         .onChange(async (value) => {
           this.plugin.jekyll.readyFolder = value;
           this.plugin.docusaurus.readyFolder = value;
