@@ -55,9 +55,8 @@ export const convertDocusaurusCallout = (input: string) => {
   return input.replace(ObsidianRegex.CALLOUT, replacer);
 };
 
-const replaceDocusaurusKeyword = (target: string) => {
-  return docusaurusCalloutMap[target.toLowerCase()] || 'note';
-};
+const replaceDocusaurusKeyword = (target: string) =>
+  docusaurusCalloutMap[target.toLowerCase()] || 'note';
 
 const docusaurusCalloutMap: { [key: string]: string } = {
   note: 'note',
@@ -86,6 +85,5 @@ const docusaurusCalloutMap: { [key: string]: string } = {
   attention: 'warning',
 };
 
-const replaceDocusaurusContents = (contents: string) => {
-  return contents.replace(/^> /, '');
-};
+const replaceDocusaurusContents = (contents: string) =>
+  contents.replace(/^> /, '');
