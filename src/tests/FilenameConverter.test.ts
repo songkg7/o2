@@ -1,4 +1,4 @@
-import convertFileName from '../jekyll/FilenameConverter';
+import { convertFileName } from '../jekyll/FilenameConverter';
 
 describe('FilenameConverter', () => {
   it('should remove extension', () => {
