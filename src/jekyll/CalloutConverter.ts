@@ -8,8 +8,8 @@ export class CalloutConverter implements Converter {
 }
 
 function convertCalloutSyntaxToChirpy(content: string) {
-  function replacer(match: string, p1: string, p2: string) {
-    return `${p2}\n{: .prompt-${replaceKeyword(p1)}}`;
+  function replacer(match: string, p1: string, p2: string, p3: string) {
+    return `${p3}\n{: .prompt-${replaceKeyword(p1)}}`;
   }
 
   return content.replace(ObsidianRegex.CALLOUT, replacer);
@@ -48,8 +48,8 @@ function replaceKeyword(target: string) {
 /// note, tip, info, warning, danger
 // :::note[title]
 export const convertDocusaurusCallout = (input: string) => {
-  function replacer(match: string, p1: string, p2: string) {
-    return `:::${replaceDocusaurusKeyword(p1)}\n\n${replaceDocusaurusContents(p2)}\n\n:::`;
+  function replacer(match: string, p1: string, p2: string, p3: string) {
+    return `:::${replaceDocusaurusKeyword(p1)}[${p2.trim()}]\n\n${replaceDocusaurusContents(p3)}\n\n:::`;
   }
 
   return input.replace(ObsidianRegex.CALLOUT, replacer);
