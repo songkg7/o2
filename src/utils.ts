@@ -24,6 +24,24 @@ export async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
   return markdownFiles;
 }
 
+export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
+  const dateString = Temporal.Now.plainDateISO().toString();
+  const markdownFiles = getFilesInReady(plugin);
+  for (const file of markdownFiles) {
+    const newFileName = 'o2-temp.' + dateString + '-' + file.name;
+    const newFilePath = file.path
+      .replace(file.name, newFileName)
+      .replace(/\s/g, '-');
+
+    await plugin.app.vault.copy(file, newFilePath)
+      .catch((error) => {
+        console.error(error);
+        new Notice('Failed to copy file');
+      });
+  }
+  return markdownFiles;
+};
+
 function getFilesInReady(plugin: O2Plugin): TFile[] {
   return plugin.app.vault.getMarkdownFiles()
     .filter((file: TFile) => file.path.startsWith(plugin.jekyll.readyFolder));

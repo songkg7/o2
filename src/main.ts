@@ -20,7 +20,7 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          convertToChirpy(this);
+          // convertToChirpy(this);
         }
 
         if (this.docusaurus.afterPropertiesSet()) {
@@ -29,7 +29,6 @@ export default class O2Plugin extends Plugin {
           }
 
           convertToDocusaurus(this);
-          console.log('convert to docusaurus');
         }
       },
     });

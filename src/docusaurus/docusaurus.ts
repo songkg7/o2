@@ -1,5 +1,5 @@
 import O2Plugin from '../main';
-import { renameMarkdownFile } from '../utils';
+import { copyMarkdownFile } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
@@ -8,7 +8,7 @@ import { convertComments } from '../jekyll/CommentsConverter';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
-  const markdownFiles = await renameMarkdownFile(plugin);
+  const markdownFiles = await copyMarkdownFile(plugin);
   for (const file of markdownFiles) {
     const contents: Contents = await plugin.app.vault.read(file);
     const result = convertComments(
@@ -20,8 +20,6 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         ),
       ),
     );
-
-    console.log(result);
 
     await plugin.app.vault.modify(file, result);
   }
