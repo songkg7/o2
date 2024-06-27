@@ -129,8 +129,13 @@ export class O2SettingTab extends PluginSettingTab {
     this.addReadyFolderSetting();
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
+
+    // jekyll settings
     this.addJekyllPathSetting();
     this.addJekyllRelativeResourcePathSetting();
+
+    // docusaurus settings
+
     this.containerEl.createEl('h2', {
       text: 'Features',
     });
