@@ -2,6 +2,7 @@ import { App, Notice, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
 
 export interface O2PluginSettings {
+  targetPlatform: string;
   attachmentsFolder: string;
   readyFolder: string;
   backupFolder: string;
@@ -16,6 +17,7 @@ export interface O2PluginSettings {
 }
 
 export class JekyllSetting implements O2PluginSettings {
+  targetPlatform: string;
   attachmentsFolder: string;
   readyFolder: string;
   backupFolder: string;
@@ -117,13 +119,13 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   display(): void {
-    this.containerEl.empty();
     this.containerEl.createEl('h1', {
       text: 'Settings for O2 plugin',
     });
     this.containerEl.createEl('h2', {
       text: 'Path Settings',
     });
+    this.platformDropdownSetting();
     this.addReadyFolderSetting();
     this.addBackupFolderSetting();
     this.addAttachmentsFolderSetting();
@@ -135,6 +137,24 @@ export class O2SettingTab extends PluginSettingTab {
     this.enableCurlyBraceSetting();
     this.enableUpdateFrontmatterTimeOnEditSetting();
     this.enableAutoCreateFolderSetting();
+  }
+
+  private platformDropdownSetting() {
+    new Setting(this.containerEl)
+      .setName('Target Platform')
+      .setDesc('Select the platform to convert to.')
+      .addDropdown(dropdown => {
+        dropdown
+          .addOptions({
+            jekyll: 'Jekyll',
+            docusaurus: 'Docusaurus',
+          });
+        dropdown.setValue(this.plugin.settings.targetPlatform);
+        dropdown.onChange(async (value) => {
+          this.plugin.settings.targetPlatform = value;
+          await this.plugin.saveSettings();
+        });
+      });
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
