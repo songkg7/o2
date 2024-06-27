@@ -66,7 +66,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
   }
 }
 
-// FIXME: SRP, renameMarkdownFile(file: TFile): string
 async function moveFilesToChirpy(plugin: O2Plugin) {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.jekyll.readyFolder}`;
   const targetFolderPath = plugin.jekyll.targetPath();
