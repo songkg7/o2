@@ -80,11 +80,7 @@ export default class JekyllSetting implements O2PluginSettings {
   }
 
   afterPropertiesSet(): boolean {
-    if (this._jekyllPath === '') {
-      new Notice('Jekyll path is not set.', 5000);
-      return false;
-    }
-    return true;
+    return this._jekyllPath !== '';
   }
 
   // FIXME: As I know, abstraction is better solution but this is something weird.

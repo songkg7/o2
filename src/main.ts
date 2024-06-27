@@ -20,14 +20,13 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          // convertToChirpy(this);
+          convertToChirpy(this);
         }
 
         if (this.docusaurus.afterPropertiesSet()) {
           if (checking) {
             return true;
           }
-
           convertToDocusaurus(this);
         }
       },

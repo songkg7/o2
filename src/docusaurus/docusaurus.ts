@@ -10,7 +10,6 @@ import fs from 'fs';
 import path from 'path';
 import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../settings';
-import DocusaurusSettings from './settings/DocusaurusSettings';
 
 const PREFIX = 'o2-temp.';
 
