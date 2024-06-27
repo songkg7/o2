@@ -25,21 +25,25 @@ export async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 }
 
 export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
+  const prefix = 'o2-temp.';
   const dateString = Temporal.Now.plainDateISO().toString();
   const markdownFiles = getFilesInReady(plugin);
   for (const file of markdownFiles) {
-    const newFileName = 'o2-temp.' + dateString + '-' + file.name;
-    const newFilePath = file.path
+    const newFileName = prefix + dateString + '-' + file.name;
+    const newPath = file.path
       .replace(file.name, newFileName)
       .replace(/\s/g, '-');
 
-    await plugin.app.vault.copy(file, newFilePath)
+    await plugin.app.vault.copy(file, newPath)
       .catch((error) => {
         console.error(error);
-        new Notice('Failed to copy file');
+        new Notice('Failed to copy file, see console for more information.');
       });
   }
-  return markdownFiles;
+
+  // collect copied files
+  return plugin.app.vault.getMarkdownFiles()
+    .filter((file: TFile) => file.path.includes(prefix));
 };
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
