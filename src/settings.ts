@@ -5,6 +5,7 @@ import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export interface O2PluginSettings {
+  isAutoCreateFolder: boolean;
   attachmentsFolder: string;
   readyFolder: string;
   backupFolder: string;

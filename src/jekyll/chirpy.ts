@@ -18,7 +18,7 @@ import { convertFileName } from './FilenameConverter';
 
 export async function convertToChirpy(plugin: O2Plugin) {
   // validation
-  await validateSettings(plugin);
+  await validateSettings(plugin, plugin.jekyll);
   await backupOriginalNotes(plugin);
 
   try {
