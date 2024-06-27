@@ -49,7 +49,7 @@ function replaceKeyword(target: string) {
 // :::note[title]
 export const convertDocusaurusCallout = (input: string) => {
   function replacer(match: string, p1: string, p2: string) {
-    return `:::${replaceDocusaurusKeyword(p1)}\n\n${p2}\n\n:::`;
+    return `:::${replaceDocusaurusKeyword(p1)}\n\n${replaceDocusaurusContents(p2)}\n\n:::`;
   }
 
   return input.replace(ObsidianRegex.CALLOUT, replacer);
@@ -84,4 +84,8 @@ const docusaurusCalloutMap: { [key: string]: string } = {
   warning: 'warning',
   caution: 'warning',
   attention: 'warning',
+};
+
+const replaceDocusaurusContents = (contents: string) => {
+  return contents.replace(/^> /, '');
 };
