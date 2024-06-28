@@ -20,14 +20,7 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          convertToChirpy(this);
-        }
-
-        if (this.docusaurus.afterPropertiesSet()) {
-          if (checking) {
-            return true;
-          }
-          convertToDocusaurus(this);
+          o2Command(this);
         }
       },
     });
@@ -50,3 +43,7 @@ export default class O2Plugin extends Plugin {
   }
 }
 
+const o2Command = async (plugin: O2Plugin) => {
+  await convertToChirpy(plugin);
+  await convertToDocusaurus(plugin);
+};

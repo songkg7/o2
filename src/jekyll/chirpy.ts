@@ -96,6 +96,4 @@ export async function convertToChirpy(plugin: O2Plugin) {
     console.error(e);
     new Notice('Chirpy conversion failed.');
   }
-
-  await achieve(plugin, settings);
 }
