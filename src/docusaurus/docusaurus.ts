@@ -10,7 +10,7 @@ import path from 'path';
 import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../settings';
 
-const PREFIX = 'o2-temp.';
+export const PREFIX = 'o2-temp.' as const;
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder

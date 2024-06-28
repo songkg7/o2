@@ -1,6 +1,7 @@
 import O2Plugin from './main';
 import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
+import { PREFIX } from './docusaurus/docusaurus';
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;
@@ -25,11 +26,10 @@ export async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
 }
 
 export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
-  const prefix = 'o2-temp.';
   const dateString = Temporal.Now.plainDateISO().toString();
   const markdownFiles = getFilesInReady(plugin);
   for (const file of markdownFiles) {
-    const newFileName = prefix + dateString + '-' + file.name;
+    const newFileName = PREFIX + dateString + '-' + file.name;
     const newPath = file.path
       .replace(file.name, newFileName)
       .replace(/\s/g, '-');
@@ -43,7 +43,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
 
   // collect copied files
   return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.includes(prefix));
+    .filter((file: TFile) => file.path.includes(PREFIX));
 };
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
