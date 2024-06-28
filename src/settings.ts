@@ -1,6 +1,6 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
-import JekyllSetting from './jekyll/settings/JekyllSettings';
+import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
@@ -61,7 +61,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Replace date frontmatter to updated time')
       .setDesc('If \'updated\' frontmatter exists, replace the value of \'date\' frontmatter with the value of \'updated\' frontmatter.')
@@ -74,7 +74,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableAutoCreateFolderSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
@@ -87,7 +87,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableCurlyBraceSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Curly Brace Conversion')
       .setDesc('Convert double curly braces to jekyll raw tag.')
@@ -100,7 +100,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private addJekyllPathSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Jekyll path')
       .setDesc('The absolute path where Jekyll workspace is located.')
@@ -114,7 +114,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private addJekyllRelativeResourcePathSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSetting;
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Relative resource path')
       .setDesc('The relative path where resources are stored. (default: assets/img)')

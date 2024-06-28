@@ -1,6 +1,6 @@
 import { O2PluginSettings } from '../../settings';
 
-export default class JekyllSetting implements O2PluginSettings {
+export default class JekyllSettings implements O2PluginSettings {
   attachmentsFolder: string;
   readyFolder: string;
   achieveFolder: string;
@@ -85,7 +85,7 @@ export default class JekyllSetting implements O2PluginSettings {
 
   // FIXME: As I know, abstraction is better solution but this is something weird.
   // temporary solution
-  jekyllSetting(): JekyllSetting {
+  jekyllSetting(): JekyllSettings {
     return this;
   }
 }

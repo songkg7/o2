@@ -1,6 +1,6 @@
 import { Plugin } from 'obsidian';
 import { O2PluginSettings, O2SettingTab } from './settings';
-import JekyllSetting from './jekyll/settings/JekyllSettings';
+import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { convertToChirpy } from './jekyll/chirpy';
 import { convertToDocusaurus } from './docusaurus/docusaurus';
@@ -40,7 +40,7 @@ export default class O2Plugin extends Plugin {
   }
 
   async loadSettings() {
-    this.jekyll = Object.assign(new JekyllSetting(), await this.loadData());
+    this.jekyll = Object.assign(new JekyllSettings(), await this.loadData());
     this.docusaurus = Object.assign(new DocusaurusSettings(), await this.loadData());
   }
 

@@ -17,12 +17,12 @@ import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
 import { CurlyBraceConverter } from './CurlyBraceConverter';
-import JekyllSetting from './settings/JekyllSettings';
+import JekyllSettings from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
 
 export const convertToChirpyV2 = async (plugin: O2Plugin) => {
-  const settings = plugin.jekyll as JekyllSetting;
+  const settings = plugin.jekyll as JekyllSettings;
   const markdownFiles = await copyMarkdownFile(plugin);
   for (const file of markdownFiles) {
 
@@ -30,7 +30,7 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
 };
 
 export async function convertToChirpy(plugin: O2Plugin) {
-  const settings = plugin.jekyll as JekyllSetting;
+  const settings = plugin.jekyll as JekyllSettings;
   // validation
   await validateSettings(plugin, settings);
   await backupOriginalNotes(plugin);
