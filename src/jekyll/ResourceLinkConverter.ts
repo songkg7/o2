@@ -3,6 +3,7 @@ import { ObsidianRegex } from '../ObsidianRegex';
 import { Notice } from 'obsidian';
 import { Converter } from '../core/Converter';
 import JekyllSettings from './settings/JekyllSettings';
+import { removeTempPrefix } from './FilenameConverter';
 
 export const convertJekyllResourceLink = (
   input: string,
@@ -60,9 +61,7 @@ export class ResourceLinkConverter implements Converter {
   }
 
   convert(input: string): string {
-    const resourcePath = `${this.resourcePath}/${this.fileName}`;
-
-    console.log(`resourcePath: ${resourcePath}`);
+    const resourcePath = `${this.resourcePath}/${removeTempPrefix(this.fileName)}`;
     const resourceNames = extractResourceNames(input);
     if (!(resourceNames === undefined || resourceNames.length === 0)) {
       fs.mkdirSync(resourcePath, { recursive: true });

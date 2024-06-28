@@ -1,7 +1,7 @@
 import O2Plugin from './main';
 import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
-import { PREFIX } from './docusaurus/docusaurus';
+import { TEMP_PREFIX } from './docusaurus/docusaurus';
 import fs from 'fs';
 import path from 'path';
 import { O2PluginSettings } from './settings';
@@ -34,7 +34,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
   const dateString = Temporal.Now.plainDateISO().toString();
   const markdownFiles = getFilesInReady(plugin);
   for (const file of markdownFiles) {
-    const newFileName = PREFIX + dateString + '-' + file.name;
+    const newFileName = TEMP_PREFIX + dateString + '-' + file.name;
     const newPath = file.path
       .replace(file.name, newFileName)
       .replace(/,+/g, '')
@@ -49,7 +49,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
 
   // collect copied files
   return plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.includes(PREFIX));
+    .filter((file: TFile) => file.path.includes(TEMP_PREFIX));
 };
 
 function getFilesInReady(plugin: O2Plugin): TFile[] {
@@ -81,10 +81,10 @@ export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
     if (err) throw err;
 
     files
-      .filter((filename) => filename.startsWith(PREFIX))
+      .filter((filename) => filename.startsWith(TEMP_PREFIX))
       .forEach((filename) => {
         const sourceFilePath = path.join(sourceFolderPath, filename);
-        const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
+        const targetFilePath = path.join(targetFolderPath, filename.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
         renameFile(sourceFilePath, targetFilePath);
       });
   });
@@ -113,7 +113,7 @@ export const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) =>
 export const cleanUp = (plugin: O2Plugin) => {
   // remove temp files
   const markdownFiles = plugin.app.vault.getMarkdownFiles()
-    .filter((file) => file.path.includes(PREFIX));
+    .filter((file) => file.path.includes(TEMP_PREFIX));
 
   markdownFiles.forEach((file) => {
     plugin.app.vault.delete(file)
