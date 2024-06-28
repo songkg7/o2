@@ -4,6 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import { PREFIX } from './docusaurus/docusaurus';
 import fs from 'fs';
 import path from 'path';
+import { O2PluginSettings } from './settings';
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;
@@ -83,5 +84,17 @@ export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
         const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
         renameFile(sourceFilePath, targetFilePath);
       });
+  });
+};
+
+export const achieve = (isEnable: boolean, plugin: O2Plugin, settings: O2PluginSettings) => {
+  if (!isEnable) {
+    return;
+  }
+
+  // move files to achieve folder
+  const readyFiles = getFilesInReady(plugin);
+  readyFiles.forEach((file: TFile) => {
+    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.backupFolder));
   });
 };
