@@ -4,15 +4,7 @@ import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLink
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
-import {
-  achieve,
-  backupOriginalNotes,
-  cleanUp,
-  copyMarkdownFile,
-  moveFiles,
-  renameMarkdownFile,
-  vaultAbsolutePath,
-} from '../utils';
+import { achieve, copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -53,9 +45,6 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
   await moveFiles(plugin, settings)
     .then(() => {
       new Notice('Moved files to Chirpy successfully.', 5000);
-    })
-    .finally(() => {
-      cleanUp(plugin);
     });
 
   await achieve(plugin, settings);
@@ -65,23 +54,18 @@ export async function convertToChirpy(plugin: O2Plugin) {
   const settings = plugin.jekyll as JekyllSettings;
   // validation
   await validateSettings(plugin, settings);
-  await backupOriginalNotes(plugin);
-
-  await achieve(plugin, settings);
-
   try {
-    const markdownFiles = await renameMarkdownFile(plugin);
+    const markdownFiles = await copyMarkdownFile(plugin);
     for (const file of markdownFiles) {
-      const fileName = convertFileName(file.name);
 
       const frontMatterConverter = new FrontMatterConverter(
-        fileName,
+        file.name,
         settings.jekyllRelativeResourcePath,
         settings.isEnableBanner,
         settings.isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
-        fileName,
+        file.name,
         settings.resourcePath(),
         vaultAbsolutePath(plugin),
         settings.attachmentsFolder,
@@ -104,10 +88,14 @@ export async function convertToChirpy(plugin: O2Plugin) {
       await plugin.app.vault.modify(file, result);
     }
 
-    await moveFiles(plugin, settings);
-    new Notice('Chirpy conversion complete.');
+    await moveFiles(plugin, settings)
+      .then(() => {
+        new Notice('Moved files to Chirpy successfully.', 5000);
+      });
   } catch (e) {
     console.error(e);
     new Notice('Chirpy conversion failed.');
   }
+
+  await achieve(plugin, settings);
 }

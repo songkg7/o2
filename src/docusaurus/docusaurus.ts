@@ -1,5 +1,5 @@
 import O2Plugin from '../main';
-import { cleanUp, copyMarkdownFile, moveFiles } from '../utils';
+import { copyMarkdownFile, moveFiles } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
@@ -38,8 +38,5 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
   await moveFiles(plugin, plugin.docusaurus)
     .then(() => {
       new Notice('Moved files to Docusaurus successfully.', 5000);
-    })
-    .finally(() => {
-      cleanUp(plugin);
     });
 };

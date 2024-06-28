@@ -5,6 +5,7 @@ import { PREFIX } from './docusaurus/docusaurus';
 import fs from 'fs';
 import path from 'path';
 import { O2PluginSettings } from './settings';
+import { convertFileName } from './jekyll/FilenameConverter';
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;
@@ -115,7 +116,7 @@ export const cleanUp = (plugin: O2Plugin) => {
     .filter((file) => file.path.includes(PREFIX));
 
   markdownFiles.forEach((file) => {
-    plugin.app.vault.delete(file) // FIXME: print error message
+    plugin.app.vault.delete(file)
       .then(() => {
         console.log(`Deleted temp file: ${file.path}`);
       });

@@ -62,6 +62,7 @@ export class ResourceLinkConverter implements Converter {
   convert(input: string): string {
     const resourcePath = `${this.resourcePath}/${this.fileName}`;
 
+    console.log(`resourcePath: ${resourcePath}`);
     const resourceNames = extractResourceNames(input);
     if (!(resourceNames === undefined || resourceNames.length === 0)) {
       fs.mkdirSync(resourcePath, { recursive: true });
