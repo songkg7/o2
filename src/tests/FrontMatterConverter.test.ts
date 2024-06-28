@@ -302,7 +302,7 @@ title: "test"
 date: 2021-01-01 12:00:00 +0900
 categories: [test]
 ---
-      
+
 # test
 `;
       const result = convertFrontMatter(mockContents);

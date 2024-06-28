@@ -111,7 +111,7 @@ function convertImageFrontMatter(
   isEnable: boolean,
   fileName: string,
   resourcePath: string,
-  frontMatter: FrontMatter
+  frontMatter: FrontMatter,
 ) {
   if (!isEnable) {
     return frontMatter;
@@ -147,21 +147,17 @@ function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): Fr
   return frontMatter;
 }
 
-// TODO: "tag: mise, something" -> "tag: [mise, something]"
 export const convertFrontMatter = (input: string) => {
   const [frontMatter, body] = parseFrontMatter(input);
   if (Object.keys(frontMatter).length === 0) {
     return input;
   }
 
-  // remove unnecessary frontMatter like `aliases: ""`
   delete frontMatter['aliases'];
-  // Object.keys(frontMatter).forEach((key) => {
-  //   if (frontMatter[key] === 'aliases') {
-  //     delete frontMatter[key];
-  //   }
-  // });
 
-  return join(frontMatter, body);
+  return join(
+    convert({ ...frontMatter }),
+    body,
+  );
 };
 
