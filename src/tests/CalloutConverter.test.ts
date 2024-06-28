@@ -35,16 +35,6 @@ describe('Jekyll: convert callout syntax', () => {
   });
 
   it.each([
-    ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
-    ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING'],
-  ])('%s => danger', callout => {
-    const context = `> [!${callout}] title\n> content`;
-
-    const result = calloutConverter.convert(context);
-    expect(result).toBe(`> content\n{: .prompt-danger}`);
-  });
-
-  it.each([
     ['unknown'],
   ])('Unregistered keywords should be converted to info keyword', callout => {
     const context = `> [!${callout}] title\n> content`;
@@ -109,16 +99,6 @@ describe('Docusaurus: convert callout syntax', () => {
     expect(result).toBe(`:::warning[This is Title!]\n\ncontent\n\n:::`);
   });
 
-  it.each([
-    ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
-    ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING'],
-  ])('%s => danger', callout => {
-    const context = `> [!${callout}] This is Title!\n> lorem it sum`;
-
-    const result = convertDocusaurusCallout(context);
-    expect(result).toBe(`:::danger[This is Title!]\n\nlorem it sum\n\n:::`);
-  });
-
   it('unknown => note', () => {
     const context = `> [!unknown] This is Title!\n> content`;
 
@@ -131,5 +111,26 @@ describe('Docusaurus: convert callout syntax', () => {
 
     const result = convertDocusaurusCallout(context);
     expect(result).toBe(`:::info\n\ncontent\n\n:::`);
+  });
+});
+
+describe('danger callout', () => {
+  const dangerKeyword = [
+    ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
+    ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING'],
+  ];
+
+  it.each(dangerKeyword)('%s => danger', callout => {
+    const context = `> [!${callout}] This is Title!\n> lorem it sum`;
+
+    const result = convertDocusaurusCallout(context);
+    expect(result).toBe(`:::danger[This is Title!]\n\nlorem it sum\n\n:::`);
+  });
+
+  it.each(dangerKeyword)('%s => danger', callout => {
+    const context = `> [!${callout}] title\n> content`;
+
+    const result = calloutConverter.convert(context);
+    expect(result).toBe(`> content\n{: .prompt-danger}`);
   });
 });
