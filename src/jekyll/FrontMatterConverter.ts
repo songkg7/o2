@@ -121,11 +121,10 @@ function convertImageFrontMatter(
     return frontMatter;
   }
 
-  if (ObsidianRegex.ATTACHMENT_LINK.test(frontMatter.image)) {
-    const match = frontMatter.image.match(ObsidianRegex.ATTACHMENT_LINK);
-    if (match) {
-      frontMatter.image = frontMatter.image.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2');
-    }
+
+  const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
+  if (match) {
+    frontMatter.image = `${match[1]}.${match[2]}`;
   }
   frontMatter.image = convertImagePath(fileName, frontMatter.image, resourcePath);
   return frontMatter;
