@@ -113,10 +113,10 @@ describe('Docusaurus: convert callout syntax', () => {
     ['error'], ['danger'], ['bug'], ['failure'], ['fail'], ['missing'],
     ['ERROR'], ['DANGER'], ['BUG'], ['FAILURE'], ['FAIL'], ['MISSING'],
   ])('%s => danger', callout => {
-    const context = `> [!${callout}] This is Title!\n> content`;
+    const context = `> [!${callout}] This is Title!\n> lorem it sum`;
 
     const result = convertDocusaurusCallout(context);
-    expect(result).toBe(`:::danger[This is Title!]\n\ncontent\n\n:::`);
+    expect(result).toBe(`:::danger[This is Title!]\n\nlorem it sum\n\n:::`);
   });
 
   it('unknown => note', () => {
