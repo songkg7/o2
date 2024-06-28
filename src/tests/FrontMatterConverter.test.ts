@@ -1,4 +1,4 @@
-import { FrontMatterConverter } from '../jekyll/FrontMatterConverter';
+import { convertFrontMatter, FrontMatterConverter } from '../jekyll/FrontMatterConverter';
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
@@ -292,6 +292,65 @@ tags: test1, test2
 `;
     const result = frontMatterConverter.convert(contents);
     expect(result).toEqual(expected);
+  });
+});
+
+describe('convertFrontMatter', () => {
+  it('should passthroughs', () => {
+      const mockContents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+categories: [test]
+---
+      
+# test
+`;
+      const result = convertFrontMatter(mockContents);
+      expect(result).toEqual(mockContents);
+    },
+  );
+
+  it('should converted tags', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+tags: test1, test2
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+tags: [test1, test2]
+---
+
+# test
+`,
+    );
+  });
+
+  it('should delete aliases', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+aliases: ""
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+---
+
+# test
+`,
+    );
   });
 
 });
