@@ -1,12 +1,10 @@
 import O2Plugin from '../main';
-import { copyMarkdownFile, renameFile, vaultAbsolutePath } from '../utils';
+import { copyMarkdownFile, rename, vaultAbsolutePath } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
-import fs from 'fs';
-import path from 'path';
 import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../settings';
 
@@ -65,15 +63,5 @@ const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
   const targetFolderPath = settings.targetPath();
 
   // only temp files
-  fs.readdir(sourceFolderPath, (err, files) => {
-    if (err) throw err;
-
-    files
-      .filter((filename) => filename.startsWith(PREFIX))
-      .forEach((filename) => {
-        const sourceFilePath = path.join(sourceFolderPath, filename);
-        const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
-        renameFile(sourceFilePath, targetFilePath);
-      });
-  });
+  rename(sourceFolderPath, targetFolderPath);
 };

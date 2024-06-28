@@ -1,12 +1,10 @@
 import O2Plugin from '../main';
-import * as fs from 'fs';
-import * as path from 'path';
 import { WikiLinkConverter } from './WikiLinkConverter';
 import { ResourceLinkConverter } from './ResourceLinkConverter';
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { FrontMatterConverter } from './FrontMatterConverter';
-import { backupOriginalNotes, renameFile, renameMarkdownFile, vaultAbsolutePath } from '../utils';
+import { backupOriginalNotes, rename, renameMarkdownFile, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -70,13 +68,7 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.jekyll.readyFolder}`;
   const targetFolderPath = plugin.jekyll.targetPath();
 
-  fs.readdir(sourceFolderPath, (err, files) => {
-    if (err) throw err;
-
-    files.forEach((filename) => {
-      const sourceFilePath = path.join(sourceFolderPath, filename);
-      const targetFilePath = path.join(targetFolderPath, filename.replace(/\s/g, '-'));
-      renameFile(sourceFilePath, targetFilePath);
-    });
-  });
+  // only temp files
+  // FIXME
+  rename(sourceFolderPath, targetFolderPath);
 }

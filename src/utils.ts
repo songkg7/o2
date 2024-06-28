@@ -3,6 +3,7 @@ import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import { PREFIX } from './docusaurus/docusaurus';
 import fs from 'fs';
+import path from 'path';
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;
@@ -61,7 +62,7 @@ export async function backupOriginalNotes(plugin: O2Plugin) {
   });
 }
 
-export const renameFile = (sourceFilePath: string, targetFilePath: string) => {
+const renameFile = (sourceFilePath: string, targetFilePath: string) => {
   fs.rename(sourceFilePath, targetFilePath, (err) => {
     if (err) {
       console.error(err);
@@ -71,3 +72,16 @@ export const renameFile = (sourceFilePath: string, targetFilePath: string) => {
   });
 };
 
+export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
+  fs.readdir(sourceFolderPath, (err, files) => {
+    if (err) throw err;
+
+    files
+      .filter((filename) => filename.startsWith(PREFIX))
+      .forEach((filename) => {
+        const sourceFilePath = path.join(sourceFolderPath, filename);
+        const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
+        renameFile(sourceFilePath, targetFilePath);
+      });
+  });
+};
