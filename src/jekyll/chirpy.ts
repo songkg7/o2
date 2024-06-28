@@ -1,13 +1,13 @@
 import O2Plugin from '../main';
 import { WikiLinkConverter } from './WikiLinkConverter';
 import { ResourceLinkConverter } from './ResourceLinkConverter';
-import { Notice } from 'obsidian';
+import { editorViewField, Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
-import { FrontMatterConverter } from './FrontMatterConverter';
+import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
 import {
   achieve,
-  backupOriginalNotes,
-  copyMarkdownFile,
+  backupOriginalNotes, cleanUp,
+  copyMarkdownFile, moveFiles,
   rename,
   renameMarkdownFile,
   vaultAbsolutePath,
@@ -20,13 +20,33 @@ import { CurlyBraceConverter } from './CurlyBraceConverter';
 import JekyllSettings from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
+import { Contents } from '../core/Converter';
 
 export const convertToChirpyV2 = async (plugin: O2Plugin) => {
   const settings = plugin.jekyll as JekyllSettings;
   const markdownFiles = await copyMarkdownFile(plugin);
   for (const file of markdownFiles) {
+    const fileName = convertFileName(file.name);
+    const contents: Contents = await plugin.app.vault.read(file);
 
+    const result = convertFrontMatter(
+      contents,
+    );
+
+    await plugin.app.vault.modify(file, result)
+      .then(() => {
+        new Notice('Converted to Chirpy successfully.', 5000);
+      });
   }
+
+  // move files to chirpy folder
+  await moveFiles(plugin, settings)
+    .then(() => {
+      new Notice('Moved files to Chirpy successfully.', 5000);
+    })
+    .finally(() => {
+      cleanUp(plugin);
+    });
 };
 
 export async function convertToChirpy(plugin: O2Plugin) {
@@ -72,19 +92,10 @@ export async function convertToChirpy(plugin: O2Plugin) {
       await plugin.app.vault.modify(file, result);
     }
 
-    await moveFilesToChirpy(plugin);
+    await moveFiles(plugin, settings);
     new Notice('Chirpy conversion complete.');
   } catch (e) {
     console.error(e);
     new Notice('Chirpy conversion failed.');
   }
-}
-
-async function moveFilesToChirpy(plugin: O2Plugin) {
-  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${plugin.jekyll.readyFolder}`;
-  const targetFolderPath = plugin.jekyll.targetPath();
-
-  // only temp files
-  // FIXME
-  rename(sourceFolderPath, targetFolderPath);
 }

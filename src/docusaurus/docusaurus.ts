@@ -1,12 +1,11 @@
 import O2Plugin from '../main';
-import { copyMarkdownFile, rename, vaultAbsolutePath } from '../utils';
+import { cleanUp, copyMarkdownFile, moveFiles } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
-import { O2PluginSettings } from '../settings';
 
 export const PREFIX = 'o2-temp.' as const;
 
@@ -43,25 +42,4 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
     .finally(() => {
       cleanUp(plugin);
     });
-};
-
-const cleanUp = (plugin: O2Plugin) => {
-  // remove temp files
-  const markdownFiles = plugin.app.vault.getMarkdownFiles()
-    .filter((file) => file.path.includes(PREFIX));
-
-  markdownFiles.forEach((file) => {
-    plugin.app.vault.delete(file) // FIXME: print error message
-      .then(() => {
-        console.log(`Deleted temp file: ${file.path}`);
-      });
-  });
-};
-
-const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
-  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
-  const targetFolderPath = settings.targetPath();
-
-  // only temp files
-  rename(sourceFolderPath, targetFolderPath);
 };

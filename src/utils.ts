@@ -100,3 +100,24 @@ export const achieve = async (isEnable: boolean, plugin: O2Plugin, settings: O2P
     return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.achieveFolder));
   });
 };
+
+export const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
+  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
+  const targetFolderPath = settings.targetPath();
+
+  // only temp files
+  rename(sourceFolderPath, targetFolderPath);
+};
+
+export const cleanUp = (plugin: O2Plugin) => {
+  // remove temp files
+  const markdownFiles = plugin.app.vault.getMarkdownFiles()
+    .filter((file) => file.path.includes(PREFIX));
+
+  markdownFiles.forEach((file) => {
+    plugin.app.vault.delete(file) // FIXME: print error message
+      .then(() => {
+        console.log(`Deleted temp file: ${file.path}`);
+      });
+  });
+};
