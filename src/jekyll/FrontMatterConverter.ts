@@ -34,9 +34,7 @@ ${body}`;
 
 const convert = (frontMatter: FrontMatter) => {
   // if not around front matter title using double quote, add double quote
-  if (frontMatter.title && !frontMatter.title.startsWith('"')) {
-    frontMatter.title = `"${frontMatter.title}"`;
-  }
+  frontMatter.title = frontMatter.title?.startsWith('"') ? frontMatter.title : `"${frontMatter.title}"`;
 
   // if not around front matter categories using an array, add an array
   if (frontMatter.categories && JSON.stringify(frontMatter.categories).startsWith('[')) {
@@ -47,10 +45,8 @@ const convert = (frontMatter: FrontMatter) => {
   }
 
   // if frontMatter.tags is array
-  if (frontMatter.tags && Array.isArray(frontMatter.tags)) {
-    frontMatter.tags = `[${frontMatter.tags}]`.replace(/,/g, ', ');
-  } else if (frontMatter.tags && !JSON.stringify(frontMatter.tags).startsWith('[')) {
-    frontMatter.tags = `[${frontMatter.tags}]`;
+  if (frontMatter.tags) {
+    frontMatter.tags = Array.isArray(frontMatter.tags) ? `[${frontMatter.tags.join(', ')}]` : `[${frontMatter.tags}]`;
   }
 
   return frontMatter;
