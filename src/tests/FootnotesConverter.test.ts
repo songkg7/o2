@@ -1,4 +1,4 @@
-import { FootnotesConverter } from '../jekyll/FootnotesConverter';
+import { convertFootnotes, FootnotesConverter } from '../jekyll/FootnotesConverter';
 
 const converter = new FootnotesConverter();
 
@@ -31,4 +31,32 @@ This is a simple footnote[^fn-nth-1]. next footnote[^fn-nth-2].
 
   it.todo('should convert footnotes with multiple lines');
   it.todo('should convert inline footnotes');
+});
+
+describe('convertFootnotes', () => {
+  it('should convert simple footnotes', () => {
+    const contents = `
+# Hello World
+      
+This is a simple footnote[^1]. next footnote[^2].
+      
+[^1]: meaningful
+      
+[^2]: meaningful 2
+      
+`;
+
+    const expected = `
+# Hello World
+      
+This is a simple footnote[^fn-nth-1]. next footnote[^fn-nth-2].
+      
+[^fn-nth-1]: meaningful
+      
+[^fn-nth-2]: meaningful 2
+      
+`;
+    const actual = convertFootnotes(contents);
+    expect(actual).toEqual(expected);
+  });
 });
