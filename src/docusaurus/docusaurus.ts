@@ -1,5 +1,5 @@
 import O2Plugin from '../main';
-import { copyMarkdownFile, vaultAbsolutePath } from '../utils';
+import { copyMarkdownFile, renameFile, vaultAbsolutePath } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
@@ -73,14 +73,7 @@ const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
       .forEach((filename) => {
         const sourceFilePath = path.join(sourceFolderPath, filename);
         const targetFilePath = path.join(targetFolderPath, filename.replace(PREFIX, '').replace(/\s/g, '-'));
-
-        fs.rename(sourceFilePath, targetFilePath, (err) => {
-          if (err) {
-            console.error(err);
-            new Notice(err.message);
-            throw err;
-          }
-        });
+        renameFile(sourceFilePath, targetFilePath);
       });
   });
 };

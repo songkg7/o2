@@ -6,7 +6,7 @@ import { ResourceLinkConverter } from './ResourceLinkConverter';
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { FrontMatterConverter } from './FrontMatterConverter';
-import { backupOriginalNotes, renameMarkdownFile, vaultAbsolutePath } from '../utils';
+import { backupOriginalNotes, renameFile, renameMarkdownFile, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -76,14 +76,7 @@ async function moveFilesToChirpy(plugin: O2Plugin) {
     files.forEach((filename) => {
       const sourceFilePath = path.join(sourceFolderPath, filename);
       const targetFilePath = path.join(targetFolderPath, filename.replace(/\s/g, '-'));
-
-      fs.rename(sourceFilePath, targetFilePath, (err) => {
-        if (err) {
-          console.error(err);
-          new Notice(err.message);
-          throw err;
-        }
-      });
+      renameFile(sourceFilePath, targetFilePath);
     });
   });
 }

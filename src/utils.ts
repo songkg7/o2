@@ -2,6 +2,7 @@ import O2Plugin from './main';
 import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import { PREFIX } from './docusaurus/docusaurus';
+import fs from 'fs';
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;
@@ -59,3 +60,14 @@ export async function backupOriginalNotes(plugin: O2Plugin) {
     return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
   });
 }
+
+export const renameFile = (sourceFilePath: string, targetFilePath: string) => {
+  fs.rename(sourceFilePath, targetFilePath, (err) => {
+    if (err) {
+      console.error(err);
+      new Notice(err.message);
+      throw err;
+    }
+  });
+};
+
