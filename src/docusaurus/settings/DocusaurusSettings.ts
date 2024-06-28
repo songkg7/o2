@@ -6,7 +6,7 @@ export default class DocusaurusSettings implements O2PluginSettings {
   backupFolder: string;
   docusaurusPath: string;
   isAutoCreateFolder: boolean;
-  public dateExtractionPattern: string;
+  dateExtractionPattern: string;
 
   targetPath(): string {
     return `${this.docusaurusPath}/blog`;
