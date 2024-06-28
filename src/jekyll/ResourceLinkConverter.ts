@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { ObsidianRegex } from '../ObsidianRegex';
-import { Notice } from 'obsidian';
 import { Converter } from '../core/Converter';
 import JekyllSettings from './settings/JekyllSettings';
 import { removeTempPrefix } from './FilenameConverter';
@@ -17,16 +16,9 @@ export const convertJekyllResourceLink = (
     fs.mkdirSync(resourcePath, { recursive: true });
   }
   resourceNames?.forEach((resourceName) => {
-    fs.copyFile(
+    fs.copyFileSync(
       `${absolutePath}/${settings.attachmentsFolder}/${resourceName}`,
       `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
-      (err) => {
-        if (err) {
-          // ignore error
-          console.error(err);
-          new Notice(err.message);
-        }
-      },
     );
   });
 
@@ -68,16 +60,9 @@ export class ResourceLinkConverter implements Converter {
       fs.mkdirSync(resourcePath, { recursive: true });
     }
     resourceNames?.forEach((resourceName) => {
-      fs.copyFile(
+      fs.copyFileSync(
         `${this.absolutePath}/${this.attachmentsFolder}/${resourceName}`,
         `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
-        (err) => {
-          if (err) {
-            // ignore error
-            console.error(err);
-            new Notice(err.message);
-          }
-        },
       );
     });
 

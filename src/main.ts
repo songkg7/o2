@@ -16,7 +16,7 @@ export default class O2Plugin extends Plugin {
       id: 'jekyll-chirpy-syntax',
       name: 'convert to Jekyll Chirpy',
       checkCallback: (checking: boolean) => {
-        if (this.jekyll.afterPropertiesSet()) {
+        if (this.jekyll.afterPropertiesSet() || this.docusaurus.afterPropertiesSet()) {
           if (checking) {
             return true;
           }
@@ -44,6 +44,10 @@ export default class O2Plugin extends Plugin {
 }
 
 const o2ConversionCommand = async (plugin: O2Plugin) => {
-  await convertToChirpy(plugin);
-  await convertToDocusaurus(plugin);
+  if (plugin.jekyll.afterPropertiesSet()) {
+    await convertToChirpy(plugin);
+  }
+  if (plugin.docusaurus.afterPropertiesSet()) {
+    await convertToDocusaurus(plugin);
+  }
 };

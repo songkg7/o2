@@ -4,7 +4,7 @@ import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLink
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
-import { achieve, copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
+import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';

@@ -40,11 +40,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
       .replace(/,+/g, '')
       .replace(/\s/g, '-');
 
-    await plugin.app.vault.copy(file, newPath)
-      .catch((error) => {
-        console.error(error);
-        new Notice('Failed to copy file, see console for more information.');
-      });
+    await plugin.app.vault.copy(file, newPath).catch((error) => console.error(error));
   }
 
   // collect copied files
@@ -71,16 +67,13 @@ const renameFile = (sourceFilePath: string, targetFilePath: string) => {
 };
 
 export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
-  fs.readdir(sourceFolderPath, (err, files) => {
-    if (err) throw err;
-
-    files
-      .filter((filename) => filename.startsWith(TEMP_PREFIX))
-      .forEach((filename) => {
-        const sourceFilePath = path.join(sourceFolderPath, filename);
-        const targetFilePath = path.join(targetFolderPath, filename.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
-        renameFile(sourceFilePath, targetFilePath);
-      });
+  const dirent = fs.readdirSync(sourceFolderPath, { withFileTypes: true });
+  dirent.forEach((file) => {
+    if (file.name.startsWith(TEMP_PREFIX)) {
+      const sourceFilePath = path.join(sourceFolderPath, file.name);
+      const targetFilePath = path.join(targetFolderPath, file.name.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
+      renameFile(sourceFilePath, targetFilePath);
+    }
   });
 };
 
@@ -101,7 +94,7 @@ export const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) =>
   const targetFolderPath = settings.targetPath();
 
   // only temp files
-  rename(sourceFolderPath, targetFolderPath);
+  await rename(sourceFolderPath, targetFolderPath);
 };
 
 export const cleanUp = (plugin: O2Plugin) => {
