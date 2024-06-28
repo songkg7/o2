@@ -1,5 +1,5 @@
 import { ObsidianRegex } from '../ObsidianRegex';
-import { Contents, Converter } from '../core/Converter';
+import { Converter } from '../core/Converter';
 import yaml from 'js-yaml';
 
 interface FrontMatter {

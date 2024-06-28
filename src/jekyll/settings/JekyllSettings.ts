@@ -1,4 +1,3 @@
-import { Notice } from 'obsidian';
 import { O2PluginSettings } from '../../settings';
 
 export default class JekyllSetting implements O2PluginSettings {
