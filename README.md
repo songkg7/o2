@@ -53,18 +53,19 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 
 - jekyllPath is the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
 - Attachments will be copied by the date under the `assets/img/<yyyy-MM-dd>` folder.
-- Auto create folders: If enabled, the plugin will automatically create the necessary folders if they do not exist. You can toggle this setting in the plugin settings tab.
+- Auto create folders: If enabled, the plugin will automatically create the necessary folders if they do not exist. You
+  can toggle this setting in the plugin settings tab.
 
 #### Syntax
 
 | Feature              | Obsidian (AS-IS)                | Jekyll Chirpy (TO-BE)                                                                  | Description                                        |
 |----------------------|---------------------------------|----------------------------------------------------------------------------------------|----------------------------------------------------|
-| Wiki link            | [[What is Obsidian?]]           | What is Obsidian?                                                                      |
+| Wiki link            | [[What is Obsidian?]]           | What is Obsidian?                                                                      |                                                    |
 | Image                | ![[NewJeans.png]]               | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png)`                              | `yyyy-MM-dd` is replaced by the date of converting |
-| Resize image (width) | ![[NewJeans.png&#124;100]]      | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" }`              |
-| Resize image (w & h) | ![[NewJeans.png&#124;100x200]]  | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" height="200" }` |
-| Embeds               | ![[Obsidian#This is Obsidian!]] | Obsidian                                                                               |
-| Comments             | %% This is a comment %%         | `<!-- This is a comment -->`                                                           |
+| Resize image (width) | ![[NewJeans.png&#124;100]]      | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" }`              |                                                    |
+| Resize image (w & h) | ![[NewJeans.png&#124;100x200]]  | `![image](/assets/img/<yyyy-MM-dd>-<title>/NewJeans.png){: width="100" height="200" }` |                                                    |
+| Embeds               | ![[Obsidian#This is Obsidian!]] | Obsidian                                                                               |                                                    |
+| Comments             | %% This is a comment %%         | `<!-- This is a comment -->`                                                           |                                                    |
 | Footnotes            | [^1]                            | `[^fn-nth-1]`                                                                          | Currently, only supports the simple syntax         |
 | Curly braces         | {{ content }}                   | `{% raw %}{{ content }}{% endraw %}`                                                   | Optional                                           |
 
@@ -78,7 +79,8 @@ issue.
 
 ## Contributing
 
-Pull requests are always welcome! For major changes, please open an issue(or discussion) first to discuss what you would like to
+Pull requests are always welcome! For major changes, please open an issue(or discussion) first to discuss what you would
+like to
 change.
 
 For the detailed information about building and developing O2,
