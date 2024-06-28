@@ -48,8 +48,6 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
     .then(() => {
       new Notice('Moved files to Chirpy successfully.', 5000);
     });
-
-  await achieve(plugin, settings);
 };
 
 export async function convertToChirpy(plugin: O2Plugin) {

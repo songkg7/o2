@@ -58,6 +58,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.enableCurlyBraceSetting();
     this.enableUpdateFrontmatterTimeOnEditSetting();
     this.enableAutoCreateFolderSetting();
+    // this.enableAutoAchieveSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
@@ -199,7 +200,7 @@ export class O2SettingTab extends PluginSettingTab {
       });
   }
 
-  private addAutoAchieveSetting() {
+  private enableAutoAchieveSetting() {
     new Setting(this.containerEl)
       .setName('Auto achieve')
       .setDesc('Automatically move files to achieve folder after converting.')
