@@ -6,6 +6,7 @@ import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
+import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
@@ -20,7 +21,9 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         convertDocusaurusCallout(
           convertFootnotes(
             convertWikiLink(
-              contents,
+              convertFrontMatter(
+                contents,
+              ),
             ),
           ),
         ),
