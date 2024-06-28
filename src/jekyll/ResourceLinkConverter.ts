@@ -61,7 +61,8 @@ export class ResourceLinkConverter implements Converter {
   }
 
   convert(input: string): string {
-    const resourcePath = `${this.resourcePath}/${removeTempPrefix(this.fileName)}`;
+    const sanitizedFileName = removeTempPrefix(this.fileName);
+    const resourcePath = `${this.resourcePath}/${sanitizedFileName}`;
     const resourceNames = extractResourceNames(input);
     if (!(resourceNames === undefined || resourceNames.length === 0)) {
       fs.mkdirSync(resourcePath, { recursive: true });
@@ -87,7 +88,7 @@ export class ResourceLinkConverter implements Converter {
                       height: string | undefined,
                       space: string | undefined,
                       caption: string | undefined) =>
-      `![image](/${this.relativeResourcePath}/${this.fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
+      `![image](/${this.relativeResourcePath}/${sanitizedFileName}/${contents.replace(/\s/g, '-')}.${suffix})`
       + `${convertImageSize(width, height)}`
       + `${convertImageCaption(caption)}`;
 
