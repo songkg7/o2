@@ -1,11 +1,11 @@
 import O2Plugin from './main';
 import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
-import { TEMP_PREFIX } from './docusaurus/docusaurus';
 import fs from 'fs';
 import path from 'path';
 import { O2PluginSettings } from './settings';
-import { convertFileName } from './jekyll/FilenameConverter';
+
+export const TEMP_PREFIX = 'o2-temp.' as const;
 
 export function vaultAbsolutePath(plugin: O2Plugin): string {
   const adapter = plugin.app.vault.adapter;

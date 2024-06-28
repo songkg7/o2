@@ -7,8 +7,6 @@ import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
 
-export const TEMP_PREFIX = 'o2-temp.' as const;
-
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
