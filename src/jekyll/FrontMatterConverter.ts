@@ -3,7 +3,7 @@ import { Converter } from '../core/Converter';
 import yaml from 'js-yaml';
 
 interface FrontMatter {
-  [key: string]: string;
+  [key: string]: string | undefined;
 }
 
 const parseFrontMatter = (content: string): [FrontMatter, string] => {
@@ -154,10 +154,10 @@ export const convertFrontMatter = (input: string) => {
   }
 
   delete frontMatter['aliases'];
+  delete frontMatter['updated'];
 
   return join(
     convert({ ...frontMatter }),
     body,
   );
 };
-

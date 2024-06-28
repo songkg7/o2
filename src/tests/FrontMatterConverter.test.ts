@@ -2,7 +2,6 @@ import { convertFrontMatter, FrontMatterConverter } from '../jekyll/FrontMatterC
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
-
 describe('convert front matter', () => {
   const contents = `---
 title: "test"
@@ -337,6 +336,27 @@ tags: [test1, test2]
 title: "test"
 date: 2021-01-01 12:00:00 +0900
 aliases: ""
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
+
+  it('should delete updated', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+updated: 2022-01-02 12:00:00 +0900
 ---
 
 # test
