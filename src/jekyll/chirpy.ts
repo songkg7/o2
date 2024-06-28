@@ -4,7 +4,7 @@ import { ResourceLinkConverter } from './ResourceLinkConverter';
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { FrontMatterConverter } from './FrontMatterConverter';
-import { backupOriginalNotes, rename, renameMarkdownFile, vaultAbsolutePath } from '../utils';
+import { achieve, backupOriginalNotes, rename, renameMarkdownFile, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -15,31 +15,33 @@ import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
 
 export async function convertToChirpy(plugin: O2Plugin) {
+  const settings = plugin.jekyll as JekyllSetting;
   // validation
-  await validateSettings(plugin, plugin.jekyll);
+  await validateSettings(plugin, settings);
   await backupOriginalNotes(plugin);
+
+  await achieve(settings.isAutoAchieve, plugin, settings);
 
   try {
     const markdownFiles = await renameMarkdownFile(plugin);
     for (const file of markdownFiles) {
       const fileName = convertFileName(file.name);
 
-      const jekyll = plugin.jekyll as JekyllSetting;
       const frontMatterConverter = new FrontMatterConverter(
         fileName,
-        jekyll.jekyllRelativeResourcePath,
-        jekyll.isEnableBanner,
-        jekyll.isEnableUpdateFrontmatterTimeOnEdit,
+        settings.jekyllRelativeResourcePath,
+        settings.isEnableBanner,
+        settings.isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,
-        jekyll.resourcePath(),
+        settings.resourcePath(),
         vaultAbsolutePath(plugin),
-        jekyll.attachmentsFolder,
-        jekyll.jekyllRelativeResourcePath,
+        settings.attachmentsFolder,
+        settings.jekyllRelativeResourcePath,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
-        jekyll.isEnableCurlyBraceConvertMode,
+        settings.isEnableCurlyBraceConvertMode,
       );
       const result = ConverterChain.create()
         .chaining(frontMatterConverter)

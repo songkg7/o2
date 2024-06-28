@@ -8,7 +8,8 @@ export interface O2PluginSettings {
   isAutoCreateFolder: boolean;
   attachmentsFolder: string;
   readyFolder: string;
-  backupFolder: string;
+  achieveFolder: string;
+  isAutoAchieve: boolean;
 
   targetPath(): string;
 
@@ -34,7 +35,7 @@ export class O2SettingTab extends PluginSettingTab {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
-    this.addBackupFolderSetting();
+    this.addAchieveFolderSetting();
     this.addAttachmentsFolderSetting();
 
     // jekyll settings
@@ -154,15 +155,17 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
-  private addBackupFolderSetting() {
+  private addAchieveFolderSetting() {
     new Setting(this.containerEl)
-      .setName('Folder to backup notes before execute converting process in')
-      .setDesc('Where the notes will be backup before converting.')
+      .setName('Folder to Archive notes in')
+      .setDesc('Where the notes will be archived after conversion.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.jekyll.backupFolder)
+        .setValue(this.plugin.jekyll.achieveFolder)
+        .setValue(this.plugin.docusaurus.achieveFolder)
         .onChange(async (value) => {
-          this.plugin.jekyll.backupFolder = value;
+          this.plugin.jekyll.achieveFolder = value;
+          this.plugin.docusaurus.achieveFolder = value;
           await this.plugin.saveSettings();
         }));
   }
@@ -194,5 +197,19 @@ export class O2SettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         });
       });
+  }
+
+  private addAutoAchieveSetting() {
+    new Setting(this.containerEl)
+      .setName('Auto achieve')
+      .setDesc('Automatically move files to achieve folder after converting.')
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.jekyll.isAutoAchieve)
+        .setValue(this.plugin.docusaurus.isAutoAchieve)
+        .onChange(async (value) => {
+          this.plugin.jekyll.isAutoAchieve = value;
+          this.plugin.docusaurus.isAutoAchieve = value;
+          await this.plugin.saveSettings();
+        }));
   }
 }

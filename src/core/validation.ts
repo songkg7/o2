@@ -22,13 +22,13 @@ export default async function validateSettings(plugin: O2Plugin, settings: O2Plu
       throw new Error(`Ready folder ${settings.readyFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(settings.backupFolder)) {
+  if (!await adapter.exists(settings.achieveFolder)) {
     if (settings.isAutoCreateFolder) {
-      new Notice(`Auto create backup folder: ${settings.backupFolder}.`, 5000);
-      await adapter.mkdir(settings.backupFolder);
+      new Notice(`Auto create backup folder: ${settings.achieveFolder}.`, 5000);
+      await adapter.mkdir(settings.achieveFolder);
     } else {
-      new Notice(`Backup folder ${settings.backupFolder} does not exist.`, 5000);
-      throw new Error(`Backup folder ${settings.backupFolder} does not exist.`);
+      new Notice(`Backup folder ${settings.achieveFolder} does not exist.`, 5000);
+      throw new Error(`Backup folder ${settings.achieveFolder} does not exist.`);
     }
   }
 }

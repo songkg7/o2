@@ -56,7 +56,7 @@ function getFilesInReady(plugin: O2Plugin): TFile[] {
 
 export async function backupOriginalNotes(plugin: O2Plugin) {
   const readyFiles = getFilesInReady(plugin);
-  const backupFolder = plugin.jekyll.backupFolder;
+  const backupFolder = plugin.jekyll.achieveFolder;
   const readyFolder = plugin.jekyll.readyFolder;
   readyFiles.forEach((file: TFile) => {
     return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
@@ -87,7 +87,7 @@ export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
   });
 };
 
-export const achieve = (isEnable: boolean, plugin: O2Plugin, settings: O2PluginSettings) => {
+export const achieve = async (isEnable: boolean, plugin: O2Plugin, settings: O2PluginSettings) => {
   if (!isEnable) {
     return;
   }
@@ -95,6 +95,6 @@ export const achieve = (isEnable: boolean, plugin: O2Plugin, settings: O2PluginS
   // move files to achieve folder
   const readyFiles = getFilesInReady(plugin);
   readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.backupFolder));
+    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.achieveFolder));
   });
 };
