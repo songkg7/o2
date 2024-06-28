@@ -2,6 +2,47 @@ import fs from 'fs';
 import { ObsidianRegex } from '../ObsidianRegex';
 import { Notice } from 'obsidian';
 import { Converter } from '../core/Converter';
+import JekyllSettings from './settings/JekyllSettings';
+
+export const convertJekyllResourceLink = (
+  input: string,
+  fileName: string,
+  absolutePath: string,
+  settings: JekyllSettings,
+) => {
+  const resourcePath = `${settings.resourcePath}/${fileName}`;
+  const resourceNames = extractResourceNames(input);
+  if (!(resourceNames === undefined || resourceNames.length === 0)) {
+    fs.mkdirSync(resourcePath, { recursive: true });
+  }
+  resourceNames?.forEach((resourceName) => {
+    fs.copyFile(
+      `${absolutePath}/${settings.attachmentsFolder}/${resourceName}`,
+      `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
+      (err) => {
+        if (err) {
+          // ignore error
+          console.error(err);
+          new Notice(err.message);
+        }
+      },
+    );
+  });
+
+  const replacer = (match: string,
+                    contents: string,
+                    suffix: string,
+                    width: string | undefined,
+                    height: string | undefined,
+                    space: string | undefined,
+                    caption: string | undefined) =>
+    `![image](/${settings.jekyllRelativeResourcePath}/${fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
+    + `${convertImageSize(width, height)}`
+    + `${convertImageCaption(caption)}`;
+
+  return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
+};
+
 
 export class ResourceLinkConverter implements Converter {
   private readonly fileName: string;

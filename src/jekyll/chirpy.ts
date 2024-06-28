@@ -1,6 +1,6 @@
 import O2Plugin from '../main';
 import { WikiLinkConverter } from './WikiLinkConverter';
-import { ResourceLinkConverter } from './ResourceLinkConverter';
+import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLinkConverter';
 import { editorViewField, Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
@@ -29,9 +29,15 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
     const fileName = convertFileName(file.name);
     const contents: Contents = await plugin.app.vault.read(file);
 
-    const result = convertFrontMatter(
-      contents,
-    );
+    const result =
+      convertFrontMatter(
+        convertJekyllResourceLink(
+          contents,
+          fileName,
+          vaultAbsolutePath(plugin),
+          settings,
+        ),
+      );
 
     await plugin.app.vault.modify(file, result)
       .then(() => {
