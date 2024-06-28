@@ -20,8 +20,13 @@ const parseFrontMatter = (content: string): [FrontMatter, string] => {
   const frontMatterLines = content.substring(3, endOfFrontMatter);
   const body = content.substring(endOfFrontMatter + 3).trimStart();
 
-  const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
-  return [frontMatter, body];
+  try {
+    const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
+    return [frontMatter, body];
+  } catch (e) {
+    console.error(e);
+    return [{}, content];
+  }
 };
 
 const join = (result: FrontMatter, body: string) => `---

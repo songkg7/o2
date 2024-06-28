@@ -374,3 +374,27 @@ date: 2021-01-01 12:00:00 +0900
   });
 
 });
+
+describe('FrontMatterConverter Edge Case Tests', () => {
+  const malformedFrontMatterContents = `---
+title "test"  // Missing colon
+date: 2021-01-01 12:00:00 +0900
+categories: [test]
+---
+# test
+`;
+  it('should handle malformed front matter', () => {
+    const result = convertFrontMatter(malformedFrontMatterContents);
+    expect(result).toEqual(malformedFrontMatterContents); // Assuming the function passes through malformed front matter as is
+  });
+
+  const incompleteFrontMatterContents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+# test
+`;
+  it('should handle interrupted parsing', () => {
+    const result = convertFrontMatter(incompleteFrontMatterContents);
+    expect(result).toEqual(incompleteFrontMatterContents); // Assuming the function passes through incomplete front matter as is
+  });
+});
