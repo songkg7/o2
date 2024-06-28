@@ -124,36 +124,4 @@ function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): Fr
 }
 
 // TODO: "tag: mise, something" -> "tag: [mise, something]"
-const convertDateFrontMatter = (isEnable: boolean, contents: string) => {
-  if (!isEnable) {
-    return contents;
-  }
-  const [frontMatter, body] = parseFrontMatter(contents);
-  const afterFrontMatter = replaceDateFrontMatter(frontMatter, true);
 
-  return `---
-${Object.entries(afterFrontMatter)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join('\n')}
----
-
-${body}`;
-};
-
-const parseFrontMatter = (content: string): [FrontMatter, string] => {
-  if (!content.startsWith('---')) {
-    return [{}, content];
-  }
-
-  // for define front matter boundary
-  const endOfFrontMatter = content.indexOf('---', 3);
-  if (endOfFrontMatter === -1) {
-    return [{}, content];
-  }
-
-  const frontMatterLines = content.substring(3, endOfFrontMatter);
-  const body = content.substring(endOfFrontMatter + 3).trimStart();
-
-  const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
-  return [frontMatter, body];
-};
