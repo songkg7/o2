@@ -4,7 +4,14 @@ import { ResourceLinkConverter } from './ResourceLinkConverter';
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { FrontMatterConverter } from './FrontMatterConverter';
-import { achieve, backupOriginalNotes, rename, renameMarkdownFile, vaultAbsolutePath } from '../utils';
+import {
+  achieve,
+  backupOriginalNotes,
+  copyMarkdownFile,
+  rename,
+  renameMarkdownFile,
+  vaultAbsolutePath,
+} from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -13,6 +20,14 @@ import { CurlyBraceConverter } from './CurlyBraceConverter';
 import JekyllSetting from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
+
+export const convertToChirpyV2 = async (plugin: O2Plugin) => {
+  const settings = plugin.jekyll as JekyllSetting;
+  const markdownFiles = await copyMarkdownFile(plugin);
+  for (const file of markdownFiles) {
+
+  }
+};
 
 export async function convertToChirpy(plugin: O2Plugin) {
   const settings = plugin.jekyll as JekyllSetting;
@@ -60,7 +75,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
     await moveFilesToChirpy(plugin);
     new Notice('Chirpy conversion complete.');
   } catch (e) {
-    // TODO: move file that occurred error to backlog folder
     console.error(e);
     new Notice('Chirpy conversion failed.');
   }

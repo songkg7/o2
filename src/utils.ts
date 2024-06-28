@@ -22,6 +22,7 @@ export async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
     const newFileName = dateString + '-' + file.name;
     const newFilePath = file.path
       .replace(file.name, newFileName)
+      .replace(/,+/g, '')
       .replace(/\s/g, '-');
     await plugin.app.vault.rename(file, newFilePath);
   }
@@ -35,6 +36,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
     const newFileName = PREFIX + dateString + '-' + file.name;
     const newPath = file.path
       .replace(file.name, newFileName)
+      .replace(/,+/g, '')
       .replace(/\s/g, '-');
 
     await plugin.app.vault.copy(file, newPath)
