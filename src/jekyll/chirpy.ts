@@ -15,6 +15,8 @@ import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
 import { Contents } from '../core/Converter';
 
+// WIP
+// TODO: implement this function
 export const convertToChirpyV2 = async (plugin: O2Plugin) => {
   const settings = plugin.jekyll as JekyllSettings;
   const markdownFiles = await copyMarkdownFile(plugin);

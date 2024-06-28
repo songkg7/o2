@@ -67,13 +67,7 @@ export async function backupOriginalNotes(plugin: O2Plugin) {
 }
 
 const renameFile = (sourceFilePath: string, targetFilePath: string) => {
-  fs.rename(sourceFilePath, targetFilePath, (err) => {
-    if (err) {
-      console.error(err);
-      new Notice(err.message);
-      throw err;
-    }
-  });
+  fs.renameSync(sourceFilePath, targetFilePath);
 };
 
 export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
