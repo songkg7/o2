@@ -1,4 +1,4 @@
-import { Plugin } from 'obsidian';
+import { Notice, Plugin } from 'obsidian';
 import { O2PluginSettings, O2SettingTab } from './settings';
 import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
@@ -20,7 +20,7 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          o2Command(this);
+          o2ConversionCommand(this).then(() => new Notice('Converted to successfully.', 5000));
         }
       },
     });
@@ -43,7 +43,7 @@ export default class O2Plugin extends Plugin {
   }
 }
 
-const o2Command = async (plugin: O2Plugin) => {
+const o2ConversionCommand = async (plugin: O2Plugin) => {
   await convertToChirpy(plugin);
   await convertToDocusaurus(plugin);
 };
