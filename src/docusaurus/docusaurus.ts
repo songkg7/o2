@@ -31,13 +31,16 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         ),
       );
 
-    await plugin.app.vault.modify(file, result);
+    await plugin.app.vault.modify(file, result)
+      .then(() => {
+        new Notice('Converted to Docusaurus successfully.', 5000);
+      });
   }
 
   // move files to docusaurus folder
   await moveFiles(plugin, plugin.docusaurus)
     .then(() => {
-      new Notice('Converted to Docusaurus successfully.', 5000);
+      new Notice('Moved files to Docusaurus successfully.', 5000);
     })
     .finally(() => {
       cleanUp(plugin);
