@@ -38,23 +38,24 @@ ${Object.entries(result)
 ${body}`;
 
 const convert = (frontMatter: FrontMatter) => {
+  const fm = { ...frontMatter };
   // if not around front matter title using double quote, add double quote
-  frontMatter.title = frontMatter.title?.startsWith('"') ? frontMatter.title : `"${frontMatter.title}"`;
+  fm.title = fm.title?.startsWith('"') ? fm.title : `"${fm.title}"`;
 
   // if not around front matter categories using an array, add an array
-  if (frontMatter.categories && JSON.stringify(frontMatter.categories).startsWith('[')) {
-    frontMatter.categories = `${JSON.stringify(frontMatter.categories)
+  if (fm.categories && JSON.stringify(fm.categories).startsWith('[')) {
+    fm.categories = `${JSON.stringify(fm.categories)
       .replace(/,/g, ', ')
       .replace(/"/g, '')
     }`;
   }
 
-  // if frontMatter.tags is array
-  if (frontMatter.tags) {
-    frontMatter.tags = Array.isArray(frontMatter.tags) ? `[${frontMatter.tags.join(', ')}]` : `[${frontMatter.tags}]`;
+  // if fm.tags is array
+  if (fm.tags) {
+    fm.tags = Array.isArray(fm.tags) ? `[${fm.tags.join(', ')}]` : `[${fm.tags}]`;
   }
 
-  return frontMatter;
+  return fm;
 };
 
 export class FrontMatterConverter implements Converter {
@@ -121,7 +122,6 @@ function convertImageFrontMatter(
   if (!frontMatter.image) {
     return frontMatter;
   }
-
 
   const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
   if (match) {
