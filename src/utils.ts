@@ -89,8 +89,8 @@ export const rename = (sourceFolderPath: string, targetFolderPath: string) => {
   });
 };
 
-export const achieve = async (isEnable: boolean, plugin: O2Plugin, settings: O2PluginSettings) => {
-  if (!isEnable) {
+export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
+  if (!settings.isAutoAchieve) {
     return;
   }
 

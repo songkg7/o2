@@ -1,14 +1,15 @@
 import O2Plugin from '../main';
 import { WikiLinkConverter } from './WikiLinkConverter';
 import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLinkConverter';
-import { editorViewField, Notice } from 'obsidian';
+import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
 import {
   achieve,
-  backupOriginalNotes, cleanUp,
-  copyMarkdownFile, moveFiles,
-  rename,
+  backupOriginalNotes,
+  cleanUp,
+  copyMarkdownFile,
+  moveFiles,
   renameMarkdownFile,
   vaultAbsolutePath,
 } from '../utils';
@@ -16,7 +17,7 @@ import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
 import { EmbedsConverter } from './EmbedsConverter';
-import { CurlyBraceConverter } from './CurlyBraceConverter';
+import { convertCurlyBrace, CurlyBraceConverter } from './CurlyBraceConverter';
 import JekyllSettings from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
 import { convertFileName } from './FilenameConverter';
@@ -30,12 +31,15 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
     const contents: Contents = await plugin.app.vault.read(file);
 
     const result =
-      convertFrontMatter(
-        convertJekyllResourceLink(
-          contents,
-          fileName,
-          vaultAbsolutePath(plugin),
-          settings,
+      convertCurlyBrace(
+        settings.isEnableCurlyBraceConvertMode,
+        convertFrontMatter(
+          convertJekyllResourceLink(
+            contents,
+            fileName,
+            vaultAbsolutePath(plugin),
+            settings,
+          ),
         ),
       );
 
@@ -53,6 +57,8 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
     .finally(() => {
       cleanUp(plugin);
     });
+
+  await achieve(plugin, settings);
 };
 
 export async function convertToChirpy(plugin: O2Plugin) {
@@ -61,7 +67,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
   await validateSettings(plugin, settings);
   await backupOriginalNotes(plugin);
 
-  await achieve(settings.isAutoAchieve, plugin, settings);
+  await achieve(plugin, settings);
 
   try {
     const markdownFiles = await renameMarkdownFile(plugin);
