@@ -16,9 +16,3 @@ export class CurlyBraceConverter implements Converter {
     return input.replace(ObsidianRegex.DOUBLE_CURLY_BRACES, (match, content) => `{% raw %}${match}{% endraw %}`);
   }
 }
-
-export const convertCurlyBrace =
-  (input: string) => input.replace(
-    ObsidianRegex.DOUBLE_CURLY_BRACES,
-    (match, content) => `{% raw %}${match}{% endraw %}`,
-  );
