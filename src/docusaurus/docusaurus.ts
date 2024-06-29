@@ -8,6 +8,15 @@ import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
 import { addPublishedFrontMatter, convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
+async function markPublished(plugin: O2Plugin) {
+  const filesInReady = getFilesInReady(plugin);
+  for (const file of filesInReady) {
+    const contents: Contents = await plugin.app.vault.read(file);
+    const newBody = addPublishedFrontMatter(contents);
+    await plugin.app.vault.modify(file, newBody);
+  }
+}
+
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
@@ -38,14 +47,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
     plugin,
     plugin.docusaurus,
   )
-    .then(async () => {
-      const filesInReady = getFilesInReady(plugin);
-      for (const file of filesInReady) {
-        const contents: Contents = await plugin.app.vault.read(file);
-        const newBody = addPublishedFrontMatter(contents);
-        await plugin.app.vault.modify(file, newBody);
-      }
-    })
+    .then(async () => await markPublished(plugin))
     .then(() => {
       new Notice('Moved files to Docusaurus successfully.', 5000);
     });
