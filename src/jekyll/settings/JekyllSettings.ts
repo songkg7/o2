@@ -85,11 +85,4 @@ export default class JekyllSettings implements O2PluginSettings {
   afterPropertiesSet(): boolean {
     return this._jekyllPath !== '';
   }
-
-  // FIXME: As I know, abstraction is better solution but this is something weird.
-  // temporary solution
-  jekyllSetting(): JekyllSettings {
-    return this;
-  }
 }
-
