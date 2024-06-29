@@ -4,8 +4,7 @@ import { Temporal } from '@js-temporal/polyfill';
 import fs from 'fs';
 import path from 'path';
 import { O2PluginSettings } from './settings';
-import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
-import { DateExtractionPattern, DateExtractionPatternInterface } from './docusaurus/DateExtractionPattern';
+import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export const TEMP_PREFIX = 'o2-temp.' as const;
 
@@ -69,12 +68,18 @@ export async function backupOriginalNotes(plugin: O2Plugin) {
 }
 
 const renameFile = (sourceFilePath: string, targetFilePath: string) => {
+  // if directory not exist create it
+  const targetDirectory = path.dirname(targetFilePath);
+  if (!fs.existsSync(targetDirectory)) {
+    fs.mkdirSync(targetDirectory, { recursive: true });
+  }
   fs.renameSync(sourceFilePath, targetFilePath);
 };
 
 export const rename = (
   sourceFolderPath: string,
   targetFolderPath: string,
+  replacer: (year: string, month: string, day: string, title: string) => string,
 ) => {
   fs.readdir(sourceFolderPath, (err, files) => {
     if (err) throw err;
@@ -82,8 +87,12 @@ export const rename = (
     files
       .filter((filename) => filename.startsWith(TEMP_PREFIX))
       .forEach((filename) => {
+        const transformedFileName = transformPath(filename, replacer);
+        console.log(`Renaming ${filename} to ${transformedFileName}`);
+
         const sourceFilePath = path.join(sourceFolderPath, filename);
-        const targetFilePath = path.join(targetFolderPath, filename.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
+        const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
+
         renameFile(sourceFilePath, targetFilePath);
       });
   });
@@ -101,19 +110,18 @@ export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
   });
 };
 
-export const moveFiles = async (plugin: O2Plugin, settings: O2PluginSettings) => {
+export const moveFiles = async (
+  plugin: O2Plugin,
+  settings: O2PluginSettings,
+) => {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
   const targetFolderPath = settings.targetPath();
-
-  if (settings instanceof DocusaurusSettings) {
-    // yyyy-MM-dd-my-blog-post-title.md -> yyyy-MM-dd/my-blog-post-title.md
-    const pattern = DateExtractionPattern[settings.dateExtractionPattern as keyof typeof DateExtractionPattern];
-  }
-
-  // only temp files
   rename(
     sourceFolderPath,
     targetFolderPath,
+    (year, month, day, title) => {
+      return `${year}/${month}/${day}/${title}.md`;
+    },
   );
 };
 
@@ -130,22 +138,12 @@ export const cleanUp = (plugin: O2Plugin) => {
   });
 };
 
-// TODO: prepare path related to docusaurus date extraction type
+// prepare path related to docusaurus date extraction type
 // e.g. directory candidates that should be created have to refer to date extraction type.
 // return path to be created, and this path is target path
-export const convertTargetPath = (plugin: O2Plugin) => {
-  const settings = plugin.docusaurus as DocusaurusSettings;
-  const filePath = 'o2-temp.2021-02-01-my-blog-post-title.md';
-  const element: DateExtractionPatternInterface = DateExtractionPattern[settings.dateExtractionPattern];
-
-  const targetPath = transformString(filePath, element.replacer);
-  console.log(`targetPath: ${targetPath}`);
-  return targetPath;
-};
-
-const transformString = (
+const transformPath = (
   input: string,
-  replacer: (year: string, month: string, day: string, title: string) => string
+  replacer: (year: string, month: string, day: string, title: string) => string,
 ): string => {
   const match = input.match(DateExtractionPattern['SINGLE'].regexp);
   if (match) {

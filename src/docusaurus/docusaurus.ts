@@ -7,7 +7,6 @@ import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
 import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
-import DocusaurusSettings from './settings/DocusaurusSettings';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
@@ -35,7 +34,10 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
   }
 
   // move files to docusaurus folder
-  await moveFiles(plugin, plugin.docusaurus)
+  await moveFiles(
+    plugin,
+    plugin.docusaurus,
+  )
     .then(() => {
       new Notice('Moved files to Docusaurus successfully.', 5000);
     });
