@@ -29,6 +29,17 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
   const markdownFiles = await copyMarkdownFile(plugin);
 
   for (const file of markdownFiles) {
+    let publishedDate = new Date().toISOString().split('T')[0];
+    await plugin.app.fileManager.processFrontMatter(
+      file,
+      fm => {
+        if (fm.published) {
+          publishedDate = fm.published;
+          return fm;
+        }
+      },
+    );
+
     const contents: Contents = await plugin.app.vault.read(file);
     const result =
       convertComments(
@@ -50,10 +61,10 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
     // move files to docusaurus folder
     await moveFiles(
-      file,
       `${vaultAbsolutePath(plugin)}/${plugin.docusaurus.readyFolder}`,
       plugin.docusaurus.targetPath(),
       plugin.docusaurus.pathReplacer,
+      publishedDate,
     )
       .then(async () => await markPublished(plugin));
   }

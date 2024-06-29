@@ -44,7 +44,6 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
 
     // move files to chirpy folder
     await moveFiles(
-      file,
       `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
       settings.targetPath(),
       settings.pathReplacer,
@@ -90,7 +89,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
       await plugin.app.vault.modify(file, result);
       await moveFiles(
-        file,
         `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
         settings.targetPath(),
         settings.pathReplacer,

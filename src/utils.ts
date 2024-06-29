@@ -91,13 +91,14 @@ export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
 };
 
 export const moveFiles = async (
-  file: TFile,
   sourceFolderPath: string,
   targetFolderPath: string,
   pathReplacer: (year: string, month: string, day: string, title: string) => string,
+  publishedDate?: string,
 ) => {
   // TODO: published front matter 를 가지고 있는 파일이라면 이미 발행된 적이 있는 파일이므로, targetFolderPath 를 published 로 변경해야 함
   console.log(`targetFolderPath: ${targetFolderPath}`);
+  console.log(`publishedDate: ${publishedDate}`);
 
   copy(
     sourceFolderPath,
