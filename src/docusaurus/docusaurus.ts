@@ -15,9 +15,10 @@ const markPublished = async (plugin: O2Plugin) => {
       file,
       fm => {
         if (fm.published) {
-          return;
+          return fm;
         }
         fm.published = new Date().toISOString().split('T')[0];
+        return fm;
       },
     );
   }
