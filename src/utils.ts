@@ -67,7 +67,7 @@ export const copy = (
   replacer: (year: string, month: string, day: string, title: string) => string,
 ) => {
   fs.readdirSync(sourceFolderPath)
-    .filter(f => f.startsWith(TEMP_PREFIX))
+    .filter(filename => filename.startsWith(TEMP_PREFIX))
     .forEach((filename) => {
       const transformedFileName = transformPath(filename, replacer);
 
@@ -94,8 +94,10 @@ export const moveFiles = async (
   plugin: O2Plugin,
   settings: O2PluginSettings,
 ) => {
-  const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
+  const sourceFolderPath = `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`;
   const targetFolderPath = settings.targetPath();
+
+
   copy(
     sourceFolderPath,
     targetFolderPath,
@@ -104,6 +106,23 @@ export const moveFiles = async (
     },
   );
 };
+
+export const moveFilesV2 = async (
+  file: TFile,
+  sourceFolderPath: string,
+  targetFolderPath: string,
+  pathReplacer: (year: string, month: string, day: string, title: string) => string,
+) => {
+  // TODO: published front matter 를 가지고 있는 파일이라면 이미 발행된 적이 있는 파일이므로, targetFolderPath 를 published 로 변경해야 함
+  console.log(`targetFolderPath: ${targetFolderPath}`);
+
+  copy(
+    sourceFolderPath,
+    targetFolderPath,
+    pathReplacer,
+  );
+};
+
 
 export const cleanUp = async (plugin: O2Plugin) => {
   // remove temp files
