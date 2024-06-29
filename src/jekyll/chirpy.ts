@@ -57,15 +57,15 @@ export async function convertToChirpy(plugin: O2Plugin) {
   try {
     const markdownFiles = await copyMarkdownFile(plugin);
     for (const file of markdownFiles) {
-
+      const fileName = convertFileName(file.name);
       const frontMatterConverter = new FrontMatterConverter(
-        file.name,
+        fileName,
         settings.jekyllRelativeResourcePath,
         settings.isEnableBanner,
         settings.isEnableUpdateFrontmatterTimeOnEdit,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
-        file.name,
+        fileName,
         settings.resourcePath(),
         vaultAbsolutePath(plugin),
         settings.attachmentsFolder,
