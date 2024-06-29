@@ -1,5 +1,5 @@
 import { ObsidianRegex } from '../ObsidianRegex';
-import { Converter } from '../core/Converter';
+import { Contents, Converter } from '../core/Converter';
 import yaml from 'js-yaml';
 
 interface FrontMatter {
@@ -153,6 +153,8 @@ export const convertFrontMatter = (input: string) => {
     return input;
   }
 
+  // TODO: insert front matter, published: yyyy-mm-dd
+
   delete frontMatter['aliases'];
   delete frontMatter['updated'];
 
@@ -161,3 +163,9 @@ export const convertFrontMatter = (input: string) => {
     body,
   );
 };
+
+export function addFrontMatter(contents: Contents, frontMatterRecord: FrontMatter) {
+  const [frontMatter, body] = parseFrontMatter(contents);
+  const result = { ...frontMatter, ...frontMatterRecord };
+  return join(result, body);
+}

@@ -39,10 +39,9 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
     .filter((file: TFile) => file.path.includes(TEMP_PREFIX));
 };
 
-function getFilesInReady(plugin: O2Plugin): TFile[] {
-  return plugin.app.vault.getMarkdownFiles()
+export const getFilesInReady = (plugin: O2Plugin): TFile[] =>
+  plugin.app.vault.getMarkdownFiles()
     .filter((file: TFile) => file.path.startsWith(plugin.jekyll.readyFolder));
-}
 
 export async function backupOriginalNotes(plugin: O2Plugin) {
   const readyFiles = getFilesInReady(plugin);
