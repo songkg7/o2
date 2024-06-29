@@ -155,6 +155,7 @@ export const convertFrontMatter = (input: string) => {
 
   delete frontMatter['aliases'];
   delete frontMatter['updated'];
+  delete frontMatter['published'];
 
   return join(
     convert({ ...frontMatter }),
