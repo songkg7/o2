@@ -16,6 +16,8 @@ export interface O2PluginSettings {
   resourcePath(): string;
 
   afterPropertiesSet(): boolean;
+
+  pathReplacer(year: string, month: string, day: string, title: string): string;
 }
 
 export class O2SettingTab extends PluginSettingTab {

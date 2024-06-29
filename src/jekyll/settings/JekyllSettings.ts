@@ -8,6 +8,9 @@ export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
   private _isAutoCreateFolder: boolean;
+  pathReplacer(year: string, month: string, day: string, title: string): string {
+    return `${year}-${month}-${day}-${title}.md`;
+  }
 
   // FIXME: abstraction
   private _isEnableBanner: boolean;

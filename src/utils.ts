@@ -120,7 +120,7 @@ export const moveFiles = async (
     sourceFolderPath,
     targetFolderPath,
     (year, month, day, title) => {
-      return `${year}/${month}/${day}/${title}.md`;
+      return settings.pathReplacer(year, month, day, title);
     },
   );
 };
