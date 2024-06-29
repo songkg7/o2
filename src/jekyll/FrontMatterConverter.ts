@@ -153,8 +153,6 @@ export const convertFrontMatter = (input: string) => {
     return input;
   }
 
-  // TODO: insert front matter, published: yyyy-mm-dd
-
   delete frontMatter['aliases'];
   delete frontMatter['updated'];
 
@@ -164,8 +162,12 @@ export const convertFrontMatter = (input: string) => {
   );
 };
 
-export function addFrontMatter(contents: Contents, frontMatterRecord: FrontMatter) {
+export function addPublishedFrontMatter(contents: Contents) {
   const [frontMatter, body] = parseFrontMatter(contents);
-  const result = { ...frontMatter, ...frontMatterRecord };
+  if (frontMatter.published) {
+    return contents;
+  }
+
+  const result = { ...frontMatter, ...{ published: new Date().toISOString().split('T')[0] } };
   return join(result, body);
 }

@@ -6,7 +6,7 @@ import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
-import { addFrontMatter, convertFrontMatter } from '../jekyll/FrontMatterConverter';
+import { addPublishedFrontMatter, convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
@@ -39,19 +39,14 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
     plugin.docusaurus,
   )
     .then(async () => {
-      console.log('Moved files to Docusaurus successfully. 1/2');
-      // TODO: add published front matter to original file
-      // 1. get ready files
-      // 2. add published front matter
       const filesInReady = getFilesInReady(plugin);
       for (const file of filesInReady) {
         const contents: Contents = await plugin.app.vault.read(file);
-        const newBody = addFrontMatter(contents, { published: new Date().toISOString().split('T')[0] });
+        const newBody = addPublishedFrontMatter(contents);
         await plugin.app.vault.modify(file, newBody);
       }
     })
     .then(() => {
-      console.log('Moved files to Docusaurus successfully. 2/2');
       new Notice('Moved files to Docusaurus successfully.', 5000);
     });
 };
