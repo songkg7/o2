@@ -191,7 +191,9 @@ export class O2SettingTab extends PluginSettingTab {
       .setName('Date extraction pattern')
       .setDesc('The pattern to extract date from note title.')
       .addDropdown(dropdown => {
-        dropdown.addOptions(DateExtractionPattern);
+        for (const key in DateExtractionPattern) {
+          dropdown.addOption(key, DateExtractionPattern[key].pattern);
+        }
         dropdown.setValue(docusaurus.dateExtractionPattern);
         dropdown.onChange(async (value) => {
           docusaurus.dateExtractionPattern = value;

@@ -8,13 +8,43 @@
  * Nested folders + index.md: YYYY/MM/DD/my-blog-post-title/index.md
  * Date in the middle of path: category/YYYY/MM-DD-my-blog-post-title.md
  */
-export const DateExtractionPattern = {
-  SINGLE: 'YYYY-MM-DD-my-blog-post-title.md',
-  MDX: 'YYYY-MM-DD-my-blog-post-title.mdx',
-  SINGLE_FOLDER_INDEX: 'YYYY-MM-DD-my-blog-post-title/index.md',
-  FOLDER_NAMED_BY_DATE: 'YYYY-MM-DD/my-blog-post-title.md',
-  NESTED_FOLDERS_BY_DATE: 'YYYY/MM/DD/my-blog-post-title.md',
-  PARTIALLY_NESTED_FOLDERS_BY_DATE: 'YYYY/MM-DD/my-blog-post-title.md',
-  NESTED_FOLDERS_INDEX: 'YYYY/MM/DD/my-blog-post-title/index.md',
-  DATE_IN_MIDDLE_OF_PATH: 'category/YYYY/MM-DD-my-blog-post-title.md',
-} as const;
+export const DateExtractionPattern: Record<string, DateExtractionPatternInterface> = {
+  SINGLE: {
+    pattern: 'YYYY-MM-DD-my-blog-post-title.md',
+    regexp: /(\d{4})-(\d{2})-(\d{2})-(.*)\.md/,
+  },
+  MDX: {
+    pattern: 'YYYY-MM-DD-my-blog-post-title.mdx',
+    regexp: /(\d{4})-(\d{2})-(\d{2})-(.*)\.mdx/,
+  },
+  SINGLE_FOLDER_INDEX: {
+    pattern: 'YYYY-MM-DD-my-blog-post-title/index.md',
+    regexp: /(\d{4})-(\d{2})-(\d{2})-(.*)\/index\.md/,
+  },
+  FOLDER_NAMED_BY_DATE: {
+    pattern: 'YYYY-MM-DD/my-blog-post-title.md',
+    regexp: /(\d{4})-(\d{2})-(\d{2})\/(.*)\.md/,
+  },
+  NESTED_FOLDERS_BY_DATE: {
+    pattern: 'YYYY/MM/DD/my-blog-post-title.md',
+    regexp: /(\d{4})\/(\d{2})\/(\d{2})\/(.*)\.md/,
+  },
+  PARTIALLY_NESTED_FOLDERS_BY_DATE: {
+    pattern: 'YYYY/MM-DD/my-blog-post-title.md',
+    regexp: /(\d{4})\/(\d{2})-(\d{2})\/(.*)\.md/,
+  },
+  NESTED_FOLDERS_INDEX: {
+    pattern: 'YYYY/MM/DD/my-blog-post-title/index.md',
+    regexp: /(\d{4})\/(\d{2})\/(\d{2})\/(.*)\/index\.md/,
+  },
+  // FIXME:
+  DATE_IN_MIDDLE_OF_PATH: {
+    pattern: 'category/YYYY/MM-DD-my-blog-post-title.md',
+    regexp: /category\/(\d{4})\/(\d{2})-(\d{2})-(.*)\.md/,
+  },
+};
+
+export interface DateExtractionPatternInterface {
+  pattern: string;
+  regexp: RegExp;
+}
