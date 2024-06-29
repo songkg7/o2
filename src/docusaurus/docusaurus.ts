@@ -8,7 +8,7 @@ import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
 import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
-async function markPublished(plugin: O2Plugin) {
+const markPublished = async (plugin: O2Plugin) => {
   const filesInReady = getFilesInReady(plugin);
   for (const file of filesInReady) {
     await plugin.app.fileManager.processFrontMatter(
@@ -21,7 +21,7 @@ async function markPublished(plugin: O2Plugin) {
       },
     );
   }
-}
+};
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
