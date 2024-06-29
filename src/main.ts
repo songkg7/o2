@@ -4,6 +4,7 @@ import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { convertToChirpy } from './jekyll/chirpy';
 import { convertToDocusaurus } from './docusaurus/docusaurus';
+import { cleanUp } from './utils';
 
 export default class O2Plugin extends Plugin {
   jekyll: JekyllSettings;
@@ -45,9 +46,12 @@ export default class O2Plugin extends Plugin {
 
 const o2ConversionCommand = async (plugin: O2Plugin) => {
   if (plugin.jekyll.afterPropertiesSet()) {
-    await convertToChirpy(plugin);
+    await convertToChirpy(plugin)
+      .finally(() => cleanUp(plugin));
   }
+
   if (plugin.docusaurus.afterPropertiesSet()) {
-    await convertToDocusaurus(plugin);
+    await convertToDocusaurus(plugin)
+      .finally(() => cleanUp(plugin));
   }
 };

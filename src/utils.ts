@@ -17,20 +17,6 @@ export function vaultAbsolutePath(plugin: O2Plugin): string {
   throw new Error('Vault is not a file system adapter');
 }
 
-export async function renameMarkdownFile(plugin: O2Plugin): Promise<TFile[]> {
-  const dateString = Temporal.Now.plainDateISO().toString();
-  const markdownFiles = getFilesInReady(plugin);
-  for (const file of markdownFiles) {
-    const newFileName = dateString + '-' + file.name;
-    const newFilePath = file.path
-      .replace(file.name, newFileName)
-      .replace(/,+/g, '')
-      .replace(/\s/g, '-');
-    await plugin.app.vault.rename(file, newFilePath);
-  }
-  return markdownFiles;
-}
-
 export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
   const dateString = Temporal.Now.plainDateISO().toString();
   const markdownFiles = getFilesInReady(plugin);
@@ -67,16 +53,16 @@ export async function backupOriginalNotes(plugin: O2Plugin) {
   });
 }
 
-const renameFile = (sourceFilePath: string, targetFilePath: string) => {
+const copyFile = (sourceFilePath: string, targetFilePath: string) => {
   // if directory not exist create it
   const targetDirectory = path.dirname(targetFilePath);
   if (!fs.existsSync(targetDirectory)) {
     fs.mkdirSync(targetDirectory, { recursive: true });
   }
-  fs.renameSync(sourceFilePath, targetFilePath);
+  fs.copyFileSync(sourceFilePath, targetFilePath);
 };
 
-export const rename = (
+export const copy = (
   sourceFolderPath: string,
   targetFolderPath: string,
   replacer: (year: string, month: string, day: string, title: string) => string,
@@ -85,12 +71,11 @@ export const rename = (
     .filter(f => f.startsWith(TEMP_PREFIX))
     .forEach((filename) => {
       const transformedFileName = transformPath(filename, replacer);
-      console.log(`Renaming ${filename} to ${transformedFileName}`);
 
       const sourceFilePath = path.join(sourceFolderPath, filename);
       const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
 
-      renameFile(sourceFilePath, targetFilePath);
+      copyFile(sourceFilePath, targetFilePath);
     });
 };
 
@@ -112,7 +97,7 @@ export const moveFiles = async (
 ) => {
   const sourceFolderPath = `${(vaultAbsolutePath(plugin))}/${settings.readyFolder}`;
   const targetFolderPath = settings.targetPath();
-  rename(
+  copy(
     sourceFolderPath,
     targetFolderPath,
     (year, month, day, title) => {
@@ -121,17 +106,17 @@ export const moveFiles = async (
   );
 };
 
-export const cleanUp = (plugin: O2Plugin) => {
+export const cleanUp = async (plugin: O2Plugin) => {
   // remove temp files
   const markdownFiles = plugin.app.vault.getMarkdownFiles()
     .filter((file) => file.path.includes(TEMP_PREFIX));
 
-  markdownFiles.forEach((file) => {
-    plugin.app.vault.delete(file)
+  for (const file of markdownFiles) {
+    await plugin.app.vault.delete(file)
       .then(() => {
         console.log(`Deleted temp file: ${file.path}`);
       });
-  });
+  }
 };
 
 // prepare path related to docusaurus date extraction type
