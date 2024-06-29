@@ -81,21 +81,17 @@ export const rename = (
   targetFolderPath: string,
   replacer: (year: string, month: string, day: string, title: string) => string,
 ) => {
-  fs.readdir(sourceFolderPath, (err, files) => {
-    if (err) throw err;
+  fs.readdirSync(sourceFolderPath)
+    .filter(f => f.startsWith(TEMP_PREFIX))
+    .forEach((filename) => {
+      const transformedFileName = transformPath(filename, replacer);
+      console.log(`Renaming ${filename} to ${transformedFileName}`);
 
-    files
-      .filter((filename) => filename.startsWith(TEMP_PREFIX))
-      .forEach((filename) => {
-        const transformedFileName = transformPath(filename, replacer);
-        console.log(`Renaming ${filename} to ${transformedFileName}`);
+      const sourceFilePath = path.join(sourceFolderPath, filename);
+      const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
 
-        const sourceFilePath = path.join(sourceFolderPath, filename);
-        const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
-
-        renameFile(sourceFilePath, targetFilePath);
-      });
-  });
+      renameFile(sourceFilePath, targetFilePath);
+    });
 };
 
 export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
