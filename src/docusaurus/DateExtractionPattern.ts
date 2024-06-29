@@ -9,6 +9,7 @@
  * Date in the middle of path: category/YYYY/MM-DD-my-blog-post-title.md
  */
 export const DateExtractionPattern: Record<string, DateExtractionPatternInterface> = {
+  // default pattern
   SINGLE: {
     pattern: 'YYYY-MM-DD-my-blog-post-title.md',
     regexp: /(\d{4})-(\d{2})-(\d{2})-(.*)\.md/,

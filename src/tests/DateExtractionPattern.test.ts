@@ -3,7 +3,16 @@ import { DateExtractionPattern } from '../docusaurus/DateExtractionPattern';
 describe('SINGLE', () => {
   it('should match YYYY-MM-DD-my-blog-post-title.md', () => {
     const regex = DateExtractionPattern['SINGLE'].regexp;
-    expect('o2-temp.2021-02-01-my-blog-post-title.md').toMatch(regex);
+    const actual = '2021-02-01-my-blog-post-title.md';
+    expect(actual).toMatch(regex);
+
+    const match = actual.match(regex);
+    if (match) {
+      expect(match[1]).toBe('2021');
+      expect(match[2]).toBe('02');
+      expect(match[3]).toBe('01');
+      expect(match[4]).toBe('my-blog-post-title');
+    }
   });
 
   it('should replace YYYY-MM-DD-my-blog-post-title.md', () => {

@@ -7,12 +7,11 @@ import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
 import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
+import DocusaurusSettings from './settings/DocusaurusSettings';
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
-  // TODO: prepare path related to docusaurus date extraction type
-  // e.g. directory candidates that should be created have to refer to date extraction type.
 
   for (const file of markdownFiles) {
     const contents: Contents = await plugin.app.vault.read(file);
