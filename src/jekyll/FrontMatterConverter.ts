@@ -1,5 +1,5 @@
 import { ObsidianRegex } from '../ObsidianRegex';
-import { Contents, Converter } from '../core/Converter';
+import { Converter } from '../core/Converter';
 import yaml from 'js-yaml';
 
 interface FrontMatter {
@@ -161,13 +161,3 @@ export const convertFrontMatter = (input: string) => {
     body,
   );
 };
-
-export function addPublishedFrontMatter(contents: Contents) {
-  const [frontMatter, body] = parseFrontMatter(contents);
-  if (frontMatter.published) {
-    return contents;
-  }
-
-  const result = { ...frontMatter, ...{ published: new Date().toISOString().split('T')[0] } };
-  return join(result, body);
-}

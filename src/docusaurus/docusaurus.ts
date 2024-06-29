@@ -6,14 +6,20 @@ import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
 import { Notice } from 'obsidian';
-import { addPublishedFrontMatter, convertFrontMatter } from '../jekyll/FrontMatterConverter';
+import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
 async function markPublished(plugin: O2Plugin) {
   const filesInReady = getFilesInReady(plugin);
   for (const file of filesInReady) {
-    const contents: Contents = await plugin.app.vault.read(file);
-    const newBody = addPublishedFrontMatter(contents);
-    await plugin.app.vault.modify(file, newBody);
+    await plugin.app.fileManager.processFrontMatter(
+      file,
+      fm => {
+        if (fm.published) {
+          return fm;
+        }
+        fm.published = new Date().toISOString().split('T')[0];
+      },
+    );
   }
 }
 
