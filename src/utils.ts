@@ -91,23 +91,6 @@ export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
 };
 
 export const moveFiles = async (
-  plugin: O2Plugin,
-  settings: O2PluginSettings,
-) => {
-  const sourceFolderPath = `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`;
-  const targetFolderPath = settings.targetPath();
-
-
-  copy(
-    sourceFolderPath,
-    targetFolderPath,
-    (year, month, day, title) => {
-      return settings.pathReplacer(year, month, day, title);
-    },
-  );
-};
-
-export const moveFilesV2 = async (
   file: TFile,
   sourceFolderPath: string,
   targetFolderPath: string,

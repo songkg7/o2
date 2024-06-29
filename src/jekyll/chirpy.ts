@@ -4,7 +4,7 @@ import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLink
 import { Notice } from 'obsidian';
 import { CalloutConverter } from './CalloutConverter';
 import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
-import { copyMarkdownFile, moveFilesV2, vaultAbsolutePath } from '../utils';
+import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
 import { FootnotesConverter } from './FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
 import { CommentsConverter } from './CommentsConverter';
@@ -43,7 +43,7 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
       });
 
     // move files to chirpy folder
-    await moveFilesV2(
+    await moveFiles(
       file,
       `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
       settings.targetPath(),
@@ -89,7 +89,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         .converting(await plugin.app.vault.read(file));
 
       await plugin.app.vault.modify(file, result);
-      await moveFilesV2(
+      await moveFiles(
         file,
         `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
         settings.targetPath(),
