@@ -1,5 +1,5 @@
 import O2Plugin from '../main';
-import { copyMarkdownFile, getFilesInReady, moveFiles } from '../utils';
+import { copyMarkdownFile, getFilesInReady, moveFilesV2, vaultAbsolutePath } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
@@ -46,15 +46,16 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
       .then(() => {
         new Notice('Converted to Docusaurus successfully.', 5000);
       });
+
+    // move files to docusaurus folder
+    await moveFilesV2(
+      file,
+      `${vaultAbsolutePath(plugin)}/${plugin.docusaurus.readyFolder}`,
+      plugin.docusaurus.targetPath(),
+      plugin.docusaurus.pathReplacer,
+    )
+      .then(async () => await markPublished(plugin));
   }
 
-  // move files to docusaurus folder
-  await moveFiles(
-    plugin,
-    plugin.docusaurus,
-  )
-    .then(async () => await markPublished(plugin))
-    .then(() => {
-      new Notice('Moved files to Docusaurus successfully.', 5000);
-    });
+  new Notice('Moved files to Docusaurus successfully.', 5000);
 };
