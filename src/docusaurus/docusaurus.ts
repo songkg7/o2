@@ -15,7 +15,7 @@ async function markPublished(plugin: O2Plugin) {
       file,
       fm => {
         if (fm.published) {
-          return fm;
+          return;
         }
         fm.published = new Date().toISOString().split('T')[0];
       },
