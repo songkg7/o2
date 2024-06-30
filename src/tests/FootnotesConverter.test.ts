@@ -28,9 +28,6 @@ This is a simple footnote[^fn-nth-1]. next footnote[^fn-nth-2].
     const actual = converter.convert(contents);
     expect(actual).toEqual(expected);
   });
-
-  it.todo('should convert footnotes with multiple lines');
-  it.todo('should convert inline footnotes');
 });
 
 describe('convertFootnotes', () => {
