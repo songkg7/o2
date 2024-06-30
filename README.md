@@ -79,7 +79,7 @@ issue.
 
 ## Contributing
 
-Pull requests are always welcome! For major changes, please open an issue(or discussion) first to discuss what you would
+Pull requests are always welcome! For major changes, please open an issue (or discussion) first to discuss what you would like to change.
 like to
 change.
 
