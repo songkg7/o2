@@ -151,7 +151,7 @@ interface LocalDate {
   day: number;
 }
 
-export const extractLocalDate = (date: string): LocalDate => {
+export const parseLocalDate = (date: string): LocalDate => {
   const match = date.match(/(\d{4})-(\d{2})-(\d{2})/);
   if (!match) {
     throw new Error('Invalid date format');

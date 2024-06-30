@@ -1,5 +1,5 @@
 import O2Plugin from '../main';
-import { copyMarkdownFile, extractLocalDate, getFilesInReady, moveFiles, vaultAbsolutePath } from '../utils';
+import { copyMarkdownFile, getFilesInReady, moveFiles, parseLocalDate, vaultAbsolutePath } from '../utils';
 import { Contents } from '../core/Converter';
 import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
@@ -69,7 +69,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
       `${vaultAbsolutePath(plugin)}/${plugin.docusaurus.readyFolder}`,
       plugin.docusaurus.targetPath(),
       plugin.docusaurus.pathReplacer,
-      extractLocalDate(publishedDate),
+      parseLocalDate(publishedDate),
     )
       .then(async () => await markPublished(plugin));
   }
