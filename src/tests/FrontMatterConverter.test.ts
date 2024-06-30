@@ -347,6 +347,27 @@ date: 2024-01-02 12:00:00 +0900
     );
   });
 
+  it('should delete updated and published if published is exist', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+updated: 2024-01-02 12:00:00 +0900
+published: 2024-01-02 12:00:00 +0900
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2024-01-02 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
 });
 
 describe('FrontMatterConverter Edge Case Tests', () => {
