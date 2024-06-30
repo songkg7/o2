@@ -101,8 +101,6 @@ export const moveFiles = async (
   pathReplacer: (year: string, month: string, day: string, title: string) => string,
   publishedDate: LocalDate,
 ) => {
-  console.log(`targetFolderPath: ${targetFolderPath}`);
-  console.log(`publishedDate: ${publishedDate}`);
 
   copy(
     sourceFolderPath,
@@ -146,9 +144,9 @@ const transformPath = (
 };
 
 interface LocalDate {
-  year: number;
-  month: number;
-  day: number;
+  year: string;
+  month: string;
+  day: string;
 }
 
 export const parseLocalDate = (date: string): LocalDate => {
@@ -157,8 +155,8 @@ export const parseLocalDate = (date: string): LocalDate => {
     throw new Error('Invalid date format');
   }
   return {
-    year: parseInt(match[1]),
-    month: parseInt(match[2]),
-    day: parseInt(match[3]),
+    year: match[1],
+    month: match[2],
+    day: match[3],
   };
 };
