@@ -180,32 +180,6 @@ image: test.png
   });
 });
 
-describe('obsidian image link', () => {
-  const contents = `---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-image: ![[test.png]]
-tags: [test]
----
-
-# test
-`;
-  it.skip('should be converted', () => {
-    const result = frontMatterConverter.convert(contents);
-    expect(result).toEqual(`---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-image: /assets/img/2023-01-01-test-title/test.png
-tags: [test]
----
-
-# test
-`,
-    );
-  });
-
-});
-
 describe('updated front matter', () => {
   const updatedConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true, true);
   it('should be converted', () => {

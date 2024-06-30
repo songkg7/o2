@@ -65,7 +65,7 @@ export const copy = (
   sourceFolderPath: string,
   targetFolderPath: string,
   replacer: (year: string, month: string, day: string, title: string) => string,
-  publishedDate: string,
+  publishedDate: LocalDate,
 ) => {
   fs.readdirSync(sourceFolderPath)
     .filter(filename => filename.startsWith(TEMP_PREFIX))
@@ -73,7 +73,7 @@ export const copy = (
       const transformedFileName = transformPath(
         filename,
         replacer,
-        extractLocalDate(publishedDate),
+        publishedDate,
       );
 
       const sourceFilePath = path.join(sourceFolderPath, filename);
@@ -99,9 +99,8 @@ export const moveFiles = async (
   sourceFolderPath: string,
   targetFolderPath: string,
   pathReplacer: (year: string, month: string, day: string, title: string) => string,
-  publishedDate: string,
+  publishedDate: LocalDate,
 ) => {
-  // TODO: published front matter 를 가지고 있는 파일이라면 이미 발행된 적이 있는 파일이므로, targetFolderPath 를 published 로 변경해야 함
   console.log(`targetFolderPath: ${targetFolderPath}`);
   console.log(`publishedDate: ${publishedDate}`);
 
