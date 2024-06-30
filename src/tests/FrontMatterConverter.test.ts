@@ -326,11 +326,11 @@ date: 2021-01-01 12:00:00 +0900
     );
   });
 
-  it('should delete updated', () => {
+  it('should delete updated and move to date', () => {
     const contents = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
-updated: 2022-01-02 12:00:00 +0900
+updated: 2024-01-02 12:00:00 +0900
 ---
 
 # test
@@ -339,7 +339,7 @@ updated: 2022-01-02 12:00:00 +0900
     expect(result).toEqual(
       `---
 title: "test"
-date: 2021-01-01 12:00:00 +0900
+date: 2024-01-02 12:00:00 +0900
 ---
 
 # test
