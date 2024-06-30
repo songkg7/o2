@@ -1,4 +1,4 @@
-import { CalloutConverter, convertDocusaurusCallout } from '../jekyll/CalloutConverter';
+import { CalloutConverter, convertDocusaurusCallout } from '../CalloutConverter';
 
 const calloutConverter = new CalloutConverter();
 

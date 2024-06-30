@@ -1,4 +1,4 @@
-import { convertFrontMatter, FrontMatterConverter } from '../jekyll/FrontMatterConverter';
+import { convertFrontMatter, FrontMatterConverter } from '../FrontMatterConverter';
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);

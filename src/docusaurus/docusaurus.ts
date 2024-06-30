@@ -1,12 +1,12 @@
 import O2Plugin from '../main';
 import { copyMarkdownFile, getFilesInReady, moveFiles, parseLocalDate, vaultAbsolutePath } from '../utils';
 import { Contents } from '../core/Converter';
-import { convertWikiLink } from '../jekyll/WikiLinkConverter';
-import { convertFootnotes } from '../jekyll/FootnotesConverter';
-import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
-import { convertComments } from '../jekyll/CommentsConverter';
+import { convertWikiLink } from '../WikiLinkConverter';
+import { convertFootnotes } from '../FootnotesConverter';
+import { convertDocusaurusCallout } from '../CalloutConverter';
+import { convertComments } from '../CommentsConverter';
 import { Notice, TFile } from 'obsidian';
-import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
+import { convertFrontMatter } from '../FrontMatterConverter';
 
 const markPublished = async (plugin: O2Plugin) => {
   const filesInReady = getFilesInReady(plugin);
@@ -63,6 +63,8 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
       .then(() => {
         new Notice('Converted to Docusaurus successfully.', 5000);
       });
+
+    plugin.app.fileManager.ge;
 
     // move files to docusaurus folder
     await moveFiles(

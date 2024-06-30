@@ -1,5 +1,5 @@
-import { Converter } from '../core/Converter';
-import { ObsidianRegex } from '../ObsidianRegex';
+import { Converter } from './core/Converter';
+import { ObsidianRegex } from './core/ObsidianRegex';
 
 export class CommentsConverter implements Converter {
 

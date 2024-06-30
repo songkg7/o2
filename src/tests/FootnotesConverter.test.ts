@@ -1,4 +1,4 @@
-import { convertFootnotes, FootnotesConverter } from '../jekyll/FootnotesConverter';
+import { convertFootnotes, FootnotesConverter } from '../FootnotesConverter';
 
 const converter = new FootnotesConverter();
 

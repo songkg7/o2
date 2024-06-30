@@ -1,5 +1,5 @@
-import { ObsidianRegex } from '../ObsidianRegex';
-import { Converter } from '../core/Converter';
+import { ObsidianRegex } from './core/ObsidianRegex';
+import { Converter } from './core/Converter';
 
 export class WikiLinkConverter implements Converter {
   convert(input: string): string {

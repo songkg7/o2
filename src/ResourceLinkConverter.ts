@@ -1,8 +1,8 @@
 import fs from 'fs';
-import { ObsidianRegex } from '../ObsidianRegex';
+import { ObsidianRegex } from './core/ObsidianRegex';
 import { Notice } from 'obsidian';
-import { Converter } from '../core/Converter';
-import JekyllSettings from './settings/JekyllSettings';
+import { Converter } from './core/Converter';
+import JekyllSettings from './jekyll/settings/JekyllSettings';
 import { removeTempPrefix } from './FilenameConverter';
 
 export const convertJekyllResourceLink = (

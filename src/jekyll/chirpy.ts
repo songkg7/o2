@@ -1,18 +1,18 @@
 import O2Plugin from '../main';
-import { WikiLinkConverter } from './WikiLinkConverter';
-import { convertJekyllResourceLink, ResourceLinkConverter } from './ResourceLinkConverter';
+import { WikiLinkConverter } from '../WikiLinkConverter';
+import { convertJekyllResourceLink, ResourceLinkConverter } from '../ResourceLinkConverter';
 import { Notice } from 'obsidian';
-import { CalloutConverter } from './CalloutConverter';
-import { convertFrontMatter, FrontMatterConverter } from './FrontMatterConverter';
+import { CalloutConverter } from '../CalloutConverter';
+import { convertFrontMatter, FrontMatterConverter } from '../FrontMatterConverter';
 import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
-import { FootnotesConverter } from './FootnotesConverter';
+import { FootnotesConverter } from '../FootnotesConverter';
 import { ConverterChain } from '../core/ConverterChain';
-import { CommentsConverter } from './CommentsConverter';
-import { EmbedsConverter } from './EmbedsConverter';
-import { convertCurlyBrace, CurlyBraceConverter } from './CurlyBraceConverter';
+import { CommentsConverter } from '../CommentsConverter';
+import { EmbedsConverter } from '../EmbedsConverter';
+import { convertCurlyBrace, CurlyBraceConverter } from '../CurlyBraceConverter';
 import JekyllSettings from './settings/JekyllSettings';
 import validateSettings from '../core/validation';
-import { convertFileName } from './FilenameConverter';
+import { convertFileName } from '../FilenameConverter';
 import { Contents } from '../core/Converter';
 
 // WIP

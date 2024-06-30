@@ -1,4 +1,4 @@
-import { CommentsConverter } from '../jekyll/CommentsConverter';
+import { CommentsConverter } from '../CommentsConverter';
 
 const converter = new CommentsConverter();
 
