@@ -53,7 +53,7 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 
 - jekyllPath is the path of your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io).
 - Attachments will be copied by the date under the `assets/img/<yyyy-MM-dd>` folder.
-- Auto create folders: If enabled, the plugin will automatically create the necessary folders if they do not exist. You
+- Auto-create folders: If enabled, the plugin will automatically create the necessary folders if they do not exist. You
   can toggle this setting in the plugin settings tab.
 
 #### Syntax
