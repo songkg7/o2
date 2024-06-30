@@ -153,8 +153,12 @@ export const convertFrontMatter = (input: string) => {
     return input;
   }
 
+  if (frontMatter.updated) {
+    frontMatter.date = frontMatter.updated;
+    delete frontMatter.updated;
+  }
+
   delete frontMatter['aliases'];
-  delete frontMatter['updated'];
   delete frontMatter['published'];
 
   return join(
