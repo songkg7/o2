@@ -65,7 +65,7 @@ export const copy = (
   sourceFolderPath: string,
   targetFolderPath: string,
   replacer: (year: string, month: string, day: string, title: string) => string,
-  publishedDate: LocalDate,
+  publishedDate?: LocalDate,
 ) => {
   fs.readdirSync(sourceFolderPath)
     .filter(filename => filename.startsWith(TEMP_PREFIX))
@@ -99,7 +99,7 @@ export const moveFiles = async (
   sourceFolderPath: string,
   targetFolderPath: string,
   pathReplacer: (year: string, month: string, day: string, title: string) => string,
-  publishedDate: LocalDate,
+  publishedDate?: LocalDate,
 ) => {
 
   copy(
@@ -130,13 +130,13 @@ export const cleanUp = async (plugin: O2Plugin) => {
 const transformPath = (
   input: string,
   replacer: (year: string | number, month: string | number, day: string | number, title: string) => string,
-  date: LocalDate,
+  date?: LocalDate,
 ): string => {
   const match = input.match(DateExtractionPattern['SINGLE'].regexp);
   if (match) {
-    const year = date.year;
-    const month = date.month;
-    const day = date.day;
+    const year = date ? date.year : match[1];
+    const month = date ? date.month : match[2];
+    const day = date ? date.day : match[3];
     const title = match[4];
     return replacer(year, month, day, title);
   }
