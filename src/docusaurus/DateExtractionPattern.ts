@@ -72,5 +72,5 @@ export const DateExtractionPattern: Record<string, DateExtractionPatternInterfac
 export interface DateExtractionPatternInterface {
   pattern: string;
   regexp: RegExp;
-  replacer: (year: string, month: string, day: string, title: string) => string;
+  replacer: (year: string | number, month: string | number, day: string | number, title: string) => string;
 }

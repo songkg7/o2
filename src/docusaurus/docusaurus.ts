@@ -5,7 +5,7 @@ import { convertWikiLink } from '../jekyll/WikiLinkConverter';
 import { convertFootnotes } from '../jekyll/FootnotesConverter';
 import { convertDocusaurusCallout } from '../jekyll/CalloutConverter';
 import { convertComments } from '../jekyll/CommentsConverter';
-import { Notice } from 'obsidian';
+import { Notice, TFile } from 'obsidian';
 import { convertFrontMatter } from '../jekyll/FrontMatterConverter';
 
 const markPublished = async (plugin: O2Plugin) => {
@@ -24,21 +24,26 @@ const markPublished = async (plugin: O2Plugin) => {
   }
 };
 
+const checkPublished = async (plugin: O2Plugin, file: TFile) => {
+  let publishedDate = new Date().toISOString().split('T')[0];
+  await plugin.app.fileManager.processFrontMatter(
+    file,
+    fm => {
+      if (fm.published) {
+        publishedDate = fm.published;
+        return fm;
+      }
+    },
+  );
+  return publishedDate;
+};
+
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
 
   for (const file of markdownFiles) {
-    let publishedDate = new Date().toISOString().split('T')[0];
-    await plugin.app.fileManager.processFrontMatter(
-      file,
-      fm => {
-        if (fm.published) {
-          publishedDate = fm.published;
-          return fm;
-        }
-      },
-    );
+    const publishedDate = await checkPublished(plugin, file);
 
     const contents: Contents = await plugin.app.vault.read(file);
     const result =

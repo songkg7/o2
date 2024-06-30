@@ -65,11 +65,16 @@ export const copy = (
   sourceFolderPath: string,
   targetFolderPath: string,
   replacer: (year: string, month: string, day: string, title: string) => string,
+  publishedDate: string,
 ) => {
   fs.readdirSync(sourceFolderPath)
     .filter(filename => filename.startsWith(TEMP_PREFIX))
     .forEach((filename) => {
-      const transformedFileName = transformPath(filename, replacer);
+      const transformedFileName = transformPath(
+        filename,
+        replacer,
+        extractLocalDate(publishedDate),
+      );
 
       const sourceFilePath = path.join(sourceFolderPath, filename);
       const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
@@ -94,7 +99,7 @@ export const moveFiles = async (
   sourceFolderPath: string,
   targetFolderPath: string,
   pathReplacer: (year: string, month: string, day: string, title: string) => string,
-  publishedDate?: string,
+  publishedDate: string,
 ) => {
   // TODO: published front matter 를 가지고 있는 파일이라면 이미 발행된 적이 있는 파일이므로, targetFolderPath 를 published 로 변경해야 함
   console.log(`targetFolderPath: ${targetFolderPath}`);
@@ -104,6 +109,7 @@ export const moveFiles = async (
     sourceFolderPath,
     targetFolderPath,
     pathReplacer,
+    publishedDate,
   );
 };
 
@@ -126,15 +132,34 @@ export const cleanUp = async (plugin: O2Plugin) => {
 // return path to be created, and this path is target path
 const transformPath = (
   input: string,
-  replacer: (year: string, month: string, day: string, title: string) => string,
+  replacer: (year: string | number, month: string | number, day: string | number, title: string) => string,
+  date: LocalDate,
 ): string => {
   const match = input.match(DateExtractionPattern['SINGLE'].regexp);
   if (match) {
-    const year = match[1];
-    const month = match[2];
-    const day = match[3];
+    const year = date.year;
+    const month = date.month;
+    const day = date.day;
     const title = match[4];
     return replacer(year, month, day, title);
   }
   return input;
+};
+
+interface LocalDate {
+  year: number;
+  month: number;
+  day: number;
+}
+
+export const extractLocalDate = (date: string): LocalDate => {
+  const match = date.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) {
+    throw new Error('Invalid date format');
+  }
+  return {
+    year: parseInt(match[1]),
+    month: parseInt(match[2]),
+    day: parseInt(match[3]),
+  };
 };
