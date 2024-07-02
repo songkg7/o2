@@ -1,4 +1,4 @@
-import { WikiLinkConverter } from '../jekyll/WikiLinkConverter';
+import { WikiLinkConverter } from '../WikiLinkConverter';
 
 const converter = new WikiLinkConverter();
 

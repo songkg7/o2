@@ -1,20 +1,18 @@
-import { FilenameConverter } from '../jekyll/FilenameConverter';
-
-const filenameConverter = new FilenameConverter();
+import { convertFileName } from '../FilenameConverter';
 
 describe('FilenameConverter', () => {
   it('should remove extension', () => {
-    const filename = filenameConverter.convert('test.md');
+    const filename = convertFileName('test.md');
     expect(filename).toEqual('test');
   });
 
   it('should replace space to -', () => {
-    const filename = filenameConverter.convert('This is Obsidian.md');
+    const filename = convertFileName('This is Obsidian.md');
     expect(filename).toEqual('This-is-Obsidian');
   });
 
   it('should convert Korean characters', () => {
-    const filename = filenameConverter.convert('이것은 옵시디언입니다.md');
+    const filename = convertFileName('이것은 옵시디언입니다.md');
     expect(filename).toEqual('이것은-옵시디언입니다');
   });
 
@@ -27,7 +25,7 @@ describe('FilenameConverter', () => {
     ],
     ['Obsidian(Markdown Editor).md', 'ObsidianMarkdown-Editor'],
   ])('should remove special characters', (filename, expected) => {
-    const result = filenameConverter.convert(filename);
+    const result = convertFileName(filename);
     expect(result).toEqual(expected);
   });
 });

@@ -1,8 +1,7 @@
-import { FrontMatterConverter } from '../jekyll/FrontMatterConverter';
+import { convertFrontMatter, FrontMatterConverter } from '../FrontMatterConverter';
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
-
 describe('convert front matter', () => {
   const contents = `---
 title: "test"
@@ -181,32 +180,6 @@ image: test.png
   });
 });
 
-describe('obsidian image link', () => {
-  const contents = `---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-image: ![[test.png]]
-tags: [test]
----
-
-# test
-`;
-  it.skip('should be converted', () => {
-    const result = frontMatterConverter.convert(contents);
-    expect(result).toEqual(`---
-title: "test"
-date: 2021-01-01 12:00:00 +0900
-image: /assets/img/2023-01-01-test-title/test.png
-tags: [test]
----
-
-# test
-`,
-    );
-  });
-
-});
-
 describe('updated front matter', () => {
   const updatedConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true, true);
   it('should be converted', () => {
@@ -293,5 +266,130 @@ tags: test1, test2
     const result = frontMatterConverter.convert(contents);
     expect(result).toEqual(expected);
   });
+});
 
+describe('convertFrontMatter', () => {
+  it('should passthroughs', () => {
+      const mockContents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+categories: [test]
+---
+
+# test
+`;
+      const result = convertFrontMatter(mockContents);
+      expect(result).toEqual(mockContents);
+    },
+  );
+
+  it('should converted tags', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+tags: test1, test2
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+tags: [test1, test2]
+---
+
+# test
+`,
+    );
+  });
+
+  it('should delete aliases', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+aliases: ""
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
+
+  it('should delete updated and move to date', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+updated: 2024-01-02 12:00:00 +0900
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2024-01-02 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
+
+  it.skip('if published is exist, should not change date, delete updated and published', () => {
+    const contents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+updated: 2024-01-02 12:00:00 +0900
+published: 2024-01-02 12:00:00 +0900
+---
+
+# test
+`;
+    const result = convertFrontMatter(contents);
+    expect(result).toEqual(
+      `---
+title: "test"
+date: 2021-01-02 12:00:00 +0900
+---
+
+# test
+`,
+    );
+  });
+});
+
+describe('FrontMatterConverter Edge Case Tests', () => {
+  const malformedFrontMatterContents = `---
+title "test"  // Missing colon
+date: 2021-01-01 12:00:00 +0900
+categories: [test]
+---
+# test
+`;
+  it('should handle malformed front matter', () => {
+    const result = convertFrontMatter(malformedFrontMatterContents);
+    expect(result).toEqual(malformedFrontMatterContents); // Assuming the function passes through malformed front matter as is
+  });
+
+  const incompleteFrontMatterContents = `---
+title: "test"
+date: 2021-01-01 12:00:00 +0900
+# test
+`;
+  it('should handle interrupted parsing', () => {
+    const result = convertFrontMatter(incompleteFrontMatterContents);
+    expect(result).toEqual(incompleteFrontMatterContents); // Assuming the function passes through incomplete front matter as is
+  });
 });

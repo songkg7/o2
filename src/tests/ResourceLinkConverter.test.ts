@@ -1,4 +1,4 @@
-import { extractResourceNames, ResourceLinkConverter } from '../jekyll/ResourceLinkConverter';
+import { extractResourceNames, ResourceLinkConverter } from '../ResourceLinkConverter';
 
 jest.mock('obsidian', () => ({}), { virtual: true });
 jest.mock('fs', () => ({

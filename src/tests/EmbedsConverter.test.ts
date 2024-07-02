@@ -1,4 +1,4 @@
-import { EmbedsConverter } from '../jekyll/EmbedsConverter';
+import { EmbedsConverter } from '../EmbedsConverter';
 
 const converter = new EmbedsConverter();
 

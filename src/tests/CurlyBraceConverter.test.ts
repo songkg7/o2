@@ -1,4 +1,4 @@
-import { CurlyBraceConverter } from '../jekyll/CurlyBraceConverter';
+import { CurlyBraceConverter } from '../CurlyBraceConverter';
 
 const activatedConverter = new CurlyBraceConverter(true);
 const deactivatedConverter = new CurlyBraceConverter(false);
