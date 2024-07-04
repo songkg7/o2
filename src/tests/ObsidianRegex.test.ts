@@ -1,4 +1,4 @@
-import { ObsidianRegex } from '../ObsidianRegex';
+import { ObsidianRegex } from '../core/ObsidianRegex';
 
 describe('Image link', () => {
   it('should separate image name and size', () => {

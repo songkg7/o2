@@ -1,111 +1,23 @@
-import { App, Notice, PluginSettingTab, Setting } from 'obsidian';
+import { App, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
+import JekyllSettings from './jekyll/settings/JekyllSettings';
+import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
+import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export interface O2PluginSettings {
+  isAutoCreateFolder: boolean;
   attachmentsFolder: string;
   readyFolder: string;
-  backupFolder: string;
-
-  jekyllSetting(): JekyllSetting;
+  achieveFolder: string;
+  isAutoAchieve: boolean;
 
   targetPath(): string;
 
   resourcePath(): string;
 
   afterPropertiesSet(): boolean;
-}
 
-export class JekyllSetting implements O2PluginSettings {
-  attachmentsFolder: string;
-  readyFolder: string;
-  backupFolder: string;
-  private _jekyllPath: string;
-  private _jekyllRelativeResourcePath: string;
-  private _isAutoCreateFolder: boolean;
-
-  // FIXME: abstraction
-  private _isEnableBanner: boolean;
-  private _isEnableCurlyBraceConvertMode: boolean;
-  private _isEnableUpdateFrontmatterTimeOnEdit: boolean;
-
-  constructor() {
-    this.attachmentsFolder = 'attachments';
-    this.readyFolder = 'ready';
-    this.backupFolder = 'backup';
-    this._jekyllPath = '';
-    this._jekyllRelativeResourcePath = 'assets/img';
-    this._isAutoCreateFolder = false;
-  }
-
-  get jekyllPath(): string {
-    return this._jekyllPath;
-  }
-
-  set jekyllPath(value: string) {
-    this._jekyllPath = value;
-  }
-
-  get jekyllRelativeResourcePath(): string {
-    return this._jekyllRelativeResourcePath;
-  }
-
-  set jekyllRelativeResourcePath(value: string) {
-    this._jekyllRelativeResourcePath = value;
-  }
-
-  get isEnableBanner(): boolean {
-    return this._isEnableBanner;
-  }
-
-  set isEnableBanner(value: boolean) {
-    this._isEnableBanner = value;
-  }
-
-  get isEnableCurlyBraceConvertMode(): boolean {
-    return this._isEnableCurlyBraceConvertMode;
-  }
-
-  set isEnableCurlyBraceConvertMode(value: boolean) {
-    this._isEnableCurlyBraceConvertMode = value;
-  }
-
-  get isEnableUpdateFrontmatterTimeOnEdit(): boolean {
-    return this._isEnableUpdateFrontmatterTimeOnEdit;
-  }
-
-  set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
-    this._isEnableUpdateFrontmatterTimeOnEdit = value;
-  }
-
-  get isAutoCreateFolder(): boolean {
-    return this._isAutoCreateFolder;
-  }
-
-  set isAutoCreateFolder(value: boolean) {
-    this._isAutoCreateFolder = value;
-  }
-
-  targetPath(): string {
-    return `${this._jekyllPath}/_posts`;
-  }
-
-  resourcePath(): string {
-    return `${this._jekyllPath}/${this._jekyllRelativeResourcePath}`;
-  }
-
-  afterPropertiesSet(): boolean {
-    if (this._jekyllPath === '') {
-      new Notice('Jekyll path is not set.', 5000);
-      return false;
-    }
-    return true;
-  }
-
-  // FIXME: As I know, abstraction is better solution but this is something weird.
-  // temporary solution
-  jekyllSetting(): JekyllSetting {
-    return this;
-  }
+  pathReplacer(year: string, month: string, day: string, title: string): string;
 }
 
 export class O2SettingTab extends PluginSettingTab {
@@ -117,7 +29,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   display(): void {
-    this.containerEl.empty();
+    this.containerEl.empty(); // Clear the container. prevent duplicate settings
     this.containerEl.createEl('h1', {
       text: 'Settings for O2 plugin',
     });
@@ -125,20 +37,34 @@ export class O2SettingTab extends PluginSettingTab {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
-    this.addBackupFolderSetting();
+    this.addAchieveFolderSetting();
     this.addAttachmentsFolderSetting();
+
+    // jekyll settings
+    this.containerEl.createEl('h2', {
+      text: 'Jekyll',
+    });
     this.addJekyllPathSetting();
     this.addJekyllRelativeResourcePathSetting();
+
+    // docusaurus settings
+    this.containerEl.createEl('h2', {
+      text: 'Docusaurus',
+    });
+    this.addDocusaurusPathSetting();
+    this.dateExtractionPatternSetting();
+
     this.containerEl.createEl('h2', {
       text: 'Features',
     });
     this.enableCurlyBraceSetting();
     this.enableUpdateFrontmatterTimeOnEditSetting();
     this.enableAutoCreateFolderSetting();
+    // this.enableAutoAchieveSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Replace date frontmatter to updated time')
       .setDesc('If \'updated\' frontmatter exists, replace the value of \'date\' frontmatter with the value of \'updated\' frontmatter.')
@@ -151,7 +77,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableAutoCreateFolderSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
@@ -164,7 +90,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableCurlyBraceSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Curly Brace Conversion')
       .setDesc('Convert double curly braces to jekyll raw tag.')
@@ -176,24 +102,11 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
-  private enableBannerSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
-    new Setting(this.containerEl)
-      .setName('Banner Conversion')
-      .setDesc('Convert image path of front matter to jekyll banner.')
-      .addToggle(toggle => toggle
-        .setValue(jekyllSetting.isEnableBanner)
-        .onChange(async (value) => {
-          jekyllSetting.isEnableBanner = value;
-          await this.plugin.saveSettings();
-        }));
-  }
-
   private addJekyllPathSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Jekyll path')
-      .setDesc('The absolute path where Jekyll is installed.')
+      .setDesc('The absolute path where Jekyll workspace is located.')
       .addText(text => text
         .setPlaceholder('Enter path')
         .setValue(jekyllSetting.jekyllPath)
@@ -204,7 +117,7 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private addJekyllRelativeResourcePathSetting() {
-    const jekyllSetting = this.plugin.settings.jekyllSetting();
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Relative resource path')
       .setDesc('The relative path where resources are stored. (default: assets/img)')
@@ -223,9 +136,9 @@ export class O2SettingTab extends PluginSettingTab {
       .setDesc('Where the attachments will be stored.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.settings.attachmentsFolder)
+        .setValue(this.plugin.jekyll.attachmentsFolder)
         .onChange(async (value) => {
-          this.plugin.settings.attachmentsFolder = value;
+          this.plugin.jekyll.attachmentsFolder = value;
           await this.plugin.saveSettings();
         }));
   }
@@ -236,24 +149,72 @@ export class O2SettingTab extends PluginSettingTab {
       .setDesc('Where the notes will be converted to another syntax.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.settings.readyFolder)
+        .setValue(this.plugin.jekyll.readyFolder)
+        .setValue(this.plugin.docusaurus.readyFolder) // FIXME: global settings for path
         .onChange(async (value) => {
-          this.plugin.settings.readyFolder = value;
+          this.plugin.jekyll.readyFolder = value;
+          this.plugin.docusaurus.readyFolder = value;
           await this.plugin.saveSettings();
         }));
   }
 
-  private addBackupFolderSetting() {
+  private addAchieveFolderSetting() {
     new Setting(this.containerEl)
-      .setName('Folder to backup notes before execute converting process in')
-      .setDesc('Where the notes will be backup before converting.')
+      .setName('Folder to Archive notes in')
+      .setDesc('Where the notes will be archived after conversion.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.settings.backupFolder)
+        .setValue(this.plugin.jekyll.achieveFolder)
+        .setValue(this.plugin.docusaurus.achieveFolder)
         .onChange(async (value) => {
-          this.plugin.settings.backupFolder = value;
+          this.plugin.jekyll.achieveFolder = value;
+          this.plugin.docusaurus.achieveFolder = value;
           await this.plugin.saveSettings();
         }));
   }
 
+  private addDocusaurusPathSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Docusaurus path')
+      .setDesc('The absolute path where Docusaurus workspace is located.')
+      .addText(text => text
+        .setPlaceholder('Enter path')
+        .setValue(docusaurus.docusaurusPath)
+        .onChange(async (value) => {
+          docusaurus.docusaurusPath = value;
+          await this.plugin.saveSettings();
+        }));
+  }
+
+  private dateExtractionPatternSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Date extraction pattern')
+      .setDesc('The pattern to extract date from note title.')
+      .addDropdown(dropdown => {
+        for (const key in DateExtractionPattern) {
+          dropdown.addOption(key, DateExtractionPattern[key].pattern);
+        }
+        dropdown.setValue(docusaurus.dateExtractionPattern);
+        dropdown.onChange(async (value) => {
+          docusaurus.dateExtractionPattern = value;
+          await this.plugin.saveSettings();
+        });
+      });
+  }
+
+  private enableAutoAchieveSetting() {
+    new Setting(this.containerEl)
+      .setName('Auto achieve')
+      .setDesc('Automatically move files to achieve folder after converting.')
+      .addToggle(toggle => toggle
+        .setValue(this.plugin.jekyll.isAutoAchieve)
+        .setValue(this.plugin.docusaurus.isAutoAchieve)
+        .onChange(async (value) => {
+          this.plugin.jekyll.isAutoAchieve = value;
+          this.plugin.docusaurus.isAutoAchieve = value;
+          await this.plugin.saveSettings();
+        }));
+  }
 }
