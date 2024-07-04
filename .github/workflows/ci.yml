@@ -23,7 +23,7 @@ jobs:
       - name: Run tests and collect coverage
         run: npm run test
 
-      - uses: actions/checkout@main
+      - uses: actions/checkout@v4
       - uses: codecov/codecov-action@v4
         with:
 #          fail_ci_if_error: true # optional (default = false)

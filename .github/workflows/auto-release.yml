@@ -19,17 +19,17 @@ jobs:
     if: contains(github.ref, 'refs/tags/')
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Use Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Build
         id: build
         run: |
-          npm install
-          npm run build
+          yarn install
+          yarn run build
 
       - name: Release
         id: release
