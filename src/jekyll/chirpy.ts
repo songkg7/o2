@@ -44,7 +44,7 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
 
     // move files to chirpy folder
     await moveFiles(
-      `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
+      `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
       settings.targetPath(),
       settings.pathReplacer,
     )
@@ -70,7 +70,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         fileName,
         settings.resourcePath(),
         vaultAbsolutePath(plugin),
-        settings.attachmentsFolder,
+        plugin.obsidianPathSettings.attachmentsFolder,
         settings.jekyllRelativeResourcePath,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
@@ -89,7 +89,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
 
       await plugin.app.vault.modify(file, result);
       await moveFiles(
-        `${vaultAbsolutePath(plugin)}/${settings.readyFolder}`,
+        `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
         settings.targetPath(),
         settings.pathReplacer,
       )

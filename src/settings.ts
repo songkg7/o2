@@ -41,6 +41,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.addReadyFolderSetting();
     this.addAchieveFolderSetting();
     this.addAttachmentsFolderSetting();
+    this.enableAutoArchiveSetting();
 
     // jekyll settings
     this.containerEl.createEl('h2', {
@@ -62,7 +63,6 @@ export class O2SettingTab extends PluginSettingTab {
     this.enableCurlyBraceSetting();
     this.enableUpdateFrontmatterTimeOnEditSetting();
     this.enableAutoCreateFolderSetting();
-    // this.enableAutoAchieveSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
@@ -201,7 +201,7 @@ export class O2SettingTab extends PluginSettingTab {
       });
   }
 
-  private enableAutoAchieveSetting() {
+  private enableAutoArchiveSetting() {
     new Setting(this.containerEl)
       .setName('Auto achieve')
       .setDesc('Automatically move files to achieve folder after converting.')

@@ -22,7 +22,15 @@ export default class O2Plugin extends Plugin {
           if (checking) {
             return true;
           }
-          o2ConversionCommand(this).then(() => new Notice('Converted to successfully.', 5000));
+          o2ConversionCommand(this)
+            .then(() => new Notice('Converted to successfully.', 5000))
+            .finally(() => {
+              // archive
+              if (this.obsidianPathSettings.isAutoArchive) {
+                // move files to archive
+
+              }
+            });
         }
       },
     });

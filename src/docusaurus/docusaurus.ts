@@ -64,11 +64,9 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         new Notice('Converted to Docusaurus successfully.', 5000);
       });
 
-    plugin.app.fileManager.ge;
-
     // move files to docusaurus folder
     await moveFiles(
-      `${vaultAbsolutePath(plugin)}/${plugin.docusaurus.readyFolder}`,
+      `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
       plugin.docusaurus.targetPath(),
       plugin.docusaurus.pathReplacer,
       parseLocalDate(publishedDate),
