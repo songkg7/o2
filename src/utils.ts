@@ -42,15 +42,6 @@ export const getFilesInReady = (plugin: O2Plugin): TFile[] =>
   plugin.app.vault.getMarkdownFiles()
     .filter((file: TFile) => file.path.startsWith(plugin.obsidianPathSettings.readyFolder));
 
-export async function backupOriginalNotes(plugin: O2Plugin) {
-  const readyFiles = getFilesInReady(plugin);
-  const backupFolder = plugin.obsidianPathSettings.archiveFolder;
-  const readyFolder = plugin.obsidianPathSettings.readyFolder;
-  readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
-  });
-}
-
 const copyFile = (sourceFilePath: string, targetFilePath: string) => {
   // if directory not exist create it
   const targetDirectory = path.dirname(targetFilePath);

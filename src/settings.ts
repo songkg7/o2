@@ -35,12 +35,20 @@ export class O2SettingTab extends PluginSettingTab {
     this.containerEl.createEl('h1', {
       text: 'Settings for O2 plugin',
     });
+
     this.containerEl.createEl('h2', {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
     this.addArchiveFolderSetting();
     this.addAttachmentsFolderSetting();
+
+    this.containerEl.createEl('h2', {
+      text: 'Features',
+    });
+    this.enableCurlyBraceSetting();
+    this.enableUpdateFrontmatterTimeOnEditSetting();
+    this.enableAutoCreateFolderSetting();
     this.enableAutoArchiveSetting();
 
     // jekyll settings
@@ -56,13 +64,6 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addDocusaurusPathSetting();
     this.dateExtractionPatternSetting();
-
-    this.containerEl.createEl('h2', {
-      text: 'Features',
-    });
-    this.enableCurlyBraceSetting();
-    this.enableUpdateFrontmatterTimeOnEditSetting();
-    this.enableAutoCreateFolderSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
