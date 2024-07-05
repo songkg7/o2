@@ -2,13 +2,9 @@ import { O2PluginSettings } from '../../settings';
 import { DateExtractionPattern } from '../DateExtractionPattern';
 
 export default class DocusaurusSettings implements O2PluginSettings {
-  attachmentsFolder: string;
-  readyFolder: string;
-  achieveFolder: string;
   docusaurusPath: string;
   isAutoCreateFolder: boolean;
   dateExtractionPattern: string;
-  isAutoAchieve: boolean;
 
   targetPath(): string {
     return `${this.docusaurusPath}/blog`;

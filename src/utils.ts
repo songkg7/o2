@@ -3,7 +3,7 @@ import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import fs from 'fs';
 import path from 'path';
-import { O2PluginSettings } from './settings';
+import { ObsidianPathSettings } from './settings';
 import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export const TEMP_PREFIX = 'o2-temp.' as const;
@@ -41,12 +41,12 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
 
 export const getFilesInReady = (plugin: O2Plugin): TFile[] =>
   plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.jekyll.readyFolder));
+    .filter((file: TFile) => file.path.startsWith(plugin.obsidianPathSettings.readyFolder));
 
 export async function backupOriginalNotes(plugin: O2Plugin) {
   const readyFiles = getFilesInReady(plugin);
-  const backupFolder = plugin.jekyll.achieveFolder;
-  const readyFolder = plugin.jekyll.readyFolder;
+  const backupFolder = plugin.obsidianPathSettings.archiveFolder;
+  const readyFolder = plugin.obsidianPathSettings.readyFolder;
   readyFiles.forEach((file: TFile) => {
     return plugin.app.vault.copy(file, file.path.replace(readyFolder, backupFolder));
   });
@@ -83,15 +83,15 @@ export const copy = (
     });
 };
 
-export const achieve = async (plugin: O2Plugin, settings: O2PluginSettings) => {
-  if (!settings.isAutoAchieve) {
+export const archiving = async (plugin: O2Plugin, settings: ObsidianPathSettings) => {
+  if (!settings.isAutoArchive) {
     return;
   }
 
   // move files to achieve folder
   const readyFiles = getFilesInReady(plugin);
   readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.achieveFolder));
+    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.archiveFolder));
   });
 };
 

@@ -1,10 +1,6 @@
 import { O2PluginSettings } from '../../settings';
 
 export default class JekyllSettings implements O2PluginSettings {
-  attachmentsFolder: string;
-  readyFolder: string;
-  achieveFolder: string;
-  isAutoAchieve: boolean;
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
   private _isAutoCreateFolder: boolean;
@@ -18,9 +14,6 @@ export default class JekyllSettings implements O2PluginSettings {
   private _isEnableUpdateFrontmatterTimeOnEdit: boolean;
 
   constructor() {
-    this.attachmentsFolder = 'attachments';
-    this.readyFolder = 'ready';
-    this.achieveFolder = 'backup';
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
     this._isAutoCreateFolder = false;
