@@ -4,7 +4,8 @@ import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { convertToChirpy } from './jekyll/chirpy';
 import { convertToDocusaurus } from './docusaurus/docusaurus';
-import { cleanUp } from './utils';
+import { archiving, cleanUp } from './utils';
+import validateSettings from './core/validation';
 
 export default class O2Plugin extends Plugin {
   obsidianPathSettings: ObsidianPathSettings;
@@ -24,11 +25,12 @@ export default class O2Plugin extends Plugin {
           }
           o2ConversionCommand(this)
             .then(() => new Notice('Converted to successfully.', 5000))
-            .finally(() => {
+            .then(() => {
               // archive
               if (this.obsidianPathSettings.isAutoArchive) {
                 // move files to archive
-
+                console.log('archiving');
+                archiving(this);
               }
             });
         }
@@ -55,6 +57,7 @@ export default class O2Plugin extends Plugin {
 }
 
 const o2ConversionCommand = async (plugin: O2Plugin) => {
+  await validateSettings(plugin);
   if (plugin.jekyll.afterPropertiesSet()) {
     await convertToChirpy(plugin)
       .finally(() => cleanUp(plugin));

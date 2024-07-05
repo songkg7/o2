@@ -3,7 +3,6 @@ import { FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import fs from 'fs';
 import path from 'path';
-import { ObsidianPathSettings } from './settings';
 import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
 export const TEMP_PREFIX = 'o2-temp.' as const;
@@ -83,15 +82,16 @@ export const copy = (
     });
 };
 
-export const archiving = async (plugin: O2Plugin, settings: ObsidianPathSettings) => {
-  if (!settings.isAutoArchive) {
+export const archiving = async (plugin: O2Plugin) => {
+  if (!plugin.obsidianPathSettings.isAutoArchive) {
     return;
   }
 
-  // move files to achieve folder
+  // move files to archive folder
   const readyFiles = getFilesInReady(plugin);
+  console.log(readyFiles);
   readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(settings.readyFolder, settings.archiveFolder));
+    return plugin.app.vault.copy(file, file.path.replace(plugin.obsidianPathSettings.readyFolder, plugin.obsidianPathSettings.archiveFolder));
   });
 };
 

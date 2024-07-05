@@ -39,7 +39,7 @@ export class O2SettingTab extends PluginSettingTab {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
-    this.addAchieveFolderSetting();
+    this.addArchiveFolderSetting();
     this.addAttachmentsFolderSetting();
     this.enableAutoArchiveSetting();
 
@@ -157,7 +157,7 @@ export class O2SettingTab extends PluginSettingTab {
         }));
   }
 
-  private addAchieveFolderSetting() {
+  private addArchiveFolderSetting() {
     new Setting(this.containerEl)
       .setName('Folder to Archive notes in')
       .setDesc('Where the notes will be archived after conversion.')
@@ -203,8 +203,8 @@ export class O2SettingTab extends PluginSettingTab {
 
   private enableAutoArchiveSetting() {
     new Setting(this.containerEl)
-      .setName('Auto achieve')
-      .setDesc('Automatically move files to achieve folder after converting.')
+      .setName('Auto archive')
+      .setDesc('Automatically move files to archive folder after converting.')
       .addToggle(toggle => toggle
         .setValue(this.plugin.obsidianPathSettings.isAutoArchive)
         .onChange(async (value) => {

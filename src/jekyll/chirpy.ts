@@ -11,7 +11,6 @@ import { CommentsConverter } from '../CommentsConverter';
 import { EmbedsConverter } from '../EmbedsConverter';
 import { convertCurlyBrace, CurlyBraceConverter } from '../CurlyBraceConverter';
 import JekyllSettings from './settings/JekyllSettings';
-import validateSettings from '../core/validation';
 import { convertFileName } from '../FilenameConverter';
 import { Contents } from '../core/Converter';
 
@@ -54,8 +53,6 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
 
 export async function convertToChirpy(plugin: O2Plugin) {
   const settings = plugin.jekyll as JekyllSettings;
-  // validation
-  await validateSettings(plugin, settings);
   try {
     const markdownFiles = await copyMarkdownFile(plugin);
     for (const file of markdownFiles) {
