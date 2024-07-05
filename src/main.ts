@@ -48,6 +48,7 @@ export default class O2Plugin extends Plugin {
   }
 
   async saveSettings() {
+    await this.saveData(this.obsidianPathSettings);
     await this.saveData(this.jekyll);
     await this.saveData(this.docusaurus);
   }
