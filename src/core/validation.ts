@@ -1,35 +1,34 @@
 import O2Plugin from '../main';
 import { Notice } from 'obsidian';
-import { O2PluginSettings } from '../settings';
 
-export default async function validateSettings(plugin: O2Plugin, settings: O2PluginSettings) {
+export default async (plugin: O2Plugin) => {
   const adapter = plugin.app.vault.adapter;
-  if (!await adapter.exists(settings.attachmentsFolder)) {
-    if (settings.isAutoCreateFolder) {
-      new Notice(`Auto create attachments folder: ${settings.attachmentsFolder}.`, 5000);
-      await adapter.mkdir(settings.attachmentsFolder);
+  if (!await adapter.exists(plugin.obsidianPathSettings.attachmentsFolder)) {
+    if (plugin.obsidianPathSettings.isAutoCreateFolder) {
+      new Notice(`Auto create attachments folder: ${plugin.obsidianPathSettings.attachmentsFolder}.`, 5000);
+      await adapter.mkdir(plugin.obsidianPathSettings.attachmentsFolder);
     } else {
-      new Notice(`Attachments folder ${settings.attachmentsFolder} does not exist.`, 5000);
-      throw new Error(`Attachments folder ${settings.attachmentsFolder} does not exist.`);
+      new Notice(`Attachments folder ${plugin.obsidianPathSettings.attachmentsFolder} does not exist.`, 5000);
+      throw new Error(`Attachments folder ${plugin.obsidianPathSettings.attachmentsFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(settings.readyFolder)) {
-    if (settings.isAutoCreateFolder) {
-      new Notice(`Auto create ready folder: ${settings.readyFolder}.`, 5000);
-      await adapter.mkdir(settings.readyFolder);
+  if (!await adapter.exists(plugin.obsidianPathSettings.readyFolder)) {
+    if (plugin.obsidianPathSettings.isAutoCreateFolder) {
+      new Notice(`Auto create ready folder: ${plugin.obsidianPathSettings.readyFolder}.`, 5000);
+      await adapter.mkdir(plugin.obsidianPathSettings.readyFolder);
     } else {
-      new Notice(`Ready folder ${settings.readyFolder} does not exist.`, 5000);
-      throw new Error(`Ready folder ${settings.readyFolder} does not exist.`);
+      new Notice(`Ready folder ${plugin.obsidianPathSettings.readyFolder} does not exist.`, 5000);
+      throw new Error(`Ready folder ${plugin.obsidianPathSettings.readyFolder} does not exist.`);
     }
   }
-  if (!await adapter.exists(settings.achieveFolder)) {
-    if (settings.isAutoCreateFolder) {
-      new Notice(`Auto create backup folder: ${settings.achieveFolder}.`, 5000);
-      await adapter.mkdir(settings.achieveFolder);
+  if (!await adapter.exists(plugin.obsidianPathSettings.archiveFolder)) {
+    if (plugin.obsidianPathSettings.isAutoCreateFolder) {
+      new Notice(`Auto create backup folder: ${plugin.obsidianPathSettings.archiveFolder}.`, 5000);
+      await adapter.mkdir(plugin.obsidianPathSettings.archiveFolder);
     } else {
-      new Notice(`Backup folder ${settings.achieveFolder} does not exist.`, 5000);
-      throw new Error(`Backup folder ${settings.achieveFolder} does not exist.`);
+      new Notice(`Backup folder ${plugin.obsidianPathSettings.archiveFolder} does not exist.`, 5000);
+      throw new Error(`Backup folder ${plugin.obsidianPathSettings.archiveFolder} does not exist.`);
     }
   }
-}
+};
 

@@ -4,13 +4,15 @@ import JekyllSettings from './jekyll/settings/JekyllSettings';
 import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
 import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
 
-export interface O2PluginSettings {
-  isAutoCreateFolder: boolean;
-  attachmentsFolder: string;
-  readyFolder: string;
-  achieveFolder: string;
-  isAutoAchieve: boolean;
+export class ObsidianPathSettings {
+  readyFolder: string = 'ready';
+  archiveFolder: string = 'archive';
+  attachmentsFolder: string = 'attachments';
+  isAutoArchive: boolean = false;
+  isAutoCreateFolder: boolean = false;
+}
 
+export interface O2PluginSettings {
   targetPath(): string;
 
   resourcePath(): string;
@@ -33,12 +35,21 @@ export class O2SettingTab extends PluginSettingTab {
     this.containerEl.createEl('h1', {
       text: 'Settings for O2 plugin',
     });
+
     this.containerEl.createEl('h2', {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
-    this.addAchieveFolderSetting();
+    this.addArchiveFolderSetting();
     this.addAttachmentsFolderSetting();
+
+    this.containerEl.createEl('h2', {
+      text: 'Features',
+    });
+    this.enableCurlyBraceSetting();
+    this.enableUpdateFrontmatterTimeOnEditSetting();
+    this.enableAutoCreateFolderSetting();
+    this.enableAutoArchiveSetting();
 
     // jekyll settings
     this.containerEl.createEl('h2', {
@@ -53,14 +64,6 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addDocusaurusPathSetting();
     this.dateExtractionPatternSetting();
-
-    this.containerEl.createEl('h2', {
-      text: 'Features',
-    });
-    this.enableCurlyBraceSetting();
-    this.enableUpdateFrontmatterTimeOnEditSetting();
-    this.enableAutoCreateFolderSetting();
-    // this.enableAutoAchieveSetting();
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
@@ -77,14 +80,13 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableAutoCreateFolderSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
       .addToggle(toggle => toggle
-        .setValue(jekyllSetting.isAutoCreateFolder)
+        .setValue(this.plugin.obsidianPathSettings.isAutoCreateFolder)
         .onChange(async (value) => {
-          jekyllSetting.isAutoCreateFolder = value;
+          this.plugin.obsidianPathSettings.isAutoCreateFolder = value;
           await this.plugin.saveSettings();
         }));
   }
@@ -136,9 +138,9 @@ export class O2SettingTab extends PluginSettingTab {
       .setDesc('Where the attachments will be stored.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.jekyll.attachmentsFolder)
+        .setValue(this.plugin.obsidianPathSettings.attachmentsFolder)
         .onChange(async (value) => {
-          this.plugin.jekyll.attachmentsFolder = value;
+          this.plugin.obsidianPathSettings.attachmentsFolder = value;
           await this.plugin.saveSettings();
         }));
   }
@@ -149,26 +151,22 @@ export class O2SettingTab extends PluginSettingTab {
       .setDesc('Where the notes will be converted to another syntax.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.jekyll.readyFolder)
-        .setValue(this.plugin.docusaurus.readyFolder) // FIXME: global settings for path
+        .setValue(this.plugin.obsidianPathSettings.readyFolder)
         .onChange(async (value) => {
-          this.plugin.jekyll.readyFolder = value;
-          this.plugin.docusaurus.readyFolder = value;
+          this.plugin.obsidianPathSettings.readyFolder = value;
           await this.plugin.saveSettings();
         }));
   }
 
-  private addAchieveFolderSetting() {
+  private addArchiveFolderSetting() {
     new Setting(this.containerEl)
       .setName('Folder to Archive notes in')
       .setDesc('Where the notes will be archived after conversion.')
       .addText(text => text
         .setPlaceholder('Enter folder name')
-        .setValue(this.plugin.jekyll.achieveFolder)
-        .setValue(this.plugin.docusaurus.achieveFolder)
+        .setValue(this.plugin.obsidianPathSettings.archiveFolder)
         .onChange(async (value) => {
-          this.plugin.jekyll.achieveFolder = value;
-          this.plugin.docusaurus.achieveFolder = value;
+          this.plugin.obsidianPathSettings.archiveFolder = value;
           await this.plugin.saveSettings();
         }));
   }
@@ -204,16 +202,14 @@ export class O2SettingTab extends PluginSettingTab {
       });
   }
 
-  private enableAutoAchieveSetting() {
+  private enableAutoArchiveSetting() {
     new Setting(this.containerEl)
-      .setName('Auto achieve')
-      .setDesc('Automatically move files to achieve folder after converting.')
+      .setName('Auto archive')
+      .setDesc('Automatically move files to archive folder after converting.')
       .addToggle(toggle => toggle
-        .setValue(this.plugin.jekyll.isAutoAchieve)
-        .setValue(this.plugin.docusaurus.isAutoAchieve)
+        .setValue(this.plugin.obsidianPathSettings.isAutoArchive)
         .onChange(async (value) => {
-          this.plugin.jekyll.isAutoAchieve = value;
-          this.plugin.docusaurus.isAutoAchieve = value;
+          this.plugin.obsidianPathSettings.isAutoArchive = value;
           await this.plugin.saveSettings();
         }));
   }
