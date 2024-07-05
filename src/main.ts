@@ -29,7 +29,6 @@ export default class O2Plugin extends Plugin {
               // archive
               if (this.obsidianPathSettings.isAutoArchive) {
                 // move files to archive
-                console.log('archiving');
                 archiving(this);
               }
             });
