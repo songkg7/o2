@@ -32,7 +32,7 @@ export const convertToChirpyV2 = async (plugin: O2Plugin) => {
             contents,
             fileName,
             vaultAbsolutePath(plugin),
-            settings,
+            plugin
           ),
         ),
       );

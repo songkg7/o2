@@ -2,23 +2,23 @@ import fs from 'fs';
 import { ObsidianRegex } from './core/ObsidianRegex';
 import { Notice } from 'obsidian';
 import { Converter } from './core/Converter';
-import JekyllSettings from './jekyll/settings/JekyllSettings';
 import { removeTempPrefix } from './FilenameConverter';
+import O2Plugin from './main';
 
 export const convertJekyllResourceLink = (
   input: string,
   fileName: string,
   absolutePath: string,
-  settings: JekyllSettings,
+  plugin: O2Plugin,
 ) => {
-  const resourcePath = `${settings.resourcePath}/${fileName}`;
+  const resourcePath = `${plugin.jekyll.resourcePath}/${fileName}`;
   const resourceNames = extractResourceNames(input);
   if (!(resourceNames === undefined || resourceNames.length === 0)) {
     fs.mkdirSync(resourcePath, { recursive: true });
   }
   resourceNames?.forEach((resourceName) => {
     fs.copyFile(
-      `${absolutePath}/${settings.attachmentsFolder}/${resourceName}`,
+      `${absolutePath}/${plugin.obsidianPathSettings.attachmentsFolder}/${resourceName}`,
       `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
       (err) => {
         if (err) {
@@ -37,7 +37,7 @@ export const convertJekyllResourceLink = (
                     height: string | undefined,
                     space: string | undefined,
                     caption: string | undefined) =>
-    `![image](/${settings.jekyllRelativeResourcePath}/${fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
+    `![image](/${plugin.jekyll.jekyllRelativeResourcePath}/${fileName}/${contents.replace(/\s/g, '-')}.${suffix})`
     + `${convertImageSize(width, height)}`
     + `${convertImageCaption(caption)}`;
 
