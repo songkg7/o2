@@ -1,7 +1,7 @@
 import O2Plugin from '../main';
 import { Notice } from 'obsidian';
 
-export default async function validateSettings(plugin: O2Plugin) {
+export default async (plugin: O2Plugin) => {
   const adapter = plugin.app.vault.adapter;
   if (!await adapter.exists(plugin.obsidianPathSettings.attachmentsFolder)) {
     if (plugin.obsidianPathSettings.isAutoCreateFolder) {
@@ -30,5 +30,5 @@ export default async function validateSettings(plugin: O2Plugin) {
       throw new Error(`Backup folder ${plugin.obsidianPathSettings.archiveFolder} does not exist.`);
     }
   }
-}
+};
 
