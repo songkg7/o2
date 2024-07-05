@@ -26,9 +26,7 @@ export default class O2Plugin extends Plugin {
           o2ConversionCommand(this)
             .then(() => new Notice('Converted to successfully.', 5000))
             .then(() => {
-              // archive
               if (this.obsidianPathSettings.isAutoArchive) {
-                // move files to archive
                 archiving(this);
               }
             });
