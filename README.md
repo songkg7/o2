@@ -73,6 +73,11 @@ your jekyll project (ex: /Users/user1/Documents/GitHub/user1.github.io)
 Grammars not in the table are ignored. If there is a syntax you would like to convert, please let me know in an
 issue.
 
+### Docusaurus 3.x
+
+> [!NOTE]
+> since 2.0.0 (WIP)
+
 ## Plugins that work well together
 
 - [imgur](https://github.com/gavvvr/obsidian-imgur-plugin): Recommanded
