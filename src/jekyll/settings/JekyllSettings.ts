@@ -3,7 +3,6 @@ import { O2PluginSettings } from '../../settings';
 export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
-  private _isAutoCreateFolder: boolean;
   pathReplacer(year: string, month: string, day: string, title: string): string {
     return `${year}-${month}-${day}-${title}.md`;
   }
@@ -16,7 +15,6 @@ export default class JekyllSettings implements O2PluginSettings {
   constructor() {
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
-    this._isAutoCreateFolder = false;
   }
 
   get jekyllPath(): string {
@@ -57,14 +55,6 @@ export default class JekyllSettings implements O2PluginSettings {
 
   set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
     this._isEnableUpdateFrontmatterTimeOnEdit = value;
-  }
-
-  get isAutoCreateFolder(): boolean {
-    return this._isAutoCreateFolder;
-  }
-
-  set isAutoCreateFolder(value: boolean) {
-    this._isAutoCreateFolder = value;
   }
 
   targetPath(): string {

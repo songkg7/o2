@@ -3,7 +3,6 @@ import { DateExtractionPattern } from '../DateExtractionPattern';
 
 export default class DocusaurusSettings implements O2PluginSettings {
   docusaurusPath: string;
-  isAutoCreateFolder: boolean;
   dateExtractionPattern: string;
 
   targetPath(): string {

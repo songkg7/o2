@@ -9,11 +9,10 @@ export class ObsidianPathSettings {
   archiveFolder: string = 'archive';
   attachmentsFolder: string = 'attachments';
   isAutoArchive: boolean = false;
+  isAutoCreateFolder: boolean = false;
 }
 
 export interface O2PluginSettings {
-  isAutoCreateFolder: boolean;
-
   targetPath(): string;
 
   resourcePath(): string;
@@ -80,14 +79,13 @@ export class O2SettingTab extends PluginSettingTab {
   }
 
   private enableAutoCreateFolderSetting() {
-    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
     new Setting(this.containerEl)
       .setName('Auto create folders')
       .setDesc('Automatically create necessary folders if they do not exist.')
       .addToggle(toggle => toggle
-        .setValue(jekyllSetting.isAutoCreateFolder)
+        .setValue(this.plugin.obsidianPathSettings.isAutoCreateFolder)
         .onChange(async (value) => {
-          jekyllSetting.isAutoCreateFolder = value;
+          this.plugin.obsidianPathSettings.isAutoCreateFolder = value;
           await this.plugin.saveSettings();
         }));
   }
