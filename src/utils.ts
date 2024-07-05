@@ -90,7 +90,7 @@ export const archiving = async (plugin: O2Plugin) => {
   // move files to archive folder
   const readyFiles = getFilesInReady(plugin);
   readyFiles.forEach((file: TFile) => {
-    return plugin.app.vault.copy(file, file.path.replace(plugin.obsidianPathSettings.readyFolder, plugin.obsidianPathSettings.archiveFolder));
+    plugin.app.fileManager.renameFile(file, file.path.replace(plugin.obsidianPathSettings.readyFolder, plugin.obsidianPathSettings.archiveFolder));
   });
 };
 
