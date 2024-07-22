@@ -43,7 +43,7 @@ if exception occurs, you can see the original note in the `backup` folder.
 - Jekyll Chirpy
 - Docusaurus
 
-Please visit the [documentation](https://haril.dev/docs/category/o2) for more information.
+Please visit the [documentation](https://haril.dev/en/docs/category/o2) for more information.
 
 ## Plugins that work well together
 
