@@ -9,8 +9,6 @@ on:
     branches:
       - main
 
-permissions: { }
-
 env:
   PLUGIN_NAME: o2
 
@@ -28,8 +26,8 @@ jobs:
       - name: Build
         id: build
         run: |
-          yarn install
-          yarn run build
+          npm install
+          npm run build
 
       - name: Release
         id: release
