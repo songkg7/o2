@@ -22,7 +22,3 @@ data.json
 .DS_Store
 
 coverage/
-
-# yarn
-yarn-error.log*
-yarn-debug.log*

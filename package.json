@@ -1,6 +1,6 @@
 {
   "name": "o2",
-  "version": "2.0.0",
+  "version": "1.9.3",
   "description": "This is a plugin to make obsidian markdown syntax compatible with other markdown syntax.",
   "main": "main.js",
   "scripts": {
@@ -19,7 +19,6 @@
   "devDependencies": {
     "@js-temporal/polyfill": "^0.4.4",
     "@types/jest": "^29.5.12",
-    "@types/js-yaml": "^4.0.9",
     "@types/node": "^20.14.9",
     "@typescript-eslint/eslint-plugin": "7.15.0",
     "@typescript-eslint/parser": "7.15.0",
@@ -30,6 +29,7 @@
     "process": "^0.11.10",
     "ts-jest": "^29.1.4",
     "tslib": "2.6.3",
-    "typescript": "5.5.3"
+    "typescript": "5.5.3",
+    "@types/js-yaml": "^4.0.9"
   }
 }
