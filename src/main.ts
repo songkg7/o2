@@ -16,8 +16,8 @@ export default class O2Plugin extends Plugin {
     await this.loadSettings();
 
     this.addCommand({
-      id: 'jekyll-chirpy-syntax',
-      name: 'convert to Jekyll Chirpy',
+      id: 'grammar-transformation',
+      name: 'Grammar Transformation',
       checkCallback: (checking: boolean) => {
         if (this.jekyll.afterPropertiesSet() || this.docusaurus.afterPropertiesSet()) {
           if (checking) {
