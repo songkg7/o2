@@ -31,9 +31,7 @@ Other Folders will be ignored.
 
 If you want to convert your notes, you should move them to the `ready` Folder.
 
-then, Execute the command `O2: convert to Jekyll Chirpy` via obsidian's `cmd + p` shortcut.
-
-if exception occurs, you can see the original note in the `archive` folder.
+then, Execute the command `O2: Grammar Transformation` via obsidian's `cmd + p` shortcut.
 
 ## Supported platforms
 
