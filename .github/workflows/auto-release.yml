@@ -9,6 +9,8 @@ on:
     branches:
       - main
 
+permissions: write-all
+
 env:
   PLUGIN_NAME: o2
 
