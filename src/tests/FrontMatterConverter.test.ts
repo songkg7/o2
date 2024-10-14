@@ -393,3 +393,49 @@ date: 2021-01-01 12:00:00 +0900
     expect(result).toEqual(incompleteFrontMatterContents); // Assuming the function passes through incomplete front matter as is
   });
 });
+
+describe('FrontMatterConverter with defaultAuthor', () => {
+  it('should not add authors when defaultAuthor is empty', () => {
+    const converter = new FrontMatterConverter('file.md', 'path', false, false, '');
+    const input = '---\ntitle: "Test"\n---\nContent';
+    const result = converter.convert(input);
+    expect(result).not.toContain('authors:');
+  });
+
+  it('should not override existing authors', () => {
+    const converter = new FrontMatterConverter('file.md', 'path', false, false, 'Default Author');
+    const input = '---\ntitle: "Test"\nauthors: Existing Author\n---\nContent';
+    const result = converter.convert(input);
+    expect(result).toContain('authors: Existing Author');
+    expect(result).not.toContain('authors: Default Author');
+  });
+
+  it('should add defaultAuthor when no authors exist', () => {
+    const converter = new FrontMatterConverter('file.md', 'path', false, false, 'Default Author');
+    const input = '---\ntitle: "Test"\n---\nContent';
+    const result = converter.convert(input);
+    expect(result).toContain('authors: Default Author');
+  });
+
+  it('should handle empty frontmatter', () => {
+    const converter = new FrontMatterConverter('file.md', 'path', false, false, 'Default Author');
+    const input = 'Content without frontmatter';
+    const result = converter.convert(input);
+    expect(result).toBe(input);
+  });
+});
+
+describe('convertFrontMatter with defaultAuthor', () => {
+  it('should add defaultAuthor when no authors exist', () => {
+    const input = '---\ntitle: "Test"\n---\nContent';
+    const result = convertFrontMatter(input, 'Default Author');
+    expect(result).toContain('authors: Default Author');
+  });
+
+  it('should not override existing authors', () => {
+    const input = '---\ntitle: "Test"\nauthors: Existing Author\n---\nContent';
+    const result = convertFrontMatter(input, 'Default Author');
+    expect(result).toContain('authors: Existing Author');
+    expect(result).not.toContain('authors: Default Author');
+  });
+});

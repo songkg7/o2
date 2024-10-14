@@ -64,17 +64,20 @@ export class FrontMatterConverter implements Converter {
   private readonly resourcePath: string;
   private readonly isEnableBanner: boolean;
   private readonly isEnableUpdateFrontmatterTimeOnEdit: boolean;
+  private readonly defaultAuthor: string;
 
   constructor(
     fileName: string,
     resourcePath: string,
     isEnableBanner = false,
     isEnableUpdateFrontmatterTimeOnEdit = false,
+    defaultAuthor = '',
   ) {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
     this.isEnableBanner = isEnableBanner;
     this.isEnableUpdateFrontmatterTimeOnEdit = isEnableUpdateFrontmatterTimeOnEdit;
+    this.defaultAuthor = defaultAuthor;
   }
 
   parseFrontMatter(content: string): [FrontMatter, string] {
@@ -90,6 +93,10 @@ export class FrontMatterConverter implements Converter {
 
     if (body.match(/```mermaid/)) {
       frontMatter.mermaid = true.toString();
+    }
+
+    if (!frontMatter.authors && this.defaultAuthor) {
+      frontMatter.authors = this.defaultAuthor;
     }
 
     const result = convert(
@@ -147,7 +154,7 @@ function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): Fr
   return frontMatter;
 }
 
-export const convertFrontMatter = (input: string) => {
+export const convertFrontMatter = (input: string, defaultAuthor: string = '') => {
   const [frontMatter, body] = parseFrontMatter(input);
   if (Object.keys(frontMatter).length === 0) {
     return input;
@@ -160,6 +167,10 @@ export const convertFrontMatter = (input: string) => {
 
   delete frontMatter['aliases'];
   delete frontMatter['published'];
+
+  if (!frontMatter.authors && defaultAuthor && defaultAuthor.trim() !== '') {
+    frontMatter.authors = defaultAuthor;
+  }
 
   return join(
     convert({ ...frontMatter }),

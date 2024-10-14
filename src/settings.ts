@@ -64,6 +64,7 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addDocusaurusPathSetting();
     this.dateExtractionPatternSetting();
+    this.addDefaultAuthorSetting(); // 새로운 설정 추가
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
@@ -200,6 +201,20 @@ export class O2SettingTab extends PluginSettingTab {
           await this.plugin.saveSettings();
         });
       });
+  }
+
+  private addDefaultAuthorSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Default Author')
+      .setDesc('The default author to be used in Docusaurus frontmatter.')
+      .addText(text => text
+        .setPlaceholder('Enter default author')
+        .setValue(docusaurus.defaultAuthor || '')
+        .onChange(async (value) => {
+          docusaurus.defaultAuthor = value;
+          await this.plugin.saveSettings();
+        }));
   }
 
   private enableAutoArchiveSetting() {
