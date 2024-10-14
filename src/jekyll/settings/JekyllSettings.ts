@@ -1,8 +1,12 @@
 import { O2PluginSettings } from '../../settings';
+import { PlatformType } from '../../enums/PlatformType';
 
 export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
+  authors: string = '';
+  platform: PlatformType = PlatformType.Jekyll;
+
   pathReplacer(year: string, month: string, day: string, title: string): string {
     return `${year}-${month}-${day}-${title}.md`;
   }

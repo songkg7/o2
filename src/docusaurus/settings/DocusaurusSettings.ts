@@ -1,9 +1,14 @@
 import { O2PluginSettings } from '../../settings';
 import { DateExtractionPattern } from '../DateExtractionPattern';
+import { PlatformType } from '../../enums/PlatformType';
+import { AuthorStrategy } from '../../strategies/authors/AuthorStrategy';
 
 export default class DocusaurusSettings implements O2PluginSettings {
   docusaurusPath: string;
   dateExtractionPattern: string;
+  authors: string = '';
+  authorStrategy: AuthorStrategy;
+  platform: PlatformType = PlatformType.Docusaurus;
 
   targetPath(): string {
     return `${this.docusaurusPath}/blog`;

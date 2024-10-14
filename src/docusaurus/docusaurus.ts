@@ -6,7 +6,8 @@ import { convertFootnotes } from '../FootnotesConverter';
 import { convertDocusaurusCallout } from '../CalloutConverter';
 import { convertComments } from '../CommentsConverter';
 import { Notice, TFile } from 'obsidian';
-import { convertFrontMatter } from '../FrontMatterConverter';
+import { FrontMatterConverter } from '../FrontMatterConverter';
+import DocusaurusSettings from './settings/DocusaurusSettings';
 
 const markPublished = async (plugin: O2Plugin) => {
   const filesInReady = getFilesInReady(plugin);
@@ -39,11 +40,21 @@ const checkPublished = async (plugin: O2Plugin, file: TFile) => {
 };
 
 export const convertToDocusaurus = async (plugin: O2Plugin) => {
+  const settings = plugin.docusaurus as DocusaurusSettings;
   // get file name in ready folder
   const markdownFiles = await copyMarkdownFile(plugin);
 
   for (const file of markdownFiles) {
     const publishedDate = await checkPublished(plugin, file);
+
+    const frontMatterConverter = new FrontMatterConverter(
+      file.name,
+      settings.resourcePath(),
+      false,
+      false,
+      settings.authors,
+      settings.platform,
+    );
 
     const contents: Contents = await plugin.app.vault.read(file);
     const result =
@@ -51,9 +62,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         convertDocusaurusCallout(
           convertFootnotes(
             convertWikiLink(
-              convertFrontMatter(
-                contents,
-              ),
+              frontMatterConverter.convert(contents),
             ),
           ),
         ),

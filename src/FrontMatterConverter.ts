@@ -1,8 +1,11 @@
 import { ObsidianRegex } from './core/ObsidianRegex';
 import { Converter } from './core/Converter';
 import yaml from 'js-yaml';
+import { AuthorStrategyFactory } from './AuthorStrategyFactory';
+import { PlatformType } from './enums/PlatformType';
+import { AuthorStrategy } from './strategies/authors/AuthorStrategy';
 
-interface FrontMatter {
+export interface FrontMatter {
   [key: string]: string | undefined;
 }
 
@@ -64,17 +67,23 @@ export class FrontMatterConverter implements Converter {
   private readonly resourcePath: string;
   private readonly isEnableBanner: boolean;
   private readonly isEnableUpdateFrontmatterTimeOnEdit: boolean;
+  private readonly authors: string;
+  private readonly authorStrategy: AuthorStrategy;
 
   constructor(
     fileName: string,
     resourcePath: string,
-    isEnableBanner = false,
-    isEnableUpdateFrontmatterTimeOnEdit = false,
+    isEnableBanner: boolean = false,
+    isEnableUpdateFrontmatterTimeOnEdit: boolean = false,
+    authors: string = '',
+    platform: PlatformType = PlatformType.Default
   ) {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
     this.isEnableBanner = isEnableBanner;
     this.isEnableUpdateFrontmatterTimeOnEdit = isEnableUpdateFrontmatterTimeOnEdit;
+    this.authors = authors;
+    this.authorStrategy = AuthorStrategyFactory.createStrategy(platform, authors);
   }
 
   parseFrontMatter(content: string): [FrontMatter, string] {
@@ -93,13 +102,15 @@ export class FrontMatterConverter implements Converter {
     }
 
     const result = convert(
-      convertImageFrontMatter(
-        this.isEnableBanner,
-        this.fileName,
-        this.resourcePath,
-        replaceDateFrontMatter(
-          { ...frontMatter },
-          this.isEnableUpdateFrontmatterTimeOnEdit,
+      this.applyAuthors(
+        convertImageFrontMatter(
+          this.isEnableBanner,
+          this.fileName,
+          this.resourcePath,
+          replaceDateFrontMatter(
+            { ...frontMatter },
+            this.isEnableUpdateFrontmatterTimeOnEdit,
+          ),
         ),
       ),
     );
@@ -107,6 +118,12 @@ export class FrontMatterConverter implements Converter {
     return join(result, body);
   }
 
+  private applyAuthors(frontMatter: FrontMatter): FrontMatter {
+    if (this.authors) {
+      return this.authorStrategy.applyAuthors(frontMatter, this.authors);
+    }
+    return frontMatter;
+  }
 }
 
 function convertImageFrontMatter(

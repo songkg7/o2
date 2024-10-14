@@ -57,6 +57,7 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addJekyllPathSetting();
     this.addJekyllRelativeResourcePathSetting();
+    this.addJekyllAuthorsSettings();
 
     // docusaurus settings
     this.containerEl.createEl('h2', {
@@ -64,6 +65,34 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addDocusaurusPathSetting();
     this.dateExtractionPatternSetting();
+    this.addDocusaurusAuthorsSettings();
+  }
+  private addJekyllAuthorsSettings() {
+    const jekyllSettings = this.plugin.jekyll as JekyllSettings;
+    new Setting(this.containerEl)
+      .setName('Jekyll Authors')
+      .setDesc('Enter authors separated by commas. For single author, enter only one name.')
+      .addText(text => text
+        .setPlaceholder('author1, author2, ...')
+        .setValue(jekyllSettings.authors)
+        .onChange(async (value) => {
+          jekyllSettings.authors = value;
+          await this.plugin.saveSettings();
+        }));
+  }
+
+  private addDocusaurusAuthorsSettings() {
+    const docusaurusSettings = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Docusaurus Authors')
+      .setDesc('Enter authors separated by commas. For single author, enter only one name.')
+      .addText(text => text
+        .setPlaceholder('author1, author2, ...')
+        .setValue(docusaurusSettings.authors)
+        .onChange(async (value) => {
+          docusaurusSettings.authors = value;
+          await this.plugin.saveSettings();
+        }));
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {

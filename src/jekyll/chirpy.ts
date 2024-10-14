@@ -24,6 +24,8 @@ export async function convertToChirpy(plugin: O2Plugin) {
         settings.jekyllRelativeResourcePath,
         settings.isEnableBanner,
         settings.isEnableUpdateFrontmatterTimeOnEdit,
+        settings.authors,
+        settings.platform,
       );
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,

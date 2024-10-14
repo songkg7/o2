@@ -1,4 +1,5 @@
 import { convertFrontMatter, FrontMatterConverter } from '../FrontMatterConverter';
+import { PlatformType } from '../enums/PlatformType';
 
 const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
 const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
@@ -391,5 +392,151 @@ date: 2021-01-01 12:00:00 +0900
   it('should handle interrupted parsing', () => {
     const result = convertFrontMatter(incompleteFrontMatterContents);
     expect(result).toEqual(incompleteFrontMatterContents); // Assuming the function passes through incomplete front matter as is
+  });
+});
+
+describe('Author/Authors conversion', () => {
+  describe('Jekyll', () => {
+    it('should add single author for Jekyll', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe', PlatformType.Jekyll);
+      const input = `---
+title: "Test Post"
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+author: John Doe
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should add multiple authors for Jekyll', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe, Jane Smith', PlatformType.Jekyll);
+      const input = `---
+title: "Test Post"
+---
+
+Content`;
+      const expected = `---
+title: "Test Post"
+authors: [John Doe, Jane Smith]
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should overwrite existing author for Jekyll', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe', PlatformType.Jekyll);
+      const input = `---
+title: "Test Post"
+author: Existing Author
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+author: John Doe
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should overwrite existing authors with single author for Jekyll', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe', PlatformType.Jekyll);
+      const input = `---
+title: "Test Post"
+authors: [Existing Author 1, Existing Author 2]
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+author: John Doe
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+  });
+
+  describe('Docusaurus', () => {
+    it('should add single author for Docusaurus', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe', PlatformType.Docusaurus);
+      const input = `---
+title: "Test Post"
+---
+
+Content`;
+      const expected = `---
+title: "Test Post"
+authors: John Doe
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should add multiple authors for Docusaurus', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe, Jane Smith', PlatformType.Docusaurus);
+      const input = `---
+title: "Test Post"
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+authors: [John Doe, Jane Smith]
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should overwrite existing authors for Docusaurus', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe, Jane Smith', PlatformType.Docusaurus);
+      const input = `---
+title: "Test Post"
+authors: Existing Author
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+authors: [John Doe, Jane Smith]
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+
+    it('should overwrite existing single author with multiple authors for Docusaurus', () => {
+      const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, 'John Doe, Jane Smith', PlatformType.Docusaurus);
+      const input = `---
+title: "Test Post"
+authors: Existing Author
+---
+Content`;
+      const expected = `---
+title: "Test Post"
+authors: [John Doe, Jane Smith]
+---
+
+Content`;
+      expect(converter.convert(input)).toEqual(expected);
+    });
+  });
+
+  it('should not add authors when not provided', () => {
+    const converter = new FrontMatterConverter('test-file', 'assets/img', false, false, '', PlatformType.Docusaurus);
+    const input = `---
+title: "Test Post"
+---
+Content`;
+    const expected = `---
+title: "Test Post"
+---
+
+Content`;
+    expect(converter.convert(input)).toEqual(expected);
   });
 });
