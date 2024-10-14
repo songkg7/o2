@@ -35,5 +35,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VALIDATE_JAVASCRIPT_STANDARD: "false"
           VALIDATE_TYPESCRIPT_STANDARD: "false"
-          VALIDATE_CHESKOV: "false"
+          VALIDATE_CHECKOV: "false"
 
