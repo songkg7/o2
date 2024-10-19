@@ -50,6 +50,11 @@ const convert = (frontMatter: FrontMatter) => {
     }`;
   }
 
+  if (fm.authors) {
+    const authorList = fm.authors.split(',').map(author => author.trim());
+    fm.authors = authorList.length > 1 ? `[${authorList.join(', ')}]` : authorList[0];
+  }
+
   // if fm.tags is array
   if (fm.tags) {
     fm.tags = Array.isArray(fm.tags) ? `[${fm.tags.join(', ')}]` : `[${fm.tags}]`;
@@ -147,7 +152,7 @@ function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): Fr
   return frontMatter;
 }
 
-export const convertFrontMatter = (input: string) => {
+export const convertFrontMatter = (input: string, authors?: string) => {
   const [frontMatter, body] = parseFrontMatter(input);
   if (Object.keys(frontMatter).length === 0) {
     return input;
@@ -160,6 +165,12 @@ export const convertFrontMatter = (input: string) => {
 
   delete frontMatter['aliases'];
   delete frontMatter['published'];
+
+  if (authors) {
+    delete frontMatter['authors'];
+    delete frontMatter['author'];
+    frontMatter.authors = authors;
+  }
 
   return join(
     convert({ ...frontMatter }),

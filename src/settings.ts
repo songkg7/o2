@@ -64,6 +64,21 @@ export class O2SettingTab extends PluginSettingTab {
     });
     this.addDocusaurusPathSetting();
     this.dateExtractionPatternSetting();
+    this.addDocusaurusAuthorsSetting();
+  }
+
+  private addDocusaurusAuthorsSetting() {
+    const docusaurus = this.plugin.docusaurus as DocusaurusSettings;
+    new Setting(this.containerEl)
+      .setName('Docusaurus authors')
+      .setDesc('Author(s) for Docusaurus front matter. For multiple authors, separate with commas.')
+      .addText(text => text
+        .setPlaceholder('jmarcey, slorber')
+        .setValue(docusaurus.authors)
+        .onChange(async (value) => {
+          docusaurus.authors = value;
+          await this.plugin.saveSettings();
+        }));
   }
 
   private enableUpdateFrontmatterTimeOnEditSetting() {
