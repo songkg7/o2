@@ -53,6 +53,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
             convertWikiLink(
               convertFrontMatter(
                 contents,
+                plugin.docusaurus.authors,
               ),
             ),
           ),

@@ -393,3 +393,78 @@ date: 2021-01-01 12:00:00 +0900
     expect(result).toEqual(incompleteFrontMatterContents); // Assuming the function passes through incomplete front matter as is
   });
 });
+
+describe('convertFrontMatter with author settings', () => {
+  it('should add single author to front matter', () => {
+    const input = `---
+title: "Test Post"
+date: 2021-01-01
+---
+
+Content here
+`;
+    const expected = `---
+title: "Test Post"
+date: Fri Jan 01 2021 09:00:00 GMT+0900 (Korean Standard Time)
+authors: jmarcey
+---
+
+Content here
+`;
+    const result = convertFrontMatter(input, 'jmarcey');
+    expect(result).toBe(expected);
+  });
+
+  it('should add multiple authors to front matter', () => {
+    const input = `---
+title: "Test Post"
+date: 2021-01-01
+---
+
+Content here
+`;
+    const expected = `---
+title: "Test Post"
+date: Fri Jan 01 2021 09:00:00 GMT+0900 (Korean Standard Time)
+authors: [jmarcey, slorber]
+---
+
+Content here
+`;
+    const result = convertFrontMatter(input, 'jmarcey, slorber');
+    expect(result).toBe(expected);
+  });
+
+  it('should replace existing authors in front matter', () => {
+    const input = `---
+title: "Test Post"
+date: 2021-01-01
+authors: oldauthor
+---
+
+Content here
+`;
+    const expected = `---
+title: "Test Post"
+date: Fri Jan 01 2021 09:00:00 GMT+0900 (Korean Standard Time)
+authors: [jmarcey, slorber]
+---
+
+Content here
+`;
+    const result = convertFrontMatter(input, 'jmarcey, slorber');
+    expect(result).toBe(expected);
+  });
+
+  it('should not add authors if not provided', () => {
+    const input = `---
+title: "Test Post"
+date: Fri Jan 01 2021 09:00:00 GMT+0900 (Korean Standard Time)
+---
+
+Content here
+`;
+    const result = convertFrontMatter(input);
+    expect(result).toBe(input);
+  });
+});
