@@ -16,7 +16,7 @@ const compat = new FlatCompat({
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.yml', '**/*.json'],
     ignores: ['**/node_modules/', '**/main.js'],
   },
   ...compat.extends(
