@@ -35,7 +35,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         vaultAbsolutePath(plugin),
         plugin.obsidianPathSettings.attachmentsFolder,
         settings.jekyllRelativeResourcePath,
-        { useRelativeUrl: false } as LiquidFilterOptions,
+        { useRelativeUrl: settings.isEnableRelativeUrl } as LiquidFilterOptions,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
         settings.isEnableCurlyBraceConvertMode,
