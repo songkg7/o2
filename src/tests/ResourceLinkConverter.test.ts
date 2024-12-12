@@ -132,3 +132,21 @@ _This is a test image._
   });
 
 });
+
+describe('liquid filter', () => {
+  it('should enable a relative_url', () => {
+    const converter = new ResourceLinkConverter(
+      '2023-01-01-post-mock',
+      'assets',
+      'test',
+      'attachments',
+      'assets',
+      { useRelativeUrl: true },
+    );
+
+    const context = `![[test.png]]`;
+    const result = converter.convert(context);
+
+    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})`);
+  });
+});

@@ -36,14 +36,14 @@ export class O2SettingTab extends PluginSettingTab {
       text: 'Settings for O2 plugin',
     });
 
-    this.containerEl.createEl('h2', {
+    this.containerEl.createEl('h3', {
       text: 'Path Settings',
     });
     this.addReadyFolderSetting();
     this.addArchiveFolderSetting();
     this.addAttachmentsFolderSetting();
 
-    this.containerEl.createEl('h2', {
+    this.containerEl.createEl('h3', {
       text: 'Features',
     });
     this.enableCurlyBraceSetting();
@@ -52,14 +52,18 @@ export class O2SettingTab extends PluginSettingTab {
     this.enableAutoArchiveSetting();
 
     // jekyll settings
-    this.containerEl.createEl('h2', {
+    this.containerEl.createEl('h3', {
       text: 'Jekyll',
     });
     this.addJekyllPathSetting();
     this.addJekyllRelativeResourcePathSetting();
+    //// liquidFilter;
+    this.containerEl.createEl('h5', {
+      text: 'Liquid Filter',
+    });
 
     // docusaurus settings
-    this.containerEl.createEl('h2', {
+    this.containerEl.createEl('h3', {
       text: 'Docusaurus',
     });
     this.addDocusaurusPathSetting();

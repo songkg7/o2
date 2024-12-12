@@ -13,6 +13,10 @@ import { CurlyBraceConverter } from '../CurlyBraceConverter';
 import JekyllSettings from './settings/JekyllSettings';
 import { convertFileName } from '../FilenameConverter';
 
+interface LiquidFilterOptions {
+  useRelativeUrl: boolean;
+}
+
 export async function convertToChirpy(plugin: O2Plugin) {
   const settings = plugin.jekyll as JekyllSettings;
   try {
@@ -31,6 +35,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         vaultAbsolutePath(plugin),
         plugin.obsidianPathSettings.attachmentsFolder,
         settings.jekyllRelativeResourcePath,
+        { useRelativeUrl: false } as LiquidFilterOptions,
       );
       const curlyBraceConverter = new CurlyBraceConverter(
         settings.isEnableCurlyBraceConvertMode,

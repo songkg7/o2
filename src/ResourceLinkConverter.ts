@@ -10,13 +10,22 @@ export class ResourceLinkConverter implements Converter {
   private readonly absolutePath: string;
   private readonly attachmentsFolder: string;
   private readonly relativeResourcePath: string;
+  private readonly liquidFilterOptions: { useRelativeUrl: boolean };
 
-  constructor(fileName: string, resourcePath: string, absolutePath: string, attachmentsFolder: string, relativeResourcePath: string) {
+  constructor(
+    fileName: string,
+    resourcePath: string,
+    absolutePath: string,
+    attachmentsFolder: string,
+    relativeResourcePath: string,
+    liquidFilterOptions?: { useRelativeUrl: boolean },
+  ) {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
     this.absolutePath = absolutePath;
     this.attachmentsFolder = attachmentsFolder;
     this.relativeResourcePath = relativeResourcePath;
+    this.liquidFilterOptions = liquidFilterOptions ?? { useRelativeUrl: false };
   }
 
   convert(input: string): string {
