@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
+import eslintPluginYml from 'eslint-plugin-yml';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -16,9 +17,10 @@ const compat = new FlatCompat({
 
 export default [
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.yml', '**/*.json'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.json'],
     ignores: ['**/node_modules/', '**/main.js'],
   },
+  ...eslintPluginYml.configs['flat/recommended'],
   ...compat.extends(
     'eslint:recommended',
     'plugin:@typescript-eslint/eslint-recommended',
