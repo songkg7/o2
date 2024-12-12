@@ -3,7 +3,12 @@ import { O2PluginSettings } from '../../settings';
 export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
   private _jekyllRelativeResourcePath: string;
-  pathReplacer(year: string, month: string, day: string, title: string): string {
+  pathReplacer(
+    year: string,
+    month: string,
+    day: string,
+    title: string,
+  ): string {
     return `${year}-${month}-${day}-${title}.md`;
   }
 
@@ -11,10 +16,12 @@ export default class JekyllSettings implements O2PluginSettings {
   private _isEnableBanner: boolean;
   private _isEnableCurlyBraceConvertMode: boolean;
   private _isEnableUpdateFrontmatterTimeOnEdit: boolean;
+  private _isEnableRelativeUrl: boolean;
 
   constructor() {
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
+    this._isEnableRelativeUrl = false;
   }
 
   get jekyllPath(): string {
@@ -55,6 +62,14 @@ export default class JekyllSettings implements O2PluginSettings {
 
   set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
     this._isEnableUpdateFrontmatterTimeOnEdit = value;
+  }
+
+  get isEnableRelativeUrl(): boolean {
+    return this._isEnableRelativeUrl;
+  }
+
+  set isEnableRelativeUrl(value: boolean) {
+    this._isEnableRelativeUrl = value;
   }
 
   targetPath(): string {

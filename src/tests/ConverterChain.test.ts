@@ -42,5 +42,4 @@ describe('ConverterChain', () => {
       .chaining(new TestRepeatConverter());
     expect(chain.converting('test')).toEqual('TESTTEST');
   });
-
 });

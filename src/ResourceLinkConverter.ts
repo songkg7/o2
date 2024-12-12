@@ -10,13 +10,22 @@ export class ResourceLinkConverter implements Converter {
   private readonly absolutePath: string;
   private readonly attachmentsFolder: string;
   private readonly relativeResourcePath: string;
+  private readonly liquidFilterOptions: { useRelativeUrl: boolean };
 
-  constructor(fileName: string, resourcePath: string, absolutePath: string, attachmentsFolder: string, relativeResourcePath: string) {
+  constructor(
+    fileName: string,
+    resourcePath: string,
+    absolutePath: string,
+    attachmentsFolder: string,
+    relativeResourcePath: string,
+    liquidFilterOptions?: { useRelativeUrl: boolean },
+  ) {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
     this.absolutePath = absolutePath;
     this.attachmentsFolder = attachmentsFolder;
     this.relativeResourcePath = relativeResourcePath;
+    this.liquidFilterOptions = liquidFilterOptions ?? { useRelativeUrl: false };
   }
 
   convert(input: string): string {
@@ -26,11 +35,11 @@ export class ResourceLinkConverter implements Converter {
     if (!(resourceNames === undefined || resourceNames.length === 0)) {
       fs.mkdirSync(resourcePath, { recursive: true });
     }
-    resourceNames?.forEach((resourceName) => {
+    resourceNames?.forEach(resourceName => {
       fs.copyFile(
         `${this.absolutePath}/${this.attachmentsFolder}/${resourceName}`,
-        `${resourcePath}/${(resourceName.replace(/\s/g, '-'))}`,
-        (err) => {
+        `${resourcePath}/${resourceName.replace(/\s/g, '-')}`,
+        err => {
           if (err) {
             // ignore error
             console.error(err);
@@ -40,16 +49,25 @@ export class ResourceLinkConverter implements Converter {
       );
     });
 
-    const replacer = (match: string,
-                      contents: string,
-                      suffix: string,
-                      width: string | undefined,
-                      height: string | undefined,
-                      space: string | undefined,
-                      caption: string | undefined) =>
-      `![image](/${this.relativeResourcePath}/${sanitizedFileName}/${contents.replace(/\s/g, '-')}.${suffix})`
-      + `${convertImageSize(width, height)}`
-      + `${convertImageCaption(caption)}`;
+    const replacer = (
+      match: string,
+      contents: string,
+      suffix: string,
+      width: string | undefined,
+      height: string | undefined,
+      space: string | undefined,
+      caption: string | undefined,
+    ) => {
+      const imagePath = `/${this.relativeResourcePath}/${sanitizedFileName}/${contents.replace(/\s/g, '-')}.${suffix}`;
+      const imageUrl = this.liquidFilterOptions.useRelativeUrl
+        ? `{{ "${imagePath}" | relative_url }}`
+        : imagePath;
+      return (
+        `![image](${imageUrl})` +
+        `${convertImageSize(width, height)}` +
+        `${convertImageCaption(caption)}`
+      );
+    };
 
     return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
   }
@@ -60,10 +78,15 @@ export function extractResourceNames(content: string) {
   if (result === null) {
     return undefined;
   }
-  return result.map((imageLink) => imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2'));
+  return result.map(imageLink =>
+    imageLink.replace(ObsidianRegex.ATTACHMENT_LINK, '$1.$2'),
+  );
 }
 
-function convertImageSize(width: string | undefined, height: string | undefined) {
+function convertImageSize(
+  width: string | undefined,
+  height: string | undefined,
+) {
   if (width === undefined || width.length === 0) {
     return '';
   }

@@ -46,25 +46,26 @@ const convert = (frontMatter: FrontMatter) => {
   if (fm.categories && JSON.stringify(fm.categories).startsWith('[')) {
     fm.categories = `${JSON.stringify(fm.categories)
       .replace(/,/g, ', ')
-      .replace(/"/g, '')
-    }`;
+      .replace(/"/g, '')}`;
   }
 
   if (fm.authors) {
     const authorList = fm.authors.split(',').map(author => author.trim());
-    fm.authors = authorList.length > 1 ? `[${authorList.join(', ')}]` : authorList[0];
+    fm.authors =
+      authorList.length > 1 ? `[${authorList.join(', ')}]` : authorList[0];
   }
 
   // if fm.tags is array
   if (fm.tags) {
-    fm.tags = Array.isArray(fm.tags) ? `[${fm.tags.join(', ')}]` : `[${fm.tags}]`;
+    fm.tags = Array.isArray(fm.tags)
+      ? `[${fm.tags.join(', ')}]`
+      : `[${fm.tags}]`;
   }
 
   return fm;
 };
 
 export class FrontMatterConverter implements Converter {
-
   private readonly fileName: string;
   private readonly resourcePath: string;
   private readonly isEnableBanner: boolean;
@@ -79,7 +80,8 @@ export class FrontMatterConverter implements Converter {
     this.fileName = fileName;
     this.resourcePath = resourcePath;
     this.isEnableBanner = isEnableBanner;
-    this.isEnableUpdateFrontmatterTimeOnEdit = isEnableUpdateFrontmatterTimeOnEdit;
+    this.isEnableUpdateFrontmatterTimeOnEdit =
+      isEnableUpdateFrontmatterTimeOnEdit;
   }
 
   parseFrontMatter(content: string): [FrontMatter, string] {
@@ -111,7 +113,6 @@ export class FrontMatterConverter implements Converter {
 
     return join(result, body);
   }
-
 }
 
 function convertImageFrontMatter(
@@ -132,16 +133,26 @@ function convertImageFrontMatter(
   if (match) {
     frontMatter.image = `${match[1]}.${match[2]}`;
   }
-  frontMatter.image = convertImagePath(fileName, frontMatter.image, resourcePath);
+  frontMatter.image = convertImagePath(
+    fileName,
+    frontMatter.image,
+    resourcePath,
+  );
   return frontMatter;
 }
 
-
-function convertImagePath(postTitle: string, imagePath: string, resourcePath: string): string {
+function convertImagePath(
+  postTitle: string,
+  imagePath: string,
+  resourcePath: string,
+): string {
   return `/${resourcePath}/${postTitle}/${imagePath}`;
 }
 
-function replaceDateFrontMatter(frontMatter: FrontMatter, isEnable: boolean): FrontMatter {
+function replaceDateFrontMatter(
+  frontMatter: FrontMatter,
+  isEnable: boolean,
+): FrontMatter {
   if (!isEnable || frontMatter.updated === undefined) {
     return frontMatter;
   }
@@ -172,8 +183,5 @@ export const convertFrontMatter = (input: string, authors?: string) => {
     frontMatter.authors = authors;
   }
 
-  return join(
-    convert({ ...frontMatter }),
-    body,
-  );
+  return join(convert({ ...frontMatter }), body);
 };

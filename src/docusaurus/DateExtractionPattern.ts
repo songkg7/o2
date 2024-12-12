@@ -8,7 +8,10 @@
  * Nested folders + index.md: YYYY/MM/DD/my-blog-post-title/index.md
  * Date in the middle of path: category/YYYY/MM-DD-my-blog-post-title.md
  */
-export const DateExtractionPattern: Record<string, DateExtractionPatternInterface> = {
+export const DateExtractionPattern: Record<
+  string,
+  DateExtractionPatternInterface
+> = {
   // default pattern
   SINGLE: {
     pattern: 'YYYY-MM-DD-my-blog-post-title.md',

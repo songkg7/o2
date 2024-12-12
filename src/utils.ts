@@ -26,21 +26,24 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
       .replace(/,+/g, '')
       .replace(/\s/g, '-');
 
-    await plugin.app.vault.copy(file, newPath)
-      .catch((error) => {
-        console.error(error);
-        new Notice('Failed to copy file, see console for more information.');
-      });
+    await plugin.app.vault.copy(file, newPath).catch(error => {
+      console.error(error);
+      new Notice('Failed to copy file, see console for more information.');
+    });
   }
 
   // collect copied files
-  return plugin.app.vault.getMarkdownFiles()
+  return plugin.app.vault
+    .getMarkdownFiles()
     .filter((file: TFile) => file.path.includes(TEMP_PREFIX));
 };
 
 export const getFilesInReady = (plugin: O2Plugin): TFile[] =>
-  plugin.app.vault.getMarkdownFiles()
-    .filter((file: TFile) => file.path.startsWith(plugin.obsidianPathSettings.readyFolder));
+  plugin.app.vault
+    .getMarkdownFiles()
+    .filter((file: TFile) =>
+      file.path.startsWith(plugin.obsidianPathSettings.readyFolder),
+    );
 
 const copyFile = (sourceFilePath: string, targetFilePath: string) => {
   // if directory not exist create it
@@ -59,7 +62,7 @@ export const copy = (
 ) => {
   fs.readdirSync(sourceFolderPath)
     .filter(filename => filename.startsWith(TEMP_PREFIX))
-    .forEach((filename) => {
+    .forEach(filename => {
       const transformedFileName = transformPath(
         filename,
         replacer,
@@ -67,7 +70,10 @@ export const copy = (
       );
 
       const sourceFilePath = path.join(sourceFolderPath, filename);
-      const targetFilePath = path.join(targetFolderPath, transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'));
+      const targetFilePath = path.join(
+        targetFolderPath,
+        transformedFileName.replace(TEMP_PREFIX, '').replace(/\s/g, '-'),
+      );
 
       copyFile(sourceFilePath, targetFilePath);
     });
@@ -81,36 +87,40 @@ export const archiving = async (plugin: O2Plugin) => {
   // move files to archive folder
   const readyFiles = getFilesInReady(plugin);
   readyFiles.forEach((file: TFile) => {
-    plugin.app.fileManager.renameFile(file, file.path.replace(plugin.obsidianPathSettings.readyFolder, plugin.obsidianPathSettings.archiveFolder));
+    plugin.app.fileManager.renameFile(
+      file,
+      file.path.replace(
+        plugin.obsidianPathSettings.readyFolder,
+        plugin.obsidianPathSettings.archiveFolder,
+      ),
+    );
   });
 };
 
 export const moveFiles = async (
   sourceFolderPath: string,
   targetFolderPath: string,
-  pathReplacer: (year: string, month: string, day: string, title: string) => string,
+  pathReplacer: (
+    year: string,
+    month: string,
+    day: string,
+    title: string,
+  ) => string,
   publishedDate?: LocalDate,
 ) => {
-
-  copy(
-    sourceFolderPath,
-    targetFolderPath,
-    pathReplacer,
-    publishedDate,
-  );
+  copy(sourceFolderPath, targetFolderPath, pathReplacer, publishedDate);
 };
-
 
 export const cleanUp = async (plugin: O2Plugin) => {
   // remove temp files
-  const markdownFiles = plugin.app.vault.getMarkdownFiles()
-    .filter((file) => file.path.includes(TEMP_PREFIX));
+  const markdownFiles = plugin.app.vault
+    .getMarkdownFiles()
+    .filter(file => file.path.includes(TEMP_PREFIX));
 
   for (const file of markdownFiles) {
-    await plugin.app.vault.delete(file)
-      .then(() => {
-        console.log(`Deleted temp file: ${file.path}`);
-      });
+    await plugin.app.vault.delete(file).then(() => {
+      console.log(`Deleted temp file: ${file.path}`);
+    });
   }
 };
 
@@ -119,7 +129,12 @@ export const cleanUp = async (plugin: O2Plugin) => {
 // return path to be created, and this path is target path
 const transformPath = (
   input: string,
-  replacer: (year: string | number, month: string | number, day: string | number, title: string) => string,
+  replacer: (
+    year: string | number,
+    month: string | number,
+    day: string | number,
+    title: string,
+  ) => string,
   date?: LocalDate,
 ): string => {
   const match = input.match(DateExtractionPattern['SINGLE'].regexp);

@@ -22,14 +22,13 @@ What kind of change does this PR introduce?
 - [ ] Other... Please describe:
 
 ## What is the current behavior?
+
 <!-- Please describe the current behavior that you are modifying, or link to a relevant issue. -->
 <!-- If this is a PR that resolves the issue, please include the `close` or `resolve` keyword -->
 
 Issue Number: N/A
 
-
 ## What is the new behavior?
-
 
 ## Does this PR introduce a breaking change?
 
