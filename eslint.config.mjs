@@ -31,8 +31,8 @@ export default [{
         },
 
         parser: tsParser,
-        ecmaVersion: 5,
-        sourceType: "commonjs",
+        ecmaVersion: 2018,
+        sourceType: "module",
 
         parserOptions: {
             project: "./tsconfig.json",
