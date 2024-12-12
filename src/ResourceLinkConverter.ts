@@ -55,10 +55,15 @@ export class ResourceLinkConverter implements Converter {
                       width: string | undefined,
                       height: string | undefined,
                       space: string | undefined,
-                      caption: string | undefined) =>
-      `![image](/${this.relativeResourcePath}/${sanitizedFileName}/${contents.replace(/\s/g, '-')}.${suffix})`
-      + `${convertImageSize(width, height)}`
-      + `${convertImageCaption(caption)}`;
+                      caption: string | undefined) => {
+      const imagePath = `/${this.relativeResourcePath}/${sanitizedFileName}/${contents.replace(/\s/g, '-')}.${suffix}`;
+      const imageUrl = this.liquidFilterOptions.useRelativeUrl
+        ? `{{ "${imagePath}" | relative_url }}`
+        : imagePath;
+      return `![image](${imageUrl})`
+        + `${convertImageSize(width, height)}`
+        + `${convertImageCaption(caption)}`;
+    };
 
     return input.replace(ObsidianRegex.ATTACHMENT_LINK, replacer);
   }

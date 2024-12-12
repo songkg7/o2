@@ -11,10 +11,12 @@ export default class JekyllSettings implements O2PluginSettings {
   private _isEnableBanner: boolean;
   private _isEnableCurlyBraceConvertMode: boolean;
   private _isEnableUpdateFrontmatterTimeOnEdit: boolean;
+  private _isEnableRelativeUrl: boolean;
 
   constructor() {
     this._jekyllPath = '';
     this._jekyllRelativeResourcePath = 'assets/img';
+    this._isEnableRelativeUrl = false;
   }
 
   get jekyllPath(): string {
@@ -55,6 +57,14 @@ export default class JekyllSettings implements O2PluginSettings {
 
   set isEnableUpdateFrontmatterTimeOnEdit(value: boolean) {
     this._isEnableUpdateFrontmatterTimeOnEdit = value;
+  }
+
+  get isEnableRelativeUrl(): boolean {
+    return this._isEnableRelativeUrl;
+  }
+
+  set isEnableRelativeUrl(value: boolean) {
+    this._isEnableRelativeUrl = value;
   }
 
   targetPath(): string {

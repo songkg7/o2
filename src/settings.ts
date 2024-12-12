@@ -61,6 +61,7 @@ export class O2SettingTab extends PluginSettingTab {
     this.containerEl.createEl('h5', {
       text: 'Liquid Filter',
     });
+    this.addJekyllRelativeUrlSetting();
 
     // docusaurus settings
     this.containerEl.createEl('h3', {
@@ -229,6 +230,19 @@ export class O2SettingTab extends PluginSettingTab {
         .setValue(this.plugin.obsidianPathSettings.isAutoArchive)
         .onChange(async (value) => {
           this.plugin.obsidianPathSettings.isAutoArchive = value;
+          await this.plugin.saveSettings();
+        }));
+  }
+
+  private addJekyllRelativeUrlSetting() {
+    const jekyllSetting = this.plugin.jekyll as JekyllSettings;
+    new Setting(this.containerEl)
+      .setName('Enable relative URL for images')
+      .setDesc('Use Jekyll\'s relative_url filter for image paths. Required when using baseurl.')
+      .addToggle(toggle => toggle
+        .setValue(jekyllSetting.isEnableRelativeUrl)
+        .onChange(async (value) => {
+          jekyllSetting.isEnableRelativeUrl = value;
           await this.plugin.saveSettings();
         }));
   }

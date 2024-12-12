@@ -133,20 +133,31 @@ _This is a test image._
 
 });
 
-describe('liquid filter', () => {
-  it('should enable a relative_url', () => {
-    const converter = new ResourceLinkConverter(
-      '2023-01-01-post-mock',
-      'assets',
-      'test',
-      'attachments',
-      'assets',
-      { useRelativeUrl: true },
-    );
+describe('liquid filter with relative_url', () => {
+  const converter = new ResourceLinkConverter(
+    '2023-01-01-post-mock',
+    'assets',
+    'test',
+    'attachments',
+    'assets',
+    { useRelativeUrl: true },
+  );
 
+  it('should wrap image path with relative_url filter', () => {
     const context = `![[test.png]]`;
     const result = converter.convert(context);
-
     expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})`);
+  });
+
+  it('should handle images with size specifications', () => {
+    const context = `![[test.png|100x200]]`;
+    const result = converter.convert(context);
+    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }}){: width="100" height="200" }`);
+  });
+
+  it('should handle images with captions', () => {
+    const context = `![[test.png]]\n_Image caption_`;
+    const result = converter.convert(context);
+    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})\n_Image caption_`);
   });
 });
