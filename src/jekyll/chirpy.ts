@@ -56,8 +56,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
         settings.targetPath(),
         settings.pathReplacer,
-      )
-        .then(() => new Notice('Moved files to Chirpy successfully.', 5000));
+      ).then(() => new Notice('Moved files to Chirpy successfully.', 5000));
     }
   } catch (e) {
     console.error(e);

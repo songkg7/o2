@@ -1,4 +1,7 @@
-import { extractResourceNames, ResourceLinkConverter } from '../ResourceLinkConverter';
+import {
+  extractResourceNames,
+  ResourceLinkConverter,
+} from '../ResourceLinkConverter';
 
 jest.mock('obsidian', () => ({}), { virtual: true });
 jest.mock('fs', () => ({
@@ -7,7 +10,6 @@ jest.mock('fs', () => ({
 }));
 
 describe('extract image name', () => {
-
   it('should return image name array', () => {
     const context = `![[test.png]]
 
@@ -23,7 +25,6 @@ describe('extract image name', () => {
     const result = extractResourceNames(context);
     expect(result).toBeUndefined();
   });
-
 });
 
 describe('convert called', () => {
@@ -36,9 +37,10 @@ describe('convert called', () => {
   );
 
   it('should return converted post', () => {
-    expect(converter.convert(`![[test.png]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png)`);
+    expect(converter.convert(`![[test.png]]`)).toEqual(
+      `![image](/assets/2023-01-01-post-mock/test.png)`,
+    );
   });
-
 });
 
 describe('resize image', () => {
@@ -51,19 +53,22 @@ describe('resize image', () => {
   );
 
   it('should return converted attachments with width', () => {
-    expect(converter.convert(`![[test.png|100]]`)).toEqual(`![image](/assets/2023-01-01-post-mock/test.png){: width="100" }`);
+    expect(converter.convert(`![[test.png|100]]`)).toEqual(
+      `![image](/assets/2023-01-01-post-mock/test.png){: width="100" }`,
+    );
   });
 
   it('should return converted attachments with width and height', () => {
-    expect(converter.convert(`![[test.png|100x200]]`))
-      .toEqual(`![image](/assets/2023-01-01-post-mock/test.png){: width="100" height="200" }`);
+    expect(converter.convert(`![[test.png|100x200]]`)).toEqual(
+      `![image](/assets/2023-01-01-post-mock/test.png){: width="100" height="200" }`,
+    );
   });
 
   it('should ignore size when image resize syntax was invalid', () => {
-    expect(converter.convert(`![[test.png|x100]]`))
-      .toEqual(`![image](/assets/2023-01-01-post-mock/test.png)`);
+    expect(converter.convert(`![[test.png|x100]]`)).toEqual(
+      `![image](/assets/2023-01-01-post-mock/test.png)`,
+    );
   });
-
 });
 
 describe('image caption', () => {
@@ -130,7 +135,6 @@ _This is a test image._
 
 `);
   });
-
 });
 
 describe('liquid filter with relative_url', () => {
@@ -146,18 +150,24 @@ describe('liquid filter with relative_url', () => {
   it('should wrap image path with relative_url filter', () => {
     const context = `![[test.png]]`;
     const result = converter.convert(context);
-    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})`);
+    expect(result).toEqual(
+      `![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})`,
+    );
   });
 
   it('should handle images with size specifications', () => {
     const context = `![[test.png|100x200]]`;
     const result = converter.convert(context);
-    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }}){: width="100" height="200" }`);
+    expect(result).toEqual(
+      `![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }}){: width="100" height="200" }`,
+    );
   });
 
   it('should handle images with captions', () => {
     const context = `![[test.png]]\n_Image caption_`;
     const result = converter.convert(context);
-    expect(result).toEqual(`![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})\n_Image caption_`);
+    expect(result).toEqual(
+      `![image]({{ "/assets/2023-01-01-post-mock/test.png" | relative_url }})\n_Image caption_`,
+    );
   });
 });

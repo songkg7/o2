@@ -19,7 +19,10 @@ export default class O2Plugin extends Plugin {
       id: 'grammar-transformation',
       name: 'Grammar Transformation',
       checkCallback: (checking: boolean) => {
-        if (this.jekyll.afterPropertiesSet() || this.docusaurus.afterPropertiesSet()) {
+        if (
+          this.jekyll.afterPropertiesSet() ||
+          this.docusaurus.afterPropertiesSet()
+        ) {
           if (checking) {
             return true;
           }
@@ -37,14 +40,18 @@ export default class O2Plugin extends Plugin {
     this.addSettingTab(new O2SettingTab(this.app, this));
   }
 
-  onunload() {
-
-  }
+  onunload() {}
 
   async loadSettings() {
-    this.obsidianPathSettings = Object.assign(new ObsidianPathSettings(), await this.loadData());
+    this.obsidianPathSettings = Object.assign(
+      new ObsidianPathSettings(),
+      await this.loadData(),
+    );
     this.jekyll = Object.assign(new JekyllSettings(), await this.loadData());
-    this.docusaurus = Object.assign(new DocusaurusSettings(), await this.loadData());
+    this.docusaurus = Object.assign(
+      new DocusaurusSettings(),
+      await this.loadData(),
+    );
   }
 
   async saveSettings() {
@@ -59,12 +66,10 @@ export default class O2Plugin extends Plugin {
 const o2ConversionCommand = async (plugin: O2Plugin) => {
   await validateSettings(plugin);
   if (plugin.jekyll.afterPropertiesSet()) {
-    await convertToChirpy(plugin)
-      .finally(() => cleanUp(plugin));
+    await convertToChirpy(plugin).finally(() => cleanUp(plugin));
   }
 
   if (plugin.docusaurus.afterPropertiesSet()) {
-    await convertToDocusaurus(plugin)
-      .finally(() => cleanUp(plugin));
+    await convertToDocusaurus(plugin).finally(() => cleanUp(plugin));
   }
 };

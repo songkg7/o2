@@ -15,10 +15,17 @@ export default class DocusaurusSettings implements O2PluginSettings {
   }
 
   afterPropertiesSet(): boolean {
-    return this.docusaurusPath !== undefined && this.docusaurusPath.length !== 0;
+    return (
+      this.docusaurusPath !== undefined && this.docusaurusPath.length !== 0
+    );
   }
 
-  pathReplacer = (year: string, month: string, day: string, title: string): string => {
+  pathReplacer = (
+    year: string,
+    month: string,
+    day: string,
+    title: string,
+  ): string => {
     const patternInterface = DateExtractionPattern[this.dateExtractionPattern];
     return patternInterface.replacer(year, month, day, title);
   };

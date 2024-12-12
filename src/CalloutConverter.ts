@@ -7,9 +7,11 @@ export class CalloutConverter implements Converter {
   }
 }
 
-const jekyllReplacer = (match: string, p1: string, p2: string, p3: string) => `${p3}\n{: .prompt-${replaceKeyword(p1)}}`;
+const jekyllReplacer = (match: string, p1: string, p2: string, p3: string) =>
+  `${p3}\n{: .prompt-${replaceKeyword(p1)}}`;
 
-const convertCalloutSyntaxToChirpy = (content: string) => content.replace(ObsidianRegex.CALLOUT, jekyllReplacer);
+const convertCalloutSyntaxToChirpy = (content: string) =>
+  content.replace(ObsidianRegex.CALLOUT, jekyllReplacer);
 
 const jekyllCalloutMap = new Map<string, string>();
 jekyllCalloutMap.set('note', 'info');
@@ -41,12 +43,18 @@ function replaceKeyword(target: string) {
   return jekyllCalloutMap.get(target.toLowerCase()) || 'info';
 }
 
-const docusaurusReplacer = (match: string, p1: string, p2: string, p3: string) => {
+const docusaurusReplacer = (
+  match: string,
+  p1: string,
+  p2: string,
+  p3: string,
+) => {
   const title = p2 ? `[${p2.trim()}]` : '';
   return `:::${replaceDocusaurusKeyword(p1)}${title}\n\n${replaceDocusaurusContents(p3)}\n\n:::`;
 };
 
-export const convertDocusaurusCallout = (input: string) => input.replace(ObsidianRegex.CALLOUT, docusaurusReplacer);
+export const convertDocusaurusCallout = (input: string) =>
+  input.replace(ObsidianRegex.CALLOUT, docusaurusReplacer);
 
 const replaceDocusaurusKeyword = (target: string) =>
   docusaurusCalloutMap[target.toLowerCase()] || 'note';

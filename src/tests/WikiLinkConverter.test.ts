@@ -52,7 +52,6 @@ describe('WikiLinkConverter', () => {
         `);
   });
 
-
   it('should not match if string starts with !', () => {
     const input = '![[tests]]';
     const result = converter.convert(input);

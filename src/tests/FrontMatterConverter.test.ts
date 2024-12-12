@@ -1,7 +1,18 @@
-import { convertFrontMatter, FrontMatterConverter } from '../FrontMatterConverter';
+import {
+  convertFrontMatter,
+  FrontMatterConverter,
+} from '../FrontMatterConverter';
 
-const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true);
-const disableImageConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
+const frontMatterConverter = new FrontMatterConverter(
+  '2023-01-01-test-title',
+  'assets/img',
+  true,
+);
+const disableImageConverter = new FrontMatterConverter(
+  '2023-01-01-test-title',
+  'assets/img',
+  false,
+);
 describe('convert front matter', () => {
   const contents = `---
 title: "test"
@@ -35,22 +46,23 @@ image: /assets/img/2023-01-01-test-title/test.png
 ---
 
 # test
-`,
-    );
+`);
   });
 
   describe('when isEnable option is false', () => {
-    const frontMatterConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', false);
+    const frontMatterConverter = new FrontMatterConverter(
+      '2023-01-01-test-title',
+      'assets/img',
+      false,
+    );
     it('should Nothing', () => {
       const result = frontMatterConverter.convert(contents);
       expect(result).toEqual(contents);
     });
   });
-
 });
 
 describe('mermaid front matter', () => {
-
   it('should create mermaid key value if body contains mermaid block', () => {
     const contents = `---
 title: "test"
@@ -77,8 +89,7 @@ graph TD
     A-->B
 \`\`\`
 
-`,
-    );
+`);
   });
 
   it('should not create mermaid key value if body does not contain mermaid block', () => {
@@ -96,8 +107,7 @@ title: "test"
 
 # test
 
-`,
-    );
+`);
   });
 
   it('should not create mermaid key value if body contains mermaid block but front matter already has mermaid key', () => {
@@ -125,11 +135,9 @@ mermaid: true
 graph TD
     A-->B
 \`\`\`
-`,
-    );
+`);
   });
 });
-
 
 describe('if does not exist front matter', () => {
   const contents = `# test
@@ -162,8 +170,7 @@ image: /assets/img/2023-01-01-test-title/test.png
 
 # test
 ---
-`,
-    );
+`);
   });
 
   describe('when end of front matter is not exist', () => {
@@ -181,7 +188,12 @@ image: test.png
 });
 
 describe('updated front matter', () => {
-  const updatedConverter = new FrontMatterConverter('2023-01-01-test-title', 'assets/img', true, true);
+  const updatedConverter = new FrontMatterConverter(
+    '2023-01-01-test-title',
+    'assets/img',
+    true,
+    true,
+  );
   it('should be converted', () => {
     const contents = `---
 title: "test"
@@ -198,8 +210,7 @@ date: 2022-01-02 12:00:00 +0900
 ---
 
 # test
-`,
-    );
+`);
   });
 
   it('should be not converted', () => {
@@ -217,14 +228,11 @@ date: 2021-01-01 12:00:00 +0900
 ---
 
 # test
-`,
-    );
+`);
   });
-
 });
 
 describe('tags', () => {
-
   const expected = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
@@ -270,7 +278,7 @@ tags: test1, test2
 
 describe('convertFrontMatter', () => {
   it('should passthroughs', () => {
-      const mockContents = `---
+    const mockContents = `---
 title: "test"
 date: 2021-01-01 12:00:00 +0900
 categories: [test]
@@ -278,10 +286,9 @@ categories: [test]
 
 # test
 `;
-      const result = convertFrontMatter(mockContents);
-      expect(result).toEqual(mockContents);
-    },
-  );
+    const result = convertFrontMatter(mockContents);
+    expect(result).toEqual(mockContents);
+  });
 
   it('should converted tags', () => {
     const contents = `---
