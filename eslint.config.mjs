@@ -15,6 +15,7 @@ const compat = new FlatCompat({
 });
 
 export default [{
+    files: ["**/*.ts", "**/*.tsx"],
     ignores: ["**/node_modules/", "**/main.js"],
 }, ...compat.extends(
     "eslint:recommended",
