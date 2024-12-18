@@ -54,18 +54,17 @@ export async function convertToChirpy(plugin: O2Plugin) {
       await plugin.app.vault.modify(file, result);
 
       // Where can I create this code block(create a function)?
-      const path:string = file.path;
-      const directory = path.substring(0, path.lastIndexOf("/"));
-      const folder = directory.substring(directory.lastIndexOf("/") + 1);
+      const path: string = file.path;
+      const directory = path.substring(0, path.lastIndexOf('/'));
+      const folder = directory.substring(directory.lastIndexOf('/') + 1);
       // end code block
 
-      if(folder !== plugin.obsidianPathSettings.readyFolder){
+      if (folder !== plugin.obsidianPathSettings.readyFolder) {
         await moveFiles(
           `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}/${folder}`,
           settings.targetSubPath(folder),
           settings.pathReplacer,
         ).then(() => new Notice('Moved files to Chirpy successfully.', 5000));
-
       } else {
         await moveFiles(
           `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,

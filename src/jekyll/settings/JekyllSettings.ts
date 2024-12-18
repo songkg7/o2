@@ -76,7 +76,7 @@ export default class JekyllSettings implements O2PluginSettings {
     return `${this._jekyllPath}/_posts`;
   }
 
-  targetSubPath(folder:string) {
+  targetSubPath(folder: string) {
     return `${this._jekyllPath}/${folder}`;
   }
 
