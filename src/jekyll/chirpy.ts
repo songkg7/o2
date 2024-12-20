@@ -52,11 +52,24 @@ export async function convertToChirpy(plugin: O2Plugin) {
         .converting(await plugin.app.vault.read(file));
 
       await plugin.app.vault.modify(file, result);
-      await moveFiles(
-        `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
-        settings.targetPath(),
-        settings.pathReplacer,
-      ).then(() => new Notice('Moved files to Chirpy successfully.', 5000));
+
+      const path: string = file.path;
+      const directory = path.substring(0, path.lastIndexOf('/'));
+      const folder = directory.substring(directory.lastIndexOf('/') + 1);
+
+      if (folder !== plugin.obsidianPathSettings.readyFolder) {
+        await moveFiles(
+          `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}/${folder}`,
+          settings.targetSubPath(folder),
+          settings.pathReplacer,
+        ).then(() => new Notice('Moved files to Chirpy successfully.', 5000));
+      } else {
+        await moveFiles(
+          `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
+          settings.targetPath(),
+          settings.pathReplacer,
+        ).then(() => new Notice('Moved files to Chirpy successfully.', 5000));
+      }
     }
   } catch (e) {
     console.error(e);
