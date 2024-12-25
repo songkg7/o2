@@ -56,6 +56,8 @@ please visit [Obsidian Docs](https://docs.obsidian.md/Plugins/Getting+started/Bu
 
 Thanks to all [contributors](https://github.com/songkg7/o2/graphs/contributors)
 
+[![Contributors](https://contrib.rocks/image?repo=songkg7/o2)](https://github.com/songkg7/o2/graphs/contributors)
+
 ## Articles
 
 - [O2 plugin 개발하기](https://haril.dev/blog/2023/02/22/develop-obsidian-plugin)
