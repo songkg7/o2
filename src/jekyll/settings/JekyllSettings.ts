@@ -1,4 +1,5 @@
 import { O2PluginSettings } from '../../settings';
+import { convertFileName } from '../../FilenameConverter';
 
 export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
@@ -9,6 +10,7 @@ export default class JekyllSettings implements O2PluginSettings {
     day: string,
     title: string,
   ): string {
+    title = convertFileName(title);
     return `${year}-${month}-${day}-${title}.md`;
   }
 
