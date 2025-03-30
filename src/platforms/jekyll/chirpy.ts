@@ -1,17 +1,18 @@
-import O2Plugin from '../main';
-import { WikiLinkConverter } from '../WikiLinkConverter';
-import { ResourceLinkConverter } from '../ResourceLinkConverter';
-import { Notice } from 'obsidian';
-import { CalloutConverter } from '../CalloutConverter';
-import { FrontMatterConverter } from '../FrontMatterConverter';
-import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../utils';
-import { FootnotesConverter } from '../FootnotesConverter';
-import { ConverterChain } from '../core/ConverterChain';
-import { CommentsConverter } from '../CommentsConverter';
-import { EmbedsConverter } from '../EmbedsConverter';
-import { CurlyBraceConverter } from '../CurlyBraceConverter';
+import O2Plugin from '../../main';
+import { Notice, TFile } from 'obsidian';
+import { WikiLinkConverter } from '../../core/converters/WikiLinkConverter';
+import { ResourceLinkConverter } from '../../core/converters/ResourceLinkConverter';
 import JekyllSettings from './settings/JekyllSettings';
-import { convertFileName } from '../FilenameConverter';
+import { CalloutConverter } from '../../core/converters/CalloutConverter';
+import { convertFrontMatter } from '../../core/converters/FrontMatterConverter';
+import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../../core/utils/utils';
+import { FootnotesConverter } from '../../core/converters/FootnotesConverter';
+import { ConverterChain } from '../../core/ConverterChain';
+import { CommentsConverter } from '../../core/converters/CommentsConverter';
+import { EmbedsConverter } from '../../core/converters/EmbedsConverter';
+import { CurlyBraceConverter } from '../../core/converters/CurlyBraceConverter';
+import { convertFileName } from '../../core/converters/FilenameConverter';
+import { isLeft, isRight } from '../../core/types/types';
 
 interface LiquidFilterOptions {
   useRelativeUrl: boolean;
@@ -23,12 +24,20 @@ export async function convertToChirpy(plugin: O2Plugin) {
     const markdownFiles = await copyMarkdownFile(plugin);
     for (const file of markdownFiles) {
       const fileName = convertFileName(file.name);
-      const frontMatterConverter = new FrontMatterConverter(
-        fileName,
-        settings.jekyllRelativeResourcePath,
-        settings.isEnableBanner,
-        settings.isEnableUpdateFrontmatterTimeOnEdit,
-      );
+      const fileContent = await plugin.app.vault.read(file);
+      
+      const frontMatterResult = await convertFrontMatter(fileContent);
+      
+      if (isLeft(frontMatterResult)) {
+        console.error('Front matter conversion failed:', frontMatterResult.value);
+        continue;
+      }
+      
+      if (!isRight(frontMatterResult)) {
+        console.error('Unexpected front matter conversion result');
+        continue;
+      }
+
       const resourceLinkConverter = new ResourceLinkConverter(
         fileName,
         settings.resourcePath(),
@@ -41,7 +50,6 @@ export async function convertToChirpy(plugin: O2Plugin) {
         settings.isEnableCurlyBraceConvertMode,
       );
       const result = ConverterChain.create()
-        .chaining(frontMatterConverter)
         .chaining(resourceLinkConverter)
         .chaining(curlyBraceConverter)
         .chaining(new WikiLinkConverter())
@@ -49,7 +57,7 @@ export async function convertToChirpy(plugin: O2Plugin) {
         .chaining(new FootnotesConverter())
         .chaining(new CommentsConverter())
         .chaining(new EmbedsConverter())
-        .converting(await plugin.app.vault.read(file));
+        .converting(frontMatterResult.value);
 
       await plugin.app.vault.modify(file, result);
 

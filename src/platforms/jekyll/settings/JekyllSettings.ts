@@ -1,5 +1,5 @@
-import { O2PluginSettings } from '../../settings';
-import { convertFileName } from '../../FilenameConverter';
+import { O2PluginSettings } from '../../../settings';
+import { convertFileName } from '../../../core/converters/FilenameConverter';
 
 export default class JekyllSettings implements O2PluginSettings {
   private _jekyllPath: string;
