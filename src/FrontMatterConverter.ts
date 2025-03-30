@@ -1,187 +1,203 @@
 import { ObsidianRegex } from './core/ObsidianRegex';
-import { Converter } from './core/Converter';
+import { pipe } from './core/fp';
 import yaml from 'js-yaml';
+import {
+  ConversionError,
+  ConversionResult,
+  Either,
+  FrontMatter,
+  left,
+  right,
+  map,
+} from './types';
 
-interface FrontMatter {
-  [key: string]: string | undefined;
-}
+// Helper functions
+const isNullOrEmpty = (str: string | undefined | null): boolean =>
+  !str || (typeof str === 'string' && str.trim().length === 0);
 
-const parseFrontMatter = (content: string): [FrontMatter, string] => {
-  if (!content.startsWith('---')) {
-    return [{}, content];
+const formatDate = (date: unknown): string => {
+  if (typeof date === 'string') return date;
+  if (date instanceof Date) {
+    return date.toISOString().split('T')[0];
+  }
+  return String(date);
+};
+
+const formatAuthorList = (authors: string): string => {
+  const authorList = authors.split(',').map(author => author.trim());
+  return authorList.length > 1 ? `[${authorList.join(', ')}]` : authorList[0];
+};
+
+// Pure functions for front matter operations
+const extractFrontMatter = (
+  content: string,
+): Either<ConversionError, ConversionResult> => {
+  if (!content.startsWith('---\n')) {
+    return right({ frontMatter: {}, body: content });
   }
 
-  // for define front matter boundary
-  const endOfFrontMatter = content.indexOf('---', 3);
+  const endOfFrontMatter = content.indexOf('\n---', 3);
   if (endOfFrontMatter === -1) {
-    return [{}, content];
+    return right({ frontMatter: {}, body: content });
   }
 
-  const frontMatterLines = content.substring(3, endOfFrontMatter);
-  const body = content.substring(endOfFrontMatter + 3).trimStart();
+  const frontMatterLines = content.substring(4, endOfFrontMatter);
+  const body = content.substring(endOfFrontMatter + 4).trimStart();
 
   try {
-    const frontMatter = yaml.load(frontMatterLines) as FrontMatter;
-    return [frontMatter, body];
+    const frontMatter = yaml.load(frontMatterLines, {
+      schema: yaml.JSON_SCHEMA,
+    }) as FrontMatter;
+    return right({ frontMatter: frontMatter || {}, body });
   } catch (e) {
-    console.error(e);
-    return [{}, content];
+    return left({
+      type: 'PARSE_ERROR',
+      message: `Failed to parse front matter: ${
+        e instanceof Error ? e.message : 'Unknown error'
+      }`,
+    });
   }
 };
 
-const join = (result: FrontMatter, body: string) => `---
-${Object.entries(result)
+const formatTitle = (frontMatter: FrontMatter): FrontMatter => {
+  if (!frontMatter.title) return frontMatter;
+  return {
+    ...frontMatter,
+    title: frontMatter.title.startsWith('"')
+      ? frontMatter.title
+      : `"${frontMatter.title}"`,
+  };
+};
+
+const formatCategories = (frontMatter: FrontMatter): FrontMatter => {
+  if (!frontMatter.categories) return frontMatter;
+
+  const categories = JSON.stringify(frontMatter.categories).startsWith('[')
+    ? JSON.stringify(frontMatter.categories)
+        .replace(/,/g, ', ')
+        .replace(/"/g, '')
+    : frontMatter.categories;
+
+  return { ...frontMatter, categories };
+};
+
+const formatAuthors = (frontMatter: FrontMatter): FrontMatter => {
+  if (!frontMatter.authors) return frontMatter;
+
+  const authors = frontMatter.authors;
+  if (authors.startsWith('[') && authors.endsWith(']')) return frontMatter;
+
+  return {
+    ...frontMatter,
+    authors: formatAuthorList(authors),
+  };
+};
+
+const formatTags = (frontMatter: FrontMatter): FrontMatter => {
+  if (!frontMatter.tags) return frontMatter;
+
+  const tags = Array.isArray(frontMatter.tags)
+    ? `[${frontMatter.tags.join(', ')}]`
+    : frontMatter.tags
+      ? `[${frontMatter.tags}]`
+      : '[]';
+
+  return { ...frontMatter, tags };
+};
+
+const handleMermaid = (result: ConversionResult): ConversionResult => ({
+  ...result,
+  frontMatter: result.body.match(/```mermaid/)
+    ? { ...result.frontMatter, mermaid: 'true' }
+    : result.frontMatter,
+});
+
+const convertImagePath =
+  (postTitle: string, resourcePath: string) =>
+  (imagePath: string): string =>
+    `/${resourcePath}/${postTitle}/${imagePath}`;
+
+const handleImageFrontMatter =
+  (isEnable: boolean, fileName: string, resourcePath: string) =>
+  (frontMatter: FrontMatter): FrontMatter => {
+    if (!isEnable || !frontMatter.image) return frontMatter;
+
+    const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
+    const processedImage = match
+      ? `${match[1]}.${match[2]}`
+      : frontMatter.image;
+    const finalImage = convertImagePath(fileName, resourcePath)(processedImage);
+
+    return { ...frontMatter, image: finalImage };
+  };
+
+const handleDateFrontMatter =
+  (isEnable: boolean) =>
+  (frontMatter: FrontMatter): FrontMatter => {
+    if (!isEnable || isNullOrEmpty(frontMatter.updated)) return frontMatter;
+
+    const { updated, ...rest } = frontMatter;
+    return { ...rest, date: formatDate(updated) };
+  };
+
+const serializeFrontMatter = (result: ConversionResult): string => {
+  if (Object.keys(result.frontMatter).length === 0) {
+    return result.body;
+  }
+
+  return `---
+${Object.entries(result.frontMatter)
   .map(([key, value]) => `${key}: ${value}`)
   .join('\n')}
 ---
 
-${body}`;
-
-const convert = (frontMatter: FrontMatter) => {
-  const fm = { ...frontMatter };
-  // if not around front matter title using double quote, add double quote
-  fm.title = fm.title?.startsWith('"') ? fm.title : `"${fm.title}"`;
-
-  // if not around front matter categories using an array, add an array
-  if (fm.categories && JSON.stringify(fm.categories).startsWith('[')) {
-    fm.categories = `${JSON.stringify(fm.categories)
-      .replace(/,/g, ', ')
-      .replace(/"/g, '')}`;
-  }
-
-  if (fm.authors) {
-    const authorList = fm.authors.split(',').map(author => author.trim());
-    fm.authors =
-      authorList.length > 1 ? `[${authorList.join(', ')}]` : authorList[0];
-  }
-
-  // if fm.tags is array
-  if (fm.tags) {
-    fm.tags = Array.isArray(fm.tags)
-      ? `[${fm.tags.join(', ')}]`
-      : `[${fm.tags}]`;
-  }
-
-  return fm;
+${result.body}`;
 };
 
-export class FrontMatterConverter implements Converter {
-  private readonly fileName: string;
-  private readonly resourcePath: string;
-  private readonly isEnableBanner: boolean;
-  private readonly isEnableUpdateFrontmatterTimeOnEdit: boolean;
-
-  constructor(
-    fileName: string,
-    resourcePath: string,
+// Main conversion function
+export const convertFrontMatter = (
+  input: string,
+  options: Readonly<{
+    fileName?: string;
+    resourcePath?: string;
+    isEnableBanner?: boolean;
+    isEnableUpdateFrontmatterTimeOnEdit?: boolean;
+    authors?: string;
+  }> = {},
+): Either<ConversionError, string> => {
+  const {
+    fileName = '',
+    resourcePath = '',
     isEnableBanner = false,
     isEnableUpdateFrontmatterTimeOnEdit = false,
-  ) {
-    this.fileName = fileName;
-    this.resourcePath = resourcePath;
-    this.isEnableBanner = isEnableBanner;
-    this.isEnableUpdateFrontmatterTimeOnEdit =
-      isEnableUpdateFrontmatterTimeOnEdit;
-  }
+    authors,
+  } = options;
 
-  parseFrontMatter(content: string): [FrontMatter, string] {
-    return parseFrontMatter(content);
-  }
-
-  convert(input: string): string {
-    const [frontMatter, body] = this.parseFrontMatter(input);
-
-    if (Object.keys(frontMatter).length === 0) {
-      return input;
-    }
-
-    if (body.match(/```mermaid/)) {
-      frontMatter.mermaid = true.toString();
-    }
-
-    const result = convert(
-      convertImageFrontMatter(
-        this.isEnableBanner,
-        this.fileName,
-        this.resourcePath,
-        replaceDateFrontMatter(
-          { ...frontMatter },
-          this.isEnableUpdateFrontmatterTimeOnEdit,
-        ),
-      ),
+  const processFrontMatter = (frontMatter: FrontMatter): FrontMatter => {
+    const withTitle = formatTitle(frontMatter);
+    const withCategories = formatCategories(withTitle);
+    const withAuthors = formatAuthors(withCategories);
+    const withTags = formatTags(withAuthors);
+    const withImage = handleImageFrontMatter(
+      isEnableBanner,
+      fileName,
+      resourcePath,
+    )(withTags);
+    const withDate = handleDateFrontMatter(isEnableUpdateFrontmatterTimeOnEdit)(
+      withImage,
     );
+    return authors
+      ? { ...withDate, authors: formatAuthorList(authors) }
+      : withDate;
+  };
 
-    return join(result, body);
-  }
-}
-
-function convertImageFrontMatter(
-  isEnable: boolean,
-  fileName: string,
-  resourcePath: string,
-  frontMatter: FrontMatter,
-) {
-  if (!isEnable) {
-    return frontMatter;
-  }
-
-  if (!frontMatter.image) {
-    return frontMatter;
-  }
-
-  const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
-  if (match) {
-    frontMatter.image = `${match[1]}.${match[2]}`;
-  }
-  frontMatter.image = convertImagePath(
-    fileName,
-    frontMatter.image,
-    resourcePath,
+  return pipe(
+    extractFrontMatter(input),
+    map(result => ({
+      ...result,
+      frontMatter: processFrontMatter(result.frontMatter),
+    })),
+    map(handleMermaid),
+    map(serializeFrontMatter),
   );
-  return frontMatter;
-}
-
-function convertImagePath(
-  postTitle: string,
-  imagePath: string,
-  resourcePath: string,
-): string {
-  return `/${resourcePath}/${postTitle}/${imagePath}`;
-}
-
-function replaceDateFrontMatter(
-  frontMatter: FrontMatter,
-  isEnable: boolean,
-): FrontMatter {
-  if (!isEnable || frontMatter.updated === undefined) {
-    return frontMatter;
-  }
-  if (frontMatter.updated.length > 0) {
-    frontMatter.date = frontMatter.updated;
-    delete frontMatter.updated;
-  }
-  return frontMatter;
-}
-
-export const convertFrontMatter = (input: string, authors?: string) => {
-  const [frontMatter, body] = parseFrontMatter(input);
-  if (Object.keys(frontMatter).length === 0) {
-    return input;
-  }
-
-  if (frontMatter.updated) {
-    frontMatter.date = frontMatter.updated;
-    delete frontMatter.updated;
-  }
-
-  delete frontMatter['aliases'];
-  delete frontMatter['published'];
-
-  if (authors) {
-    delete frontMatter['authors'];
-    delete frontMatter['author'];
-    frontMatter.authors = authors;
-  }
-
-  return join(convert({ ...frontMatter }), body);
 };

@@ -13,6 +13,7 @@ import { convertDocusaurusCallout } from '../CalloutConverter';
 import { convertComments } from '../CommentsConverter';
 import { Notice, TFile } from 'obsidian';
 import { convertFrontMatter } from '../FrontMatterConverter';
+import { ConversionError, fold } from '../types';
 
 const markPublished = async (plugin: O2Plugin) => {
   const filesInReady = getFilesInReady(plugin);
@@ -46,15 +47,20 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
     const publishedDate = await checkPublished(plugin, file);
 
     const contents: Contents = await plugin.app.vault.read(file);
-    const result = convertComments(
-      convertDocusaurusCallout(
-        convertFootnotes(
-          convertWikiLink(
-            convertFrontMatter(contents, plugin.docusaurus.authors),
-          ),
+    const frontMatterResult = convertFrontMatter(contents, {
+      authors: plugin.docusaurus.authors,
+    });
+
+    const result = fold<ConversionError, string, string>(
+      error => {
+        new Notice(`Front matter conversion failed: ${error.message}`, 5000);
+        return contents;
+      },
+      value =>
+        convertComments(
+          convertDocusaurusCallout(convertFootnotes(convertWikiLink(value))),
         ),
-      ),
-    );
+    )(frontMatterResult);
 
     await plugin.app.vault.modify(file, result).then(() => {
       new Notice('Converted to Docusaurus successfully.', 5000);
