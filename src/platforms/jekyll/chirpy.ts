@@ -1,11 +1,15 @@
 import O2Plugin from '../../main';
-import { Notice, TFile } from 'obsidian';
+import { Notice } from 'obsidian';
 import { WikiLinkConverter } from '../../core/converters/WikiLinkConverter';
 import { ResourceLinkConverter } from '../../core/converters/ResourceLinkConverter';
 import JekyllSettings from './settings/JekyllSettings';
 import { CalloutConverter } from '../../core/converters/CalloutConverter';
 import { convertFrontMatter } from '../../core/converters/FrontMatterConverter';
-import { copyMarkdownFile, moveFiles, vaultAbsolutePath } from '../../core/utils/utils';
+import {
+  copyMarkdownFile,
+  moveFiles,
+  vaultAbsolutePath,
+} from '../../core/utils/utils';
 import { FootnotesConverter } from '../../core/converters/FootnotesConverter';
 import { ConverterChain } from '../../core/ConverterChain';
 import { CommentsConverter } from '../../core/converters/CommentsConverter';
@@ -25,14 +29,17 @@ export async function convertToChirpy(plugin: O2Plugin) {
     for (const file of markdownFiles) {
       const fileName = convertFileName(file.name);
       const fileContent = await plugin.app.vault.read(file);
-      
+
       const frontMatterResult = await convertFrontMatter(fileContent);
-      
+
       if (isLeft(frontMatterResult)) {
-        console.error('Front matter conversion failed:', frontMatterResult.value);
+        console.error(
+          'Front matter conversion failed:',
+          frontMatterResult.value,
+        );
         continue;
       }
-      
+
       if (!isRight(frontMatterResult)) {
         console.error('Unexpected front matter conversion result');
         continue;

@@ -1,4 +1,12 @@
-import { FileSystemAdapter, TFile, Vault, FileManager, DataWriteOptions, TAbstractFile, EventRef } from 'obsidian';
+import {
+  FileSystemAdapter,
+  TFile,
+  Vault,
+  FileManager,
+  DataWriteOptions,
+  TAbstractFile,
+  EventRef,
+} from 'obsidian';
 import { ObsidianPathSettings } from '../../../settings';
 import {
   TEMP_PREFIX,
@@ -14,12 +22,15 @@ import { DataAdapter, TFolder } from 'obsidian';
 import fs from 'fs';
 
 // Create a minimal mock FileManager
-const createMockFileManager = (overrides: Partial<FileManager> = {}): FileManager => ({
-  getNewFileParent: (sourcePath: string) => ({} as TFolder),
+const createMockFileManager = (
+  overrides: Partial<FileManager> = {},
+): FileManager => ({
+  getNewFileParent: (sourcePath: string) => ({}) as TFolder,
   trashFile: async (file: TFile) => {},
   generateMarkdownLink: () => '',
   processFrontMatter: async (file: TFile, fn: (frontmatter: any) => void) => {},
-  getAvailablePathForAttachment: async (filename: string, extension: string) => '',
+  getAvailablePathForAttachment: async (filename: string, extension: string) =>
+    '',
   renameFile: async (file: TFile, newPath: string) => {},
   ...overrides,
 });
@@ -41,12 +52,16 @@ const createMockVault = (overrides: Partial<Vault> = {}): Vault => ({
   delete: async () => undefined,
   create: async () => ({}) as TFile,
   createBinary: async () => ({}) as TFile,
-  createFolder: async (path: string) => ({} as TFolder),
+  createFolder: async (path: string) => ({}) as TFolder,
   read: async () => '',
   readBinary: async () => new ArrayBuffer(0),
   rename: async () => undefined,
   modify: async (file: TFile, data: string) => {},
-  modifyBinary: async (file: TFile, data: ArrayBuffer, options?: DataWriteOptions) => {},
+  modifyBinary: async (
+    file: TFile,
+    data: ArrayBuffer,
+    options?: DataWriteOptions,
+  ) => {},
   append: async (file: TFile, data: string, options?: DataWriteOptions) => {},
   process: async (file: TFile, fn: (data: string) => string) => fn(''),
   getResourcePath: () => '',
@@ -71,27 +86,6 @@ const createMockSettings = (
   isAutoCreateFolder: false,
   ...overrides,
 });
-
-type MockVault = Partial<Vault> & {
-  adapter?: FileSystemAdapter;
-  getMarkdownFiles?: jest.Mock;
-  copy?: jest.Mock;
-  delete?: jest.Mock;
-};
-
-type MockFileManager = {
-  renameFile: jest.Mock;
-};
-
-type MockApp = {
-  vault: MockVault;
-  fileManager?: MockFileManager;
-};
-
-type MockPlugin = {
-  app: MockApp;
-  obsidianPathSettings?: Partial<ObsidianPathSettings>;
-};
 
 jest.mock('fs', () => ({
   mkdirSync: jest.fn(),

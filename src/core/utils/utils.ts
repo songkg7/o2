@@ -9,7 +9,10 @@ export const TEMP_PREFIX = 'o2-temp.' as const;
 
 export type AppWithVault = Pick<App, 'vault' | 'fileManager'>;
 export type PluginWithApp = { app: AppWithVault };
-export type PluginWithSettings = { app: AppWithVault; obsidianPathSettings: ObsidianPathSettings };
+export type PluginWithSettings = {
+  app: AppWithVault;
+  obsidianPathSettings: ObsidianPathSettings;
+};
 
 export function vaultAbsolutePath(plugin: PluginWithApp): string {
   const adapter = plugin.app.vault.adapter;
