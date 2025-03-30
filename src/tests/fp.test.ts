@@ -128,10 +128,10 @@ describe('Functional Programming Utilities', () => {
       const always5 = constant(5);
       expect(always5()).toBe(5);
       expect(always5()).toBe(5);
-      
+
       const alwaysNull = constant(null);
       expect(alwaysNull()).toBe(null);
-      
+
       const obj = { a: 1 };
       const alwaysObj = constant(obj);
       expect(alwaysObj()).toBe(obj);
