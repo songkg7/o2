@@ -46,13 +46,15 @@ export const compose = <A>(...fns: Array<(a: A) => A>): ((a: A) => A) =>
 type CurriedFunction<Args extends unknown[], R> = Args extends [infer A]
   ? (a: A) => R
   : Args extends [infer A, ...infer Rest]
-  ? (a: A) => CurriedFunction<Rest, R>
-  : never;
+    ? (a: A) => CurriedFunction<Rest, R>
+    : never;
 
 /**
  * Creates a curried version of a function
  */
-export function curry<A, B, C>(fn: (a: A, b: B, c: C) => any): (a: A) => (b: B) => (c: C) => any;
+export function curry<A, B, C>(
+  fn: (a: A, b: B, c: C) => any,
+): (a: A) => (b: B) => (c: C) => any;
 export function curry<A, B>(fn: (a: A, b: B) => any): (a: A) => (b: B) => any;
 export function curry<A>(fn: (a: A) => any): (a: A) => any;
 export function curry(fn: Function) {
