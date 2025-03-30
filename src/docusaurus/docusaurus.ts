@@ -13,67 +13,168 @@ import { convertDocusaurusCallout } from '../CalloutConverter';
 import { convertComments } from '../CommentsConverter';
 import { Notice, TFile } from 'obsidian';
 import { convertFrontMatter } from '../FrontMatterConverter';
-import { ConversionError, fold } from '../types';
+import { ConversionError, Either, fold, left, right, map, chain } from '../types';
+import { pipe } from '../core/fp';
 
-const markPublished = async (plugin: O2Plugin) => {
-  const filesInReady = getFilesInReady(plugin);
-  for (const file of filesInReady) {
+// Pure functions
+export const getCurrentDate = (): string =>
+  new Date().toISOString().split('T')[0];
+
+export const convertContent = (value: string): string =>
+  pipe(
+    value,
+    convertWikiLink,
+    convertFootnotes,
+    convertDocusaurusCallout,
+    convertComments,
+  );
+
+// File operations with Either
+const processFrontMatter = async (
+  plugin: O2Plugin,
+  file: TFile,
+  published?: string,
+): Promise<Either<ConversionError, string>> => {
+  try {
     await plugin.app.fileManager.processFrontMatter(file, fm => {
-      if (fm.published) {
-        return fm;
+      if (published) {
+        fm.published = published;
       }
-      fm.published = new Date().toISOString().split('T')[0];
       return fm;
+    });
+    return right(published || getCurrentDate());
+  } catch (error) {
+    return left({
+      type: 'PROCESS_ERROR',
+      message: `Failed to process front matter: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
     });
   }
 };
 
-const checkPublished = async (plugin: O2Plugin, file: TFile) => {
-  let publishedDate = new Date().toISOString().split('T')[0];
-  await plugin.app.fileManager.processFrontMatter(file, fm => {
-    if (fm.published) {
-      publishedDate = fm.published;
-      return fm;
-    }
-  });
-  return publishedDate;
+const readFileContent = async (
+  plugin: O2Plugin,
+  file: TFile,
+): Promise<Either<ConversionError, string>> => {
+  try {
+    const content = await plugin.app.vault.read(file);
+    return right(content);
+  } catch (error) {
+    return left({
+      type: 'READ_ERROR',
+      message: `Failed to read file: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    });
+  }
 };
 
-export const convertToDocusaurus = async (plugin: O2Plugin) => {
-  // get file name in ready folder
-  const markdownFiles = await copyMarkdownFile(plugin);
-
-  for (const file of markdownFiles) {
-    const publishedDate = await checkPublished(plugin, file);
-
-    const contents: Contents = await plugin.app.vault.read(file);
-    const frontMatterResult = convertFrontMatter(contents, {
-      authors: plugin.docusaurus.authors,
+const writeFileContent = async (
+  plugin: O2Plugin,
+  file: TFile,
+  content: string,
+): Promise<Either<ConversionError, void>> => {
+  try {
+    await plugin.app.vault.modify(file, content);
+    return right(undefined);
+  } catch (error) {
+    return left({
+      type: 'WRITE_ERROR',
+      message: `Failed to write file: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
     });
+  }
+};
 
-    const result = fold<ConversionError, string, string>(
-      error => {
-        new Notice(`Front matter conversion failed: ${error.message}`, 5000);
-        return contents;
-      },
-      value =>
-        convertComments(
-          convertDocusaurusCallout(convertFootnotes(convertWikiLink(value))),
-        ),
-    )(frontMatterResult);
-
-    await plugin.app.vault.modify(file, result).then(() => {
-      new Notice('Converted to Docusaurus successfully.', 5000);
-    });
-
-    // move files to docusaurus folder
+const moveToDocusaurus = async (
+  plugin: O2Plugin,
+  publishedDate: string,
+): Promise<Either<ConversionError, void>> => {
+  try {
     await moveFiles(
       `${vaultAbsolutePath(plugin)}/${plugin.obsidianPathSettings.readyFolder}`,
       plugin.docusaurus.targetPath(),
       plugin.docusaurus.pathReplacer,
       parseLocalDate(publishedDate),
-    ).then(async () => await markPublished(plugin));
+    );
+    return right(undefined);
+  } catch (error) {
+    return left({
+      type: 'MOVE_ERROR',
+      message: `Failed to move files: ${
+        error instanceof Error ? error.message : 'Unknown error'
+      }`,
+    });
   }
+};
 
-  new Notice('Moved files to Docusaurus successfully.', 5000);
+// Side effects
+const showNotice = (message: string, duration = 5000): void => {
+  new Notice(message, duration);
+};
+
+const markPublished = async (plugin: O2Plugin): Promise<void> => {
+  const filesInReady = getFilesInReady(plugin);
+  const currentDate = getCurrentDate();
+  
+  for (const file of filesInReady) {
+    const result = await processFrontMatter(plugin, file, currentDate);
+    fold<ConversionError, string, void>(
+      error => showNotice(`Failed to mark as published: ${error.message}`),
+      () => {},
+    )(result);
+  }
+};
+
+// Main conversion function
+export const convertToDocusaurus = async (plugin: O2Plugin): Promise<void> => {
+  const markdownFiles = await copyMarkdownFile(plugin);
+
+  for (const file of markdownFiles) {
+    const publishedDateResult = await processFrontMatter(plugin, file);
+    const contentResult = await readFileContent(plugin, file);
+
+    const conversionResult = pipe(
+      contentResult,
+      chain(content =>
+        convertFrontMatter(content, {
+          authors: plugin.docusaurus.authors,
+        }),
+      ),
+      map(convertContent),
+    );
+
+    const writeResult = await pipe(
+      conversionResult,
+      fold<ConversionError, string, Promise<Either<ConversionError, void>>>(
+        error => {
+          showNotice(`Conversion failed: ${error.message}`);
+          return Promise.resolve(left(error));
+        },
+        content => writeFileContent(plugin, file, content),
+      ),
+    );
+
+    fold<ConversionError, void, void>(
+      error => showNotice(`Failed to save changes: ${error.message}`),
+      () => showNotice('Converted to Docusaurus successfully.'),
+    )(writeResult);
+
+    const publishedDate = fold<ConversionError, string, string>(
+      () => getCurrentDate(),
+      date => date,
+    )(publishedDateResult);
+
+    const moveResult = await moveToDocusaurus(plugin, publishedDate);
+    
+    fold<ConversionError, void, void>(
+      error => showNotice(`Failed to move files: ${error.message}`),
+      async () => {
+        await markPublished(plugin);
+        showNotice('Moved files to Docusaurus successfully.');
+      },
+    )(moveResult);
+  }
 };

@@ -8,4 +8,7 @@ module.exports = {
   moduleDirectories: ['node_modules', 'src'],
   collectCoverage: true,
   coverageReporters: ['text', 'cobertura'],
+  moduleNameMapper: {
+    '^obsidian$': '<rootDir>/src/tests/__mocks__/obsidian.ts',
+  },
 };
