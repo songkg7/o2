@@ -99,7 +99,9 @@ const formatTags = (frontMatter: FrontMatter): FrontMatter => {
 
   const tags = Array.isArray(frontMatter.tags)
     ? `[${frontMatter.tags.join(', ')}]`
-    : `[${frontMatter.tags}]`;
+    : frontMatter.tags
+      ? `[${frontMatter.tags}]`
+      : '[]';
 
   return { ...frontMatter, tags };
 };

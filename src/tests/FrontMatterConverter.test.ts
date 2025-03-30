@@ -168,6 +168,107 @@ invalid: yaml: :
         expect((result.value as ConversionError).type).toBe('PARSE_ERROR');
       }
     });
+
+    it('should handle malformed YAML with incorrect indentation', () => {
+      const input = `---
+title: test
+  incorrect:
+ indentation:
+   - item
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Left');
+      if (result._tag === 'Left') {
+        expect((result.value as ConversionError).type).toBe('PARSE_ERROR');
+        expect((result.value as ConversionError).message).toContain(
+          'Failed to parse front matter',
+        );
+      }
+    });
+
+    it('should handle malformed YAML with duplicate keys', () => {
+      const input = `---
+title: first
+title: second
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Left');
+      if (result._tag === 'Left') {
+        expect((result.value as ConversionError).type).toBe('PARSE_ERROR');
+      }
+    });
+
+    it('should handle malformed YAML with invalid structure', () => {
+      const input = `---
+[invalid structure
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Left');
+      if (result._tag === 'Left') {
+        expect((result.value as ConversionError).type).toBe('PARSE_ERROR');
+      }
+    });
+  });
+
+  describe('Tags handling', () => {
+    it('should handle single tag as string', () => {
+      const input = `---
+title: test
+tags: javascript
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('tags: [javascript]');
+      }
+    });
+
+    it('should handle multiple tags as array', () => {
+      const input = `---
+title: test
+tags: [javascript, typescript]
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('tags: [javascript, typescript]');
+      }
+    });
+
+    it('should handle comma-separated tags string', () => {
+      const input = `---
+title: test
+tags: javascript, typescript
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('tags: [javascript, typescript]');
+      }
+    });
+
+    it('should handle missing tags field', () => {
+      const input = `---
+title: test
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).not.toContain('tags:');
+      }
+    });
+
+    it('should handle empty tags', () => {
+      const input = `---
+title: test
+tags:
+---`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('tags: null');
+      }
+    });
   });
 
   describe('Edge cases', () => {
