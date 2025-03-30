@@ -40,18 +40,17 @@ export const isLeft = <E, A>(ma: Either<E, A>): ma is Left<E> =>
 export const isRight = <E, A>(ma: Either<E, A>): ma is Right<A> =>
   ma._tag === 'Right';
 
-export const fold = <E, A, B>(
-  onLeft: (e: E) => B,
-  onRight: (a: A) => B,
-) => (ma: Either<E, A>): B =>
-  isLeft(ma) ? onLeft(ma.value) : onRight(ma.value);
+export const fold =
+  <E, A, B>(onLeft: (e: E) => B, onRight: (a: A) => B) =>
+  (ma: Either<E, A>): B =>
+    isLeft(ma) ? onLeft(ma.value) : onRight(ma.value);
 
-export const map = <E, A, B>(
-  f: (a: A) => B,
-) => (ma: Either<E, A>): Either<E, B> =>
-  isLeft(ma) ? ma : right(f(ma.value));
+export const map =
+  <E, A, B>(f: (a: A) => B) =>
+  (ma: Either<E, A>): Either<E, B> =>
+    isLeft(ma) ? ma : right(f(ma.value));
 
-export const chain = <E, A, B>(
-  f: (a: A) => Either<E, B>,
-) => (ma: Either<E, A>): Either<E, B> =>
-  isLeft(ma) ? ma : f(ma.value); 
+export const chain =
+  <E, A, B>(f: (a: A) => Either<E, B>) =>
+  (ma: Either<E, A>): Either<E, B> =>
+    isLeft(ma) ? ma : f(ma.value);

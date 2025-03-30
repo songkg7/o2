@@ -48,7 +48,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
 
     const contents: Contents = await plugin.app.vault.read(file);
     const frontMatterResult = convertFrontMatter(contents, {
-      authors: plugin.docusaurus.authors
+      authors: plugin.docusaurus.authors,
     });
 
     const result = fold<ConversionError, string, string>(
@@ -56,13 +56,10 @@ export const convertToDocusaurus = async (plugin: O2Plugin) => {
         new Notice(`Front matter conversion failed: ${error.message}`, 5000);
         return contents;
       },
-      value => convertComments(
-        convertDocusaurusCallout(
-          convertFootnotes(
-            convertWikiLink(value)
-          )
-        )
-      )
+      value =>
+        convertComments(
+          convertDocusaurusCallout(convertFootnotes(convertWikiLink(value))),
+        ),
     )(frontMatterResult);
 
     await plugin.app.vault.modify(file, result).then(() => {

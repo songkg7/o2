@@ -13,7 +13,7 @@ import {
 } from './types';
 
 // Helper functions
-const isNullOrEmpty = (str: string | undefined | null): boolean => 
+const isNullOrEmpty = (str: string | undefined | null): boolean =>
   !str || (typeof str === 'string' && str.trim().length === 0);
 
 const formatDate = (date: unknown): string => {
@@ -30,7 +30,9 @@ const formatAuthorList = (authors: string): string => {
 };
 
 // Pure functions for front matter operations
-const extractFrontMatter = (content: string): Either<ConversionError, ConversionResult> => {
+const extractFrontMatter = (
+  content: string,
+): Either<ConversionError, ConversionResult> => {
   if (!content.startsWith('---\n')) {
     return right({ frontMatter: {}, body: content });
   }
@@ -45,7 +47,7 @@ const extractFrontMatter = (content: string): Either<ConversionError, Conversion
 
   try {
     const frontMatter = yaml.load(frontMatterLines, {
-      schema: yaml.JSON_SCHEMA
+      schema: yaml.JSON_SCHEMA,
     }) as FrontMatter;
     return right({ frontMatter: frontMatter || {}, body });
   } catch (e) {
@@ -60,39 +62,43 @@ const formatTitle = (frontMatter: FrontMatter): FrontMatter => {
   if (!frontMatter.title) return frontMatter;
   return {
     ...frontMatter,
-    title: frontMatter.title.startsWith('"') ? frontMatter.title : `"${frontMatter.title}"`,
+    title: frontMatter.title.startsWith('"')
+      ? frontMatter.title
+      : `"${frontMatter.title}"`,
   };
 };
 
 const formatCategories = (frontMatter: FrontMatter): FrontMatter => {
   if (!frontMatter.categories) return frontMatter;
-  
+
   const categories = JSON.stringify(frontMatter.categories).startsWith('[')
-    ? JSON.stringify(frontMatter.categories).replace(/,/g, ', ').replace(/"/g, '')
+    ? JSON.stringify(frontMatter.categories)
+        .replace(/,/g, ', ')
+        .replace(/"/g, '')
     : frontMatter.categories;
-    
+
   return { ...frontMatter, categories };
 };
 
 const formatAuthors = (frontMatter: FrontMatter): FrontMatter => {
   if (!frontMatter.authors) return frontMatter;
-  
+
   const authors = frontMatter.authors;
   if (authors.startsWith('[') && authors.endsWith(']')) return frontMatter;
-  
+
   return {
     ...frontMatter,
-    authors: formatAuthorList(authors)
+    authors: formatAuthorList(authors),
   };
 };
 
 const formatTags = (frontMatter: FrontMatter): FrontMatter => {
   if (!frontMatter.tags) return frontMatter;
-  
+
   const tags = Array.isArray(frontMatter.tags)
     ? `[${frontMatter.tags.join(', ')}]`
     : `[${frontMatter.tags}]`;
-    
+
   return { ...frontMatter, tags };
 };
 
@@ -103,32 +109,33 @@ const handleMermaid = (result: ConversionResult): ConversionResult => ({
     : result.frontMatter,
 });
 
-const convertImagePath = (
-  postTitle: string,
-  resourcePath: string,
-) => (imagePath: string): string =>
-  `/${resourcePath}/${postTitle}/${imagePath}`;
+const convertImagePath =
+  (postTitle: string, resourcePath: string) =>
+  (imagePath: string): string =>
+    `/${resourcePath}/${postTitle}/${imagePath}`;
 
-const handleImageFrontMatter = (
-  isEnable: boolean,
-  fileName: string,
-  resourcePath: string,
-) => (frontMatter: FrontMatter): FrontMatter => {
-  if (!isEnable || !frontMatter.image) return frontMatter;
+const handleImageFrontMatter =
+  (isEnable: boolean, fileName: string, resourcePath: string) =>
+  (frontMatter: FrontMatter): FrontMatter => {
+    if (!isEnable || !frontMatter.image) return frontMatter;
 
-  const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
-  const processedImage = match ? `${match[1]}.${match[2]}` : frontMatter.image;
-  const finalImage = convertImagePath(fileName, resourcePath)(processedImage);
+    const match = ObsidianRegex.ATTACHMENT_LINK.exec(frontMatter.image);
+    const processedImage = match
+      ? `${match[1]}.${match[2]}`
+      : frontMatter.image;
+    const finalImage = convertImagePath(fileName, resourcePath)(processedImage);
 
-  return { ...frontMatter, image: finalImage };
-};
+    return { ...frontMatter, image: finalImage };
+  };
 
-const handleDateFrontMatter = (isEnable: boolean) => (frontMatter: FrontMatter): FrontMatter => {
-  if (!isEnable || isNullOrEmpty(frontMatter.updated)) return frontMatter;
+const handleDateFrontMatter =
+  (isEnable: boolean) =>
+  (frontMatter: FrontMatter): FrontMatter => {
+    if (!isEnable || isNullOrEmpty(frontMatter.updated)) return frontMatter;
 
-  const { updated, ...rest } = frontMatter;
-  return { ...rest, date: formatDate(updated) };
-};
+    const { updated, ...rest } = frontMatter;
+    return { ...rest, date: formatDate(updated) };
+  };
 
 const serializeFrontMatter = (result: ConversionResult): string => {
   if (Object.keys(result.frontMatter).length === 0) {
@@ -168,9 +175,17 @@ export const convertFrontMatter = (
     const withCategories = formatCategories(withTitle);
     const withAuthors = formatAuthors(withCategories);
     const withTags = formatTags(withAuthors);
-    const withImage = handleImageFrontMatter(isEnableBanner, fileName, resourcePath)(withTags);
-    const withDate = handleDateFrontMatter(isEnableUpdateFrontmatterTimeOnEdit)(withImage);
-    return authors ? { ...withDate, authors: formatAuthorList(authors) } : withDate;
+    const withImage = handleImageFrontMatter(
+      isEnableBanner,
+      fileName,
+      resourcePath,
+    )(withTags);
+    const withDate = handleDateFrontMatter(isEnableUpdateFrontmatterTimeOnEdit)(
+      withImage,
+    );
+    return authors
+      ? { ...withDate, authors: formatAuthorList(authors) }
+      : withDate;
   };
 
   return pipe(
@@ -180,6 +195,6 @@ export const convertFrontMatter = (
       frontMatter: processFrontMatter(result.frontMatter),
     })),
     map(handleMermaid),
-    map(serializeFrontMatter)
+    map(serializeFrontMatter),
   );
 };

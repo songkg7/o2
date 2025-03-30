@@ -40,7 +40,9 @@ image: test.png
       });
       expect(result._tag).toBe('Right');
       if (result._tag === 'Right') {
-        expect(result.value).toContain('image: /assets/img/2023-01-01-test/test.png');
+        expect(result.value).toContain(
+          'image: /assets/img/2023-01-01-test/test.png',
+        );
       }
     });
 
@@ -132,7 +134,7 @@ title: test
 authors: John Doe
 ---`;
       const result = convertFrontMatter(input, {
-        authors: 'John Doe'
+        authors: 'John Doe',
       });
       expect(result._tag).toBe('Right');
       if (result._tag === 'Right') {
@@ -146,7 +148,7 @@ title: test
 authors: John Doe, Jane Smith
 ---`;
       const result = convertFrontMatter(input, {
-        authors: 'John Doe, Jane Smith'
+        authors: 'John Doe, Jane Smith',
       });
       expect(result._tag).toBe('Right');
       if (result._tag === 'Right') {
