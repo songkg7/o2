@@ -1,5 +1,3 @@
-import { ObsidianRegex } from './core/ObsidianRegex';
-import { pipe } from './core/fp';
 import yaml from 'js-yaml';
 import {
   ConversionError,
@@ -9,7 +7,10 @@ import {
   left,
   right,
   map,
-} from './types';
+} from '../types/types';
+import { ObsidianRegex } from '../ObsidianRegex';
+import { pipe } from '../fp';
+import { TFile } from 'obsidian';
 
 // Helper functions
 const isNullOrEmpty = (str: string | undefined | null): boolean =>

@@ -1,5 +1,9 @@
-import { TFile } from 'obsidian';
-import { convertContent, getCurrentDate } from '../docusaurus/docusaurus';
+import { Notice } from 'obsidian';
+import { convertToDocusaurus } from '../../platforms/docusaurus/docusaurus';
+import {
+  convertContent,
+  getCurrentDate,
+} from '../../platforms/docusaurus/docusaurus';
 
 describe('Docusaurus Conversion', () => {
   describe('getCurrentDate', () => {
@@ -31,9 +35,12 @@ describe('Docusaurus Conversion', () => {
     });
 
     it('should handle multiple conversions together', () => {
-      const input = '[[Page]] with [^1]\n\n[^1]: Note\n\n> [!info] Info\n> Text';
+      const input =
+        '[[Page]] with [^1]\n\n[^1]: Note\n\n> [!info] Info\n> Text';
       const result = convertContent(input);
-      expect(result).toBe('Page with [^fn-nth-1]\n\n[^fn-nth-1]: Note\n\n:::info[Info]\n\nText\n\n:::');
+      expect(result).toBe(
+        'Page with [^fn-nth-1]\n\n[^fn-nth-1]: Note\n\n:::info[Info]\n\nText\n\n:::',
+      );
     });
   });
-}); 
+});

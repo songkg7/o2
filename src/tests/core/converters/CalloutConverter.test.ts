@@ -1,7 +1,7 @@
 import {
   CalloutConverter,
   convertDocusaurusCallout,
-} from '../CalloutConverter';
+} from '../../../core/converters/CalloutConverter';
 
 const calloutConverter = new CalloutConverter();
 

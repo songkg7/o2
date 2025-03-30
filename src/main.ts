@@ -1,10 +1,10 @@
 import { Notice, Plugin } from 'obsidian';
 import { O2SettingTab, ObsidianPathSettings } from './settings';
-import JekyllSettings from './jekyll/settings/JekyllSettings';
-import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
-import { convertToChirpy } from './jekyll/chirpy';
-import { convertToDocusaurus } from './docusaurus/docusaurus';
-import { archiving, cleanUp } from './utils';
+import JekyllSettings from './platforms/jekyll/settings/JekyllSettings';
+import DocusaurusSettings from './platforms/docusaurus/settings/DocusaurusSettings';
+import { convertToChirpy } from './platforms/jekyll/chirpy';
+import { convertToDocusaurus } from './platforms/docusaurus/docusaurus';
+import { archiving, cleanUp } from './core/utils/utils';
 import validateSettings from './core/validation';
 
 export default class O2Plugin extends Plugin {

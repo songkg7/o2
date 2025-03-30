@@ -9,7 +9,9 @@
     "version": "node version-bump.mjs && git add manifest.json versions.json",
     "test": "jest --coverage",
     "prettier:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "prettier:write": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
+    "prettier:write": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "lint": "eslint \"src/**/*.{ts,tsx}\"",
+    "lint:fix": "eslint \"src/**/*.{ts,tsx}\" --fix"
   },
   "keywords": [
     "obsidian",

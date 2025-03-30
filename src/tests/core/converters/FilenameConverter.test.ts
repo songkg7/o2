@@ -1,4 +1,4 @@
-import { convertFileName } from '../FilenameConverter';
+import { convertFileName } from '../../../core/converters/FilenameConverter';
 
 describe('FilenameConverter', () => {
   it('should remove extension', () => {

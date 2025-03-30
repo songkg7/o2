@@ -1,13 +1,33 @@
-import O2Plugin from './main';
-import { FileSystemAdapter, Notice, TFile } from 'obsidian';
+import O2Plugin from '../../main';
+import { FileSystemAdapter, Notice, TFile, Vault } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import fs from 'fs';
 import path from 'path';
-import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
+import { DateExtractionPattern } from '../../platforms/docusaurus/DateExtractionPattern';
+import { ObsidianPathSettings } from '../../settings';
 
 export const TEMP_PREFIX = 'o2-temp.' as const;
 
-export function vaultAbsolutePath(plugin: O2Plugin): string {
+type VaultWithAdapter = {
+  adapter: FileSystemAdapter;
+};
+
+type AppWithVault = {
+  vault: Vault;
+  fileManager?: {
+    renameFile: (file: TFile, newPath: string) => Promise<void>;
+  };
+};
+
+type PluginWithApp = {
+  app: AppWithVault;
+};
+
+type PluginWithSettings = PluginWithApp & {
+  obsidianPathSettings: ObsidianPathSettings;
+};
+
+export function vaultAbsolutePath(plugin: PluginWithApp): string {
   const adapter = plugin.app.vault.adapter;
   if (adapter instanceof FileSystemAdapter) {
     return adapter.getBasePath();
@@ -16,7 +36,9 @@ export function vaultAbsolutePath(plugin: O2Plugin): string {
   throw new Error('Vault is not a file system adapter');
 }
 
-export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
+export const copyMarkdownFile = async (
+  plugin: PluginWithSettings,
+): Promise<TFile[]> => {
   const dateString = Temporal.Now.plainDateISO().toString();
   const markdownFiles = getFilesInReady(plugin);
   for (const file of markdownFiles) {
@@ -38,7 +60,7 @@ export const copyMarkdownFile = async (plugin: O2Plugin): Promise<TFile[]> => {
     .filter((file: TFile) => file.path.includes(TEMP_PREFIX));
 };
 
-export const getFilesInReady = (plugin: O2Plugin): TFile[] =>
+export const getFilesInReady = (plugin: PluginWithSettings): TFile[] =>
   plugin.app.vault
     .getMarkdownFiles()
     .filter((file: TFile) =>
@@ -79,7 +101,7 @@ export const copy = (
     });
 };
 
-export const archiving = async (plugin: O2Plugin) => {
+export const archiving = async (plugin: PluginWithSettings) => {
   if (!plugin.obsidianPathSettings.isAutoArchive) {
     return;
   }
@@ -87,7 +109,7 @@ export const archiving = async (plugin: O2Plugin) => {
   // move files to archive folder
   const readyFiles = getFilesInReady(plugin);
   readyFiles.forEach((file: TFile) => {
-    plugin.app.fileManager.renameFile(
+    plugin.app.fileManager?.renameFile(
       file,
       file.path.replace(
         plugin.obsidianPathSettings.readyFolder,
@@ -111,7 +133,7 @@ export const moveFiles = async (
   copy(sourceFolderPath, targetFolderPath, pathReplacer, publishedDate);
 };
 
-export const cleanUp = async (plugin: O2Plugin) => {
+export const cleanUp = async (plugin: PluginWithApp) => {
   // remove temp files
   const markdownFiles = plugin.app.vault
     .getMarkdownFiles()

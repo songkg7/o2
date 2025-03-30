@@ -1,5 +1,5 @@
-import { ObsidianRegex } from './core/ObsidianRegex';
-import { Converter } from './core/Converter';
+import { ObsidianRegex } from '../ObsidianRegex';
+import { Converter } from '../Converter';
 
 export class CalloutConverter implements Converter {
   convert(input: string): string {
