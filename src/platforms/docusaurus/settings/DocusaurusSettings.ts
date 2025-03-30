@@ -1,4 +1,4 @@
-import { O2PluginSettings } from '../../settings';
+import { O2PluginSettings } from '../../../settings';
 import { DateExtractionPattern } from '../DateExtractionPattern';
 
 export default class DocusaurusSettings implements O2PluginSettings {
