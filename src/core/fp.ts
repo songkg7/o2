@@ -43,19 +43,26 @@ export function pipe(
 export const compose = <A>(...fns: Array<(a: A) => A>): ((a: A) => A) =>
   fns.reduce((f, g) => x => f(g(x)));
 
+type CurriedFunction<Args extends unknown[], R> = Args extends [infer A]
+  ? (a: A) => R
+  : Args extends [infer A, ...infer Rest]
+  ? (a: A) => CurriedFunction<Rest, R>
+  : never;
+
 /**
  * Creates a curried version of a function
  */
-export const curry = <A extends any[], R>(
-  fn: (...args: A) => R,
-): ((...args: any[]) => any) | ((...args: A) => R) => {
-  return function curried(...args: any[]) {
+export function curry<A, B, C>(fn: (a: A, b: B, c: C) => any): (a: A) => (b: B) => (c: C) => any;
+export function curry<A, B>(fn: (a: A, b: B) => any): (a: A) => (b: B) => any;
+export function curry<A>(fn: (a: A) => any): (a: A) => any;
+export function curry(fn: Function) {
+  return function curried(...args: unknown[]) {
     if (args.length >= fn.length) {
-      return fn(...(args as A));
+      return fn(...args);
     }
-    return (...moreArgs: any[]) => curried(...args, ...moreArgs);
+    return (...moreArgs: unknown[]) => curried(...args, ...moreArgs);
   };
-};
+}
 
 /**
  * Maps a function over an array

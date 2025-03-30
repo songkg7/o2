@@ -6,6 +6,7 @@ import {
   reduce,
   identity,
   constant,
+  curry,
 } from '../core/fp';
 
 describe('Functional Programming Utilities', () => {
@@ -99,6 +100,38 @@ describe('Functional Programming Utilities', () => {
       expect(always5()).toBe(5);
       expect((always5 as unknown as (x: unknown) => number)('anything')).toBe(5);
       expect((always5 as unknown as (x: unknown) => number)(123)).toBe(5);
+    });
+  });
+
+  describe('curry', () => {
+    it('should curry a function with multiple arguments', () => {
+      const add = (a: number, b: number, c: number) => a + b + c;
+      const curriedAdd = curry(add);
+      
+      // All arguments at once
+      expect(curriedAdd(1)(2)(3)).toBe(6);
+      
+      // Step by step application
+      const add1 = curriedAdd(1);
+      const add1and2 = add1(2);
+      expect(add1and2(3)).toBe(6);
+    });
+
+    it('should handle functions with single argument', () => {
+      const double = (x: number) => x * 2;
+      const curriedDouble = curry(double);
+      expect(curriedDouble(5)).toBe(10);
+    });
+
+    it('should maintain function context', () => {
+      type GreetContext = { name: string };
+      const greet = function(this: GreetContext, greeting: string) {
+        return `${greeting} ${this.name}`;
+      };
+      const context = { name: 'World' };
+      const boundGreet = greet.bind(context);
+      const curriedGreet = curry(boundGreet);
+      expect(curriedGreet('Hello')).toBe('Hello World');
     });
   });
 });
