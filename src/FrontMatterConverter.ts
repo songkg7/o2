@@ -6,7 +6,6 @@ import {
   ConversionResult,
   Either,
   FrontMatter,
-  chain,
   left,
   right,
   map,
