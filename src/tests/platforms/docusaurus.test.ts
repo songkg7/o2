@@ -1,5 +1,3 @@
-import { Notice } from 'obsidian';
-import { convertToDocusaurus } from '../../platforms/docusaurus/docusaurus';
 import {
   convertContent,
   getCurrentDate,

@@ -10,7 +10,6 @@ import {
 } from '../types/types';
 import { ObsidianRegex } from '../ObsidianRegex';
 import { pipe } from '../fp';
-import { TFile } from 'obsidian';
 
 // Helper functions
 const isNullOrEmpty = (str: string | undefined | null): boolean =>

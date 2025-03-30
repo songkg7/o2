@@ -1,5 +1,4 @@
-import O2Plugin from '../../main';
-import { FileSystemAdapter, Notice, TFile, Vault } from 'obsidian';
+import { App, FileSystemAdapter, Notice, TFile } from 'obsidian';
 import { Temporal } from '@js-temporal/polyfill';
 import fs from 'fs';
 import path from 'path';
@@ -8,24 +7,9 @@ import { ObsidianPathSettings } from '../../settings';
 
 export const TEMP_PREFIX = 'o2-temp.' as const;
 
-type VaultWithAdapter = {
-  adapter: FileSystemAdapter;
-};
-
-type AppWithVault = {
-  vault: Vault;
-  fileManager?: {
-    renameFile: (file: TFile, newPath: string) => Promise<void>;
-  };
-};
-
-type PluginWithApp = {
-  app: AppWithVault;
-};
-
-type PluginWithSettings = PluginWithApp & {
-  obsidianPathSettings: ObsidianPathSettings;
-};
+export type AppWithVault = Pick<App, 'vault' | 'fileManager'>;
+export type PluginWithApp = { app: AppWithVault };
+export type PluginWithSettings = { app: AppWithVault; obsidianPathSettings: ObsidianPathSettings };
 
 export function vaultAbsolutePath(plugin: PluginWithApp): string {
   const adapter = plugin.app.vault.adapter;
