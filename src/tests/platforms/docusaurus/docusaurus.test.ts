@@ -1,7 +1,7 @@
 import {
   convertContent,
   getCurrentDate,
-} from '../../platforms/docusaurus/docusaurus';
+} from '../../../platforms/docusaurus/docusaurus';
 
 describe('Docusaurus Conversion', () => {
   describe('getCurrentDate', () => {
