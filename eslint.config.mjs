@@ -18,7 +18,18 @@ const compat = new FlatCompat({
 export default [
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.json'],
-    ignores: ['**/node_modules/', '**/main.js'],
+    ignores: [
+      '**/node_modules/',
+      '**/main.js',
+      '**/tests/**',
+      'src/tests/**',
+      '**/*.test.ts',
+      '**/*.spec.ts',
+      '**/test/**',
+      '**/tests/**',
+      '**/test-utils/**',
+      '**/test-helpers/**'
+    ],
   },
   ...eslintPluginYml.configs['flat/recommended'],
   ...compat.extends(
