@@ -125,6 +125,35 @@ updated: 2023-01-01
         expect(result.value).toContain('updated: 2023-01-01');
       }
     });
+
+    it('should format Date object correctly', () => {
+      const date = new Date('2023-01-01');
+      const input = `---
+title: test
+updated: ${date.toISOString()}
+---`;
+      const result = convertFrontMatter(input, {
+        isEnableUpdateFrontmatterTimeOnEdit: true,
+      });
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('date: 2023-01-01');
+      }
+    });
+
+    it('should handle non-string and non-Date values', () => {
+      const input = `---
+title: test
+updated: 42
+---`;
+      const result = convertFrontMatter(input, {
+        isEnableUpdateFrontmatterTimeOnEdit: true,
+      });
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toContain('date: 42');
+      }
+    });
   });
 
   describe('Author handling', () => {
@@ -206,6 +235,17 @@ title: second
       expect(result._tag).toBe('Left');
       if (result._tag === 'Left') {
         expect((result.value as ConversionError).type).toBe('PARSE_ERROR');
+      }
+    });
+
+    it('should handle front matter without end marker', () => {
+      const input = `---
+title: test
+content without end marker`;
+      const result = convertFrontMatter(input);
+      expect(result._tag).toBe('Right');
+      if (result._tag === 'Right') {
+        expect(result.value).toBe(input);
       }
     });
   });
