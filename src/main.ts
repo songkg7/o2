@@ -7,6 +7,18 @@ import { convertToDocusaurus } from './platforms/docusaurus/docusaurus';
 import { archiving, cleanUp } from './core/utils/utils';
 import validateSettings from './core/validation';
 
+interface O2PluginSettings {
+  obsidianPathSettings: ObsidianPathSettings;
+  jekyll: JekyllSettings;
+  docusaurus: DocusaurusSettings;
+}
+
+const DEFAULT_SETTINGS: O2PluginSettings = {
+  obsidianPathSettings: new ObsidianPathSettings(),
+  jekyll: new JekyllSettings(),
+  docusaurus: new DocusaurusSettings()
+};
+
 export default class O2Plugin extends Plugin {
   obsidianPathSettings: ObsidianPathSettings;
   jekyll: JekyllSettings;
@@ -43,15 +55,12 @@ export default class O2Plugin extends Plugin {
   onunload() {}
 
   async loadSettings() {
-    this.obsidianPathSettings = Object.assign(
-      new ObsidianPathSettings(),
-      await this.loadData(),
-    );
-    this.jekyll = Object.assign(new JekyllSettings(), await this.loadData());
-    this.docusaurus = Object.assign(
-      new DocusaurusSettings(),
-      await this.loadData(),
-    );
+    const data = await this.loadData() as O2PluginSettings;
+    
+    // Merge saved settings with defaults
+    this.obsidianPathSettings = Object.assign(new ObsidianPathSettings(), DEFAULT_SETTINGS.obsidianPathSettings, data?.obsidianPathSettings);
+    this.jekyll = Object.assign(new JekyllSettings(), DEFAULT_SETTINGS.jekyll, data?.jekyll);
+    this.docusaurus = Object.assign(new DocusaurusSettings(), DEFAULT_SETTINGS.docusaurus, data?.docusaurus);
   }
 
   async saveSettings() {
