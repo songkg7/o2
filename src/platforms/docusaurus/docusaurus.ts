@@ -1,25 +1,16 @@
-import { TFile } from 'obsidian';
-import { moveFiles } from '../../core/utils/utils';
-import { pipe } from '../../core/fp';
-import { Either, left, right, chain, map } from '../../core/types/types';
-import DocusaurusSettings from './settings/DocusaurusSettings';
-import O2Plugin from '../../main';
-import {
-  archiving,
-  cleanUp,
-  copyMarkdownFile,
-  getFilesInReady,
-  parseLocalDate,
-  vaultAbsolutePath,
-} from '../../core/utils/utils';
-import { Contents } from '../../core/Converter';
-import { convertWikiLink } from '../../core/converters/WikiLinkConverter';
-import { convertFootnotes } from '../../core/converters/FootnotesConverter';
+import { Notice, TFile } from 'obsidian';
 import { convertDocusaurusCallout } from '../../core/converters/CalloutConverter';
 import { convertComments } from '../../core/converters/CommentsConverter';
-import { Notice } from 'obsidian';
+import { convertFootnotes } from '../../core/converters/FootnotesConverter';
 import { convertFrontMatter } from '../../core/converters/FrontMatterConverter';
-import { ConversionError, fold } from '../../core/types/types';
+import { convertWikiLink } from '../../core/converters/WikiLinkConverter';
+import { pipe } from '../../core/fp';
+import { chain, ConversionError, Either, fold, left, map, right } from '../../core/types/types';
+import {
+  copyMarkdownFile, getFilesInReady, moveFiles, parseLocalDate,
+  vaultAbsolutePath
+} from '../../core/utils/utils';
+import O2Plugin from '../../main';
 
 // Pure functions
 export const getCurrentDate = (): string =>

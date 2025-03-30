@@ -1,5 +1,6 @@
+import { FileSystemAdapter, TFile, Vault, FileManager, DataWriteOptions, TAbstractFile, EventRef } from 'obsidian';
+import { ObsidianPathSettings } from '../../../settings';
 import {
-  parseLocalDate,
   TEMP_PREFIX,
   vaultAbsolutePath,
   getFilesInReady,
@@ -7,44 +8,57 @@ import {
   archiving,
   moveFiles,
   cleanUp,
+  parseLocalDate,
 } from '../../../core/utils/utils';
-import {
-  FileSystemAdapter,
-  TFile,
-  Notice,
-  Plugin,
-  Vault,
-  DataAdapter,
-  TFolder,
-} from 'obsidian';
+import { DataAdapter, TFolder } from 'obsidian';
 import fs from 'fs';
-import type { ObsidianPathSettings } from '../../../settings';
+
+// Create a minimal mock FileManager
+const createMockFileManager = (overrides: Partial<FileManager> = {}): FileManager => ({
+  getNewFileParent: (sourcePath: string) => ({} as TFolder),
+  trashFile: async (file: TFile) => {},
+  generateMarkdownLink: () => '',
+  processFrontMatter: async (file: TFile, fn: (frontmatter: any) => void) => {},
+  getAvailablePathForAttachment: async (filename: string, extension: string) => '',
+  renameFile: async (file: TFile, newPath: string) => {},
+  ...overrides,
+});
 
 // Create a minimal mock Vault that satisfies the type requirements
-const createMockVault = (overrides: Partial<Vault> = {}): Vault =>
-  ({
-    adapter: new FileSystemAdapter() as DataAdapter,
-    configDir: '',
-    getName: () => '',
-    getAbstractFileByPath: () => null,
-    getRoot: () => ({}) as TFolder,
-    getFileByPath: () => null,
-    getFolderByPath: () => null,
-    getMarkdownFiles: () => [],
-    getAllLoadedFiles: () => [],
-    copy: async () => ({}) as TFile,
-    delete: async () => undefined,
-    create: async () => ({}) as TFile,
-    createBinary: async () => ({}) as TFile,
-    createFolder: async () => undefined,
-    read: async () => '',
-    readBinary: async () => new ArrayBuffer(0),
-    rename: async () => undefined,
-    modify: async () => undefined,
-    process: async () => undefined,
-    getResourcePath: () => '',
-    ...overrides,
-  }) as Vault;
+const createMockVault = (overrides: Partial<Vault> = {}): Vault => ({
+  adapter: new FileSystemAdapter() as DataAdapter,
+  configDir: '',
+  getName: () => '',
+  getAbstractFileByPath: () => null,
+  getRoot: () => ({}) as TFolder,
+  getFileByPath: () => null,
+  getFolderByPath: () => null,
+  getMarkdownFiles: () => [],
+  getAllLoadedFiles: () => [],
+  getAllFolders: (includeRoot?: boolean) => [],
+  getFiles: () => [],
+  copy: async () => ({}) as TFile,
+  delete: async () => undefined,
+  create: async () => ({}) as TFile,
+  createBinary: async () => ({}) as TFile,
+  createFolder: async (path: string) => ({} as TFolder),
+  read: async () => '',
+  readBinary: async () => new ArrayBuffer(0),
+  rename: async () => undefined,
+  modify: async (file: TFile, data: string) => {},
+  modifyBinary: async (file: TFile, data: ArrayBuffer, options?: DataWriteOptions) => {},
+  append: async (file: TFile, data: string, options?: DataWriteOptions) => {},
+  process: async (file: TFile, fn: (data: string) => string) => fn(''),
+  getResourcePath: () => '',
+  cachedRead: async (file: TFile) => '',
+  on: () => ({ id: 0 }),
+  off: () => {},
+  offref: (ref: EventRef) => {},
+  trigger: () => {},
+  tryTrigger: () => {},
+  trash: async (file: TAbstractFile, system: boolean) => {},
+  ...overrides,
+});
 
 // Create a complete mock ObsidianPathSettings
 const createMockSettings = (
@@ -118,6 +132,7 @@ describe('utils', () => {
           vault: createMockVault({
             adapter: mockAdapter,
           }),
+          fileManager: createMockFileManager(),
         },
       };
 
@@ -132,6 +147,7 @@ describe('utils', () => {
           vault: createMockVault({
             adapter: {} as FileSystemAdapter,
           }),
+          fileManager: createMockFileManager(),
         },
       };
 
@@ -154,6 +170,7 @@ describe('utils', () => {
           vault: createMockVault({
             getMarkdownFiles: jest.fn().mockReturnValue(mockFiles),
           }),
+          fileManager: createMockFileManager(),
         },
         obsidianPathSettings: createMockSettings(),
       };
@@ -175,6 +192,7 @@ describe('utils', () => {
           vault: createMockVault({
             getMarkdownFiles: jest.fn().mockReturnValue(mockFiles),
           }),
+          fileManager: createMockFileManager(),
         },
         obsidianPathSettings: createMockSettings(),
       };
@@ -206,6 +224,7 @@ describe('utils', () => {
               ]),
             copy: jest.fn().mockResolvedValue(undefined),
           }),
+          fileManager: createMockFileManager(),
         },
         obsidianPathSettings: createMockSettings(),
       };
@@ -227,6 +246,7 @@ describe('utils', () => {
             getMarkdownFiles: jest.fn().mockReturnValue(mockFiles),
             copy: jest.fn().mockRejectedValue(new Error('Copy failed')),
           }),
+          fileManager: createMockFileManager(),
         },
         obsidianPathSettings: createMockSettings(),
       };
@@ -240,18 +260,20 @@ describe('utils', () => {
 
   describe('archiving', () => {
     it('should not archive when isAutoArchive is false', async () => {
+      const mockFileManager = createMockFileManager({
+        renameFile: jest.fn(),
+      });
+
       const mockPlugin = {
         app: {
           vault: createMockVault(),
-          fileManager: {
-            renameFile: jest.fn(),
-          },
+          fileManager: mockFileManager,
         },
         obsidianPathSettings: createMockSettings(),
       };
 
       await archiving(mockPlugin);
-      expect(mockPlugin.app.fileManager.renameFile).not.toHaveBeenCalled();
+      expect(mockFileManager.renameFile).not.toHaveBeenCalled();
     });
 
     it('should move files to archive folder when isAutoArchive is true', async () => {
@@ -260,14 +282,16 @@ describe('utils', () => {
         { path: 'ready/test2.md' },
       ] as TFile[];
 
+      const mockFileManager = createMockFileManager({
+        renameFile: jest.fn(),
+      });
+
       const mockPlugin = {
         app: {
           vault: createMockVault({
             getMarkdownFiles: jest.fn().mockReturnValue(mockFiles),
           }),
-          fileManager: {
-            renameFile: jest.fn(),
-          },
+          fileManager: mockFileManager,
         },
         obsidianPathSettings: createMockSettings({
           isAutoArchive: true,
@@ -275,8 +299,8 @@ describe('utils', () => {
       };
 
       await archiving(mockPlugin);
-      expect(mockPlugin.app.fileManager.renameFile).toHaveBeenCalledTimes(2);
-      expect(mockPlugin.app.fileManager.renameFile).toHaveBeenCalledWith(
+      expect(mockFileManager.renameFile).toHaveBeenCalledTimes(2);
+      expect(mockFileManager.renameFile).toHaveBeenCalledWith(
         mockFiles[0],
         'archive/test1.md',
       );
@@ -345,6 +369,7 @@ describe('utils', () => {
             getMarkdownFiles: jest.fn().mockReturnValue(mockTempFiles),
             delete: jest.fn().mockResolvedValue(undefined),
           }),
+          fileManager: createMockFileManager(),
         },
       };
 
