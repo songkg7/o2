@@ -7,7 +7,13 @@ export interface ConversionResult {
 }
 
 export interface ConversionError {
-  type: 'PARSE_ERROR' | 'VALIDATION_ERROR';
+  type:
+    | 'PARSE_ERROR'
+    | 'VALIDATION_ERROR'
+    | 'PROCESS_ERROR'
+    | 'READ_ERROR'
+    | 'WRITE_ERROR'
+    | 'MOVE_ERROR';
   message: string;
 }
 
