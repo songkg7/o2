@@ -53,7 +53,9 @@ const extractFrontMatter = (
   } catch (e) {
     return left({
       type: 'PARSE_ERROR',
-      message: `Failed to parse front matter: ${e instanceof Error ? e.message : 'Unknown error'}`,
+      message: `Failed to parse front matter: ${
+        e instanceof Error ? e.message : 'Unknown error'
+      }`,
     });
   }
 };

@@ -98,7 +98,9 @@ describe('Functional Programming Utilities', () => {
     it('should return a function that always returns the same value', () => {
       const always5 = constant(5);
       expect(always5()).toBe(5);
-      expect((always5 as unknown as (x: unknown) => number)('anything')).toBe(5);
+      expect((always5 as unknown as (x: unknown) => number)('anything')).toBe(
+        5,
+      );
       expect((always5 as unknown as (x: unknown) => number)(123)).toBe(5);
     });
   });
@@ -107,10 +109,10 @@ describe('Functional Programming Utilities', () => {
     it('should curry a function with multiple arguments', () => {
       const add = (a: number, b: number, c: number) => a + b + c;
       const curriedAdd = curry(add);
-      
+
       // All arguments at once
       expect(curriedAdd(1)(2)(3)).toBe(6);
-      
+
       // Step by step application
       const add1 = curriedAdd(1);
       const add1and2 = add1(2);
@@ -125,7 +127,7 @@ describe('Functional Programming Utilities', () => {
 
     it('should maintain function context', () => {
       type GreetContext = { name: string };
-      const greet = function(this: GreetContext, greeting: string) {
+      const greet = function (this: GreetContext, greeting: string) {
         return `${greeting} ${this.name}`;
       };
       const context = { name: 'World' };
