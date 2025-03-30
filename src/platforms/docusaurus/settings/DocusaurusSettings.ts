@@ -3,7 +3,7 @@ import { DateExtractionPattern } from '../DateExtractionPattern';
 
 export default class DocusaurusSettings implements O2PluginSettings {
   docusaurusPath: string;
-  dateExtractionPattern: string;
+  dateExtractionPattern: string = 'FOLDER_NAMED_BY_DATE';
   authors: string;
 
   targetPath(): string {
