@@ -94,8 +94,3 @@ const o2ConversionCommand = async (plugin: O2Plugin) => {
     await convertToDocusaurus(plugin).finally(() => cleanUp(plugin));
   }
 };
-
-// Test formatting
-function test() {
-  console.log('test');
-}
