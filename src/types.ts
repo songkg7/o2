@@ -53,4 +53,4 @@ export const map =
 export const chain =
   <E, A, B>(f: (a: A) => Either<E, B>) =>
   (ma: Either<E, A>): Either<E, B> =>
-    isLeft(ma) ? ma : f(ma.value);
+    ma._tag === 'Left' ? ma : f(ma.value);
