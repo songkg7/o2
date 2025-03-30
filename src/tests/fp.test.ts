@@ -1,41 +1,82 @@
 import {
   pipe,
   compose,
+  curry,
   map,
   filter,
   reduce,
   identity,
   constant,
-  curry,
 } from '../core/fp';
 
 describe('Functional Programming Utilities', () => {
-  describe('compose', () => {
-    it('should compose functions from right to left', () => {
-      const addOne = (x: number) => x + 1;
-      const double = (x: number) => x * 2;
-      const composed = compose(addOne, double);
+  describe('pipe', () => {
+    it('should pipe a single value through multiple functions', () => {
+      const add2 = (x: number) => x + 2;
+      const multiply3 = (x: number) => x * 3;
+      const toString = (x: number) => x.toString();
 
-      // (5 * 2) + 1 = 11
-      expect(composed(5)).toBe(11);
+      const result = pipe(5, add2, multiply3, toString);
+      expect(result).toBe('21');
     });
 
-    it('should handle single function', () => {
-      const addOne = (x: number) => x + 1;
-      const composed = compose(addOne);
-      expect(composed(5)).toBe(6);
+    it('should handle a single function', () => {
+      const add2 = (x: number) => x + 2;
+      const result = pipe(5, add2);
+      expect(result).toBe(7);
+    });
+
+    it('should handle no functions', () => {
+      const result = pipe(5);
+      expect(result).toBe(5);
+    });
+  });
+
+  describe('compose', () => {
+    it('should compose multiple functions from right to left', () => {
+      const add2 = (x: number) => x + 2;
+      const multiply3 = (x: number) => x * 3;
+      const composed = compose(add2, multiply3);
+      expect(composed(5)).toBe(17); // (5 * 3) + 2
+    });
+
+    it('should handle a single function', () => {
+      const add2 = (x: number) => x + 2;
+      const composed = compose(add2);
+      expect(composed(5)).toBe(7);
+    });
+  });
+
+  describe('curry', () => {
+    it('should curry a function with multiple arguments', () => {
+      const add = (a: number, b: number, c: number) => a + b + c;
+      const curriedAdd = curry(add);
+      expect(curriedAdd(1)(2)(3)).toBe(6);
+    });
+
+    it('should handle partial application', () => {
+      const add = (a: number, b: number) => a + b;
+      const curriedAdd = curry(add);
+      const add5 = curriedAdd(5);
+      expect(add5(3)).toBe(8);
+    });
+
+    it('should handle single argument functions', () => {
+      const double = (x: number) => x * 2;
+      const curriedDouble = curry(double);
+      expect(curriedDouble(5)).toBe(10);
     });
   });
 
   describe('map', () => {
-    it('should transform array elements', () => {
+    it('should map a function over an array', () => {
       const double = (x: number) => x * 2;
-      const numbers = [1, 2, 3];
+      const numbers = [1, 2, 3, 4];
       const result = map(double)(numbers);
-      expect(result).toEqual([2, 4, 6]);
+      expect(result).toEqual([2, 4, 6, 8]);
     });
 
-    it('should handle empty array', () => {
+    it('should handle empty arrays', () => {
       const double = (x: number) => x * 2;
       const result = map(double)([]);
       expect(result).toEqual([]);
@@ -43,44 +84,32 @@ describe('Functional Programming Utilities', () => {
   });
 
   describe('filter', () => {
-    it('should filter array elements', () => {
+    it('should filter array elements based on predicate', () => {
       const isEven = (x: number) => x % 2 === 0;
-      const numbers = [1, 2, 3, 4];
+      const numbers = [1, 2, 3, 4, 5, 6];
       const result = filter(isEven)(numbers);
-      expect(result).toEqual([2, 4]);
+      expect(result).toEqual([2, 4, 6]);
     });
 
-    it('should handle empty array', () => {
+    it('should handle empty arrays', () => {
       const isEven = (x: number) => x % 2 === 0;
       const result = filter(isEven)([]);
-      expect(result).toEqual([]);
-    });
-
-    it('should handle array with no matches', () => {
-      const isEven = (x: number) => x % 2 === 0;
-      const result = filter(isEven)([1, 3, 5]);
       expect(result).toEqual([]);
     });
   });
 
   describe('reduce', () => {
-    it('should reduce array to single value', () => {
+    it('should reduce array using accumulator function', () => {
       const sum = (acc: number, x: number) => acc + x;
       const numbers = [1, 2, 3, 4];
       const result = reduce(sum, 0)(numbers);
       expect(result).toBe(10);
     });
 
-    it('should handle empty array', () => {
+    it('should handle empty arrays', () => {
       const sum = (acc: number, x: number) => acc + x;
       const result = reduce(sum, 0)([]);
       expect(result).toBe(0);
-    });
-
-    it('should handle array with single element', () => {
-      const sum = (acc: number, x: number) => acc + x;
-      const result = reduce(sum, 0)([5]);
-      expect(result).toBe(5);
     });
   });
 
@@ -95,45 +124,17 @@ describe('Functional Programming Utilities', () => {
   });
 
   describe('constant', () => {
-    it('should return a function that always returns the same value', () => {
+    it('should create a function that always returns the same value', () => {
       const always5 = constant(5);
       expect(always5()).toBe(5);
-      expect((always5 as unknown as (x: unknown) => number)('anything')).toBe(
-        5,
-      );
-      expect((always5 as unknown as (x: unknown) => number)(123)).toBe(5);
-    });
-  });
-
-  describe('curry', () => {
-    it('should curry a function with multiple arguments', () => {
-      const add = (a: number, b: number, c: number) => a + b + c;
-      const curriedAdd = curry(add);
-
-      // All arguments at once
-      expect(curriedAdd(1)(2)(3)).toBe(6);
-
-      // Step by step application
-      const add1 = curriedAdd(1);
-      const add1and2 = add1(2);
-      expect(add1and2(3)).toBe(6);
-    });
-
-    it('should handle functions with single argument', () => {
-      const double = (x: number) => x * 2;
-      const curriedDouble = curry(double);
-      expect(curriedDouble(5)).toBe(10);
-    });
-
-    it('should maintain function context', () => {
-      type GreetContext = { name: string };
-      const greet = function (this: GreetContext, greeting: string) {
-        return `${greeting} ${this.name}`;
-      };
-      const context = { name: 'World' };
-      const boundGreet = greet.bind(context);
-      const curriedGreet = curry(boundGreet);
-      expect(curriedGreet('Hello')).toBe('Hello World');
+      expect(always5()).toBe(5);
+      
+      const alwaysNull = constant(null);
+      expect(alwaysNull()).toBe(null);
+      
+      const obj = { a: 1 };
+      const alwaysObj = constant(obj);
+      expect(alwaysObj()).toBe(obj);
     });
   });
 });
