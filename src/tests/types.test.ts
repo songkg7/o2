@@ -3,7 +3,7 @@ import { Either, left, right, chain, isLeft, isRight } from '../types';
 describe('Either type utilities', () => {
   describe('chain', () => {
     const addOne = (n: number): Either<string, number> => right(n + 1);
-    const failOnZero = (n: number): Either<string, number> => 
+    const failOnZero = (n: number): Either<string, number> =>
       n === 0 ? left('Cannot process zero') : right(n);
 
     it('should return the passed Left value without invoking the function', () => {
@@ -41,4 +41,4 @@ describe('Either type utilities', () => {
       expect(failedResult).toEqual(left('Cannot process zero'));
     });
   });
-}); 
+});
