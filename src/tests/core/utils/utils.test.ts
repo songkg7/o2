@@ -48,7 +48,8 @@ const createMockVault = (overrides: Partial<Vault> = {}): Vault => ({
   getAllLoadedFiles: () => [],
   getAllFolders: (includeRoot?: boolean) => [],
   getFiles: () => [],
-  copy: async () => ({}) as TFile,
+  copy: async <T extends TAbstractFile>(file: T, newPath: string): Promise<T> =>
+    ({}) as T,
   delete: async () => undefined,
   create: async () => ({}) as TFile,
   createBinary: async () => ({}) as TFile,
