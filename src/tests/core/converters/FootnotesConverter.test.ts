@@ -1,4 +1,7 @@
-import { convertFootnotes, FootnotesConverter } from '../FootnotesConverter';
+import {
+  convertFootnotes,
+  FootnotesConverter,
+} from '../../../core/converters/FootnotesConverter';
 
 const converter = new FootnotesConverter();
 

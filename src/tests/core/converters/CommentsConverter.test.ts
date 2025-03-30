@@ -1,4 +1,4 @@
-import { CommentsConverter } from '../CommentsConverter';
+import { CommentsConverter } from '../../../core/converters/CommentsConverter';
 
 const converter = new CommentsConverter();
 

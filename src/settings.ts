@@ -1,8 +1,8 @@
 import { App, PluginSettingTab, Setting } from 'obsidian';
 import O2Plugin from './main';
-import JekyllSettings from './jekyll/settings/JekyllSettings';
-import DocusaurusSettings from './docusaurus/settings/DocusaurusSettings';
-import { DateExtractionPattern } from './docusaurus/DateExtractionPattern';
+import JekyllSettings from './platforms/jekyll/settings/JekyllSettings';
+import DocusaurusSettings from './platforms/docusaurus/settings/DocusaurusSettings';
+import { DateExtractionPattern } from './platforms/docusaurus/DateExtractionPattern';
 
 export class ObsidianPathSettings {
   readyFolder: string = 'ready';

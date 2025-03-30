@@ -1,4 +1,4 @@
-import { EmbedsConverter } from '../EmbedsConverter';
+import { EmbedsConverter } from '../../../core/converters/EmbedsConverter';
 
 const converter = new EmbedsConverter();
 

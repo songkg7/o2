@@ -1,4 +1,4 @@
-import { WikiLinkConverter } from '../WikiLinkConverter';
+import { WikiLinkConverter } from '../../../core/converters/WikiLinkConverter';
 
 const converter = new WikiLinkConverter();
 

@@ -1,4 +1,11 @@
-import { Either, left, right, chain, isLeft, isRight } from '../types';
+import {
+  Either,
+  left,
+  right,
+  chain,
+  isLeft,
+  isRight,
+} from '../core/types/types';
 
 describe('Either type utilities', () => {
   describe('chain', () => {

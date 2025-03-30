@@ -1,4 +1,4 @@
-import { CurlyBraceConverter } from '../CurlyBraceConverter';
+import { CurlyBraceConverter } from '../../../core/converters/CurlyBraceConverter';
 
 const activatedConverter = new CurlyBraceConverter(true);
 const deactivatedConverter = new CurlyBraceConverter(false);

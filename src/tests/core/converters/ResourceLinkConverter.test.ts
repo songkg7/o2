@@ -1,7 +1,7 @@
 import {
-  extractResourceNames,
   ResourceLinkConverter,
-} from '../ResourceLinkConverter';
+  extractResourceNames,
+} from '../../../core/converters/ResourceLinkConverter';
 
 jest.mock('obsidian', () => ({}), { virtual: true });
 jest.mock('fs', () => ({

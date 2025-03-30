@@ -1,5 +1,5 @@
-import { convertFrontMatter } from '../FrontMatterConverter';
-import { ConversionError } from '../types';
+import { convertFrontMatter } from '../../../core/converters/FrontMatterConverter';
+import { ConversionError } from '../../../core/types/types';
 
 describe('Functional FrontMatter Converter', () => {
   describe('Basic front matter conversion', () => {

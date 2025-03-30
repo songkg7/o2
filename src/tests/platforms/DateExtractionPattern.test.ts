@@ -1,4 +1,4 @@
-import { DateExtractionPattern } from '../docusaurus/DateExtractionPattern';
+import { DateExtractionPattern } from '../../platforms/docusaurus/DateExtractionPattern';
 
 describe('SINGLE', () => {
   it('should match YYYY-MM-DD-my-blog-post-title.md', () => {

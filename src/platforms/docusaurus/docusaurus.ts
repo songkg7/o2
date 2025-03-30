@@ -1,20 +1,25 @@
-import O2Plugin from '../main';
+import { TFile } from 'obsidian';
+import { moveFiles } from '../../core/utils/utils';
+import { pipe } from '../../core/fp';
+import { Either, left, right, chain, map } from '../../core/types/types';
+import DocusaurusSettings from './settings/DocusaurusSettings';
+import O2Plugin from '../../main';
 import {
+  archiving,
+  cleanUp,
   copyMarkdownFile,
   getFilesInReady,
-  moveFiles,
   parseLocalDate,
   vaultAbsolutePath,
-} from '../utils';
-import { Contents } from '../core/Converter';
-import { convertWikiLink } from '../WikiLinkConverter';
-import { convertFootnotes } from '../FootnotesConverter';
-import { convertDocusaurusCallout } from '../CalloutConverter';
-import { convertComments } from '../CommentsConverter';
-import { Notice, TFile } from 'obsidian';
-import { convertFrontMatter } from '../FrontMatterConverter';
-import { ConversionError, Either, fold, left, right, map, chain } from '../types';
-import { pipe } from '../core/fp';
+} from '../../core/utils/utils';
+import { Contents } from '../../core/Converter';
+import { convertWikiLink } from '../../core/converters/WikiLinkConverter';
+import { convertFootnotes } from '../../core/converters/FootnotesConverter';
+import { convertDocusaurusCallout } from '../../core/converters/CalloutConverter';
+import { convertComments } from '../../core/converters/CommentsConverter';
+import { Notice } from 'obsidian';
+import { convertFrontMatter } from '../../core/converters/FrontMatterConverter';
+import { ConversionError, fold } from '../../core/types/types';
 
 // Pure functions
 export const getCurrentDate = (): string =>
@@ -118,7 +123,7 @@ const showNotice = (message: string, duration = 5000): void => {
 const markPublished = async (plugin: O2Plugin): Promise<void> => {
   const filesInReady = getFilesInReady(plugin);
   const currentDate = getCurrentDate();
-  
+
   for (const file of filesInReady) {
     const result = await processFrontMatter(plugin, file, currentDate);
     fold<ConversionError, string, void>(
@@ -138,12 +143,12 @@ export const convertToDocusaurus = async (plugin: O2Plugin): Promise<void> => {
 
     const conversionResult = pipe(
       contentResult,
-      chain(content =>
+      chain((content: string) =>
         convertFrontMatter(content, {
           authors: plugin.docusaurus.authors,
         }),
       ),
-      map(convertContent),
+      map((content: string) => convertContent(content)),
     );
 
     const writeResult = await pipe(
@@ -168,7 +173,7 @@ export const convertToDocusaurus = async (plugin: O2Plugin): Promise<void> => {
     )(publishedDateResult);
 
     const moveResult = await moveToDocusaurus(plugin, publishedDate);
-    
+
     fold<ConversionError, void, void>(
       error => showNotice(`Failed to move files: ${error.message}`),
       async () => {

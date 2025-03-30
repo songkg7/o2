@@ -1,5 +1,5 @@
-import { Converter } from './core/Converter';
-import { ObsidianRegex } from './core/ObsidianRegex';
+import { Converter } from '../Converter';
+import { ObsidianRegex } from '../ObsidianRegex';
 
 export class CurlyBraceConverter implements Converter {
   private readonly isEnable: boolean;

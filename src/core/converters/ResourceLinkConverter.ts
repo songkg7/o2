@@ -1,7 +1,7 @@
 import fs from 'fs';
-import { ObsidianRegex } from './core/ObsidianRegex';
+import { ObsidianRegex } from '../ObsidianRegex';
 import { Notice } from 'obsidian';
-import { Converter } from './core/Converter';
+import { Converter } from '../Converter';
 import { removeTempPrefix } from './FilenameConverter';
 
 export class ResourceLinkConverter implements Converter {
