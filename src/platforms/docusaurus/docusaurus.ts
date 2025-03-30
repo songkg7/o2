@@ -5,10 +5,21 @@ import { convertFootnotes } from '../../core/converters/FootnotesConverter';
 import { convertFrontMatter } from '../../core/converters/FrontMatterConverter';
 import { convertWikiLink } from '../../core/converters/WikiLinkConverter';
 import { pipe } from '../../core/fp';
-import { chain, ConversionError, Either, fold, left, map, right } from '../../core/types/types';
 import {
-  copyMarkdownFile, getFilesInReady, moveFiles, parseLocalDate,
-  vaultAbsolutePath
+  chain,
+  ConversionError,
+  Either,
+  fold,
+  left,
+  map,
+  right,
+} from '../../core/types/types';
+import {
+  copyMarkdownFile,
+  getFilesInReady,
+  moveFiles,
+  parseLocalDate,
+  vaultAbsolutePath,
 } from '../../core/utils/utils';
 import O2Plugin from '../../main';
 

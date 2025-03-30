@@ -16,7 +16,7 @@ interface O2PluginSettings {
 const DEFAULT_SETTINGS: O2PluginSettings = {
   obsidianPathSettings: new ObsidianPathSettings(),
   jekyll: new JekyllSettings(),
-  docusaurus: new DocusaurusSettings()
+  docusaurus: new DocusaurusSettings(),
 };
 
 export default class O2Plugin extends Plugin {
@@ -55,12 +55,24 @@ export default class O2Plugin extends Plugin {
   onunload() {}
 
   async loadSettings() {
-    const data = await this.loadData() as O2PluginSettings;
-    
+    const data = (await this.loadData()) as O2PluginSettings;
+
     // Merge saved settings with defaults
-    this.obsidianPathSettings = Object.assign(new ObsidianPathSettings(), DEFAULT_SETTINGS.obsidianPathSettings, data?.obsidianPathSettings);
-    this.jekyll = Object.assign(new JekyllSettings(), DEFAULT_SETTINGS.jekyll, data?.jekyll);
-    this.docusaurus = Object.assign(new DocusaurusSettings(), DEFAULT_SETTINGS.docusaurus, data?.docusaurus);
+    this.obsidianPathSettings = Object.assign(
+      new ObsidianPathSettings(),
+      DEFAULT_SETTINGS.obsidianPathSettings,
+      data?.obsidianPathSettings,
+    );
+    this.jekyll = Object.assign(
+      new JekyllSettings(),
+      DEFAULT_SETTINGS.jekyll,
+      data?.jekyll,
+    );
+    this.docusaurus = Object.assign(
+      new DocusaurusSettings(),
+      DEFAULT_SETTINGS.docusaurus,
+      data?.docusaurus,
+    );
   }
 
   async saveSettings() {
