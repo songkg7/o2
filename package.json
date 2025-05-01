@@ -22,7 +22,7 @@
   "author": "haril song",
   "license": "MIT",
   "devDependencies": {
-    "@js-temporal/polyfill": "^0.4.4",
+    "@js-temporal/polyfill": "^0.5.1",
     "@types/jest": "^29.5.14",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.15.3",
