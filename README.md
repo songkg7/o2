@@ -1,5 +1,6 @@
 # O2
 
+
 [![CI](https://github.com/songkg7/o2/actions/workflows/ci.yml/badge.svg)](https://github.com/songkg7/o2/actions/workflows/node.js.yml)
 [![CodeFactor](https://www.codefactor.io/repository/github/songkg7/o2/badge)](https://www.codefactor.io/repository/github/songkg7/o2)
 [![Super-Linter](https://github.com/songkg7/o2/actions/workflows/linter.yml/badge.svg)](https://github.com/marketplace/actions/super-linter)
@@ -7,6 +8,9 @@
 [![Obsidian downloads](https://img.shields.io/badge/dynamic/json?logo=Obsidian&color=%238b6cef&label=downloads&query=o2.downloads&url=https://raw.githubusercontent.com/obsidianmd/obsidian-releases/master/community-plugin-stats.json)][community-plugin]
 
 [community-plugin]: https://obsidian.md/plugins?id=o2
+
+> [!WARNING]
+> Development of new features for this project has been discontinued. This decision was made because I am now envisioning a new tool that will not be tied to the Obsidian platform.
 
 Write once, convert to multiple platforms.
 
