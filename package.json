@@ -29,7 +29,7 @@
     "@typescript-eslint/eslint-plugin": "8.45.0",
     "@typescript-eslint/parser": "8.45.0",
     "builtin-modules": "5.0.0",
-    "esbuild": "0.25.9",
+    "esbuild": "0.25.11",
     "eslint": "^9.34.0",
     "eslint-plugin-yml": "^1.19.0",
     "husky": "^9.1.7",
